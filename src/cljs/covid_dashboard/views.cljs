@@ -35,9 +35,8 @@
 
 (defn group-data [& names]
   (apply concat (for [n names]
-                  (map-indexed (fn [i y] {:x i :y y :col n}) (take 20
-                                                                   (repeatedly #(rand-int 100)))))))
-(group-data "monkey" "slipper" "broom")
+                  (map-indexed (fn [i y] {:x i :y y :col n})
+                               (take 20 (repeatedly #(rand-int 100)))))))
 
 (def line-plot
   {:data {:values (group-data "monkey" "slipper" "broom" "dragon")}

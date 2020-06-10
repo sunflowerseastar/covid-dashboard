@@ -25,12 +25,9 @@
   (routes/app-routes)
   (re-frame/dispatch-sync [::events/initialize-db])
   (re-frame/dispatch-sync [::bp/set-breakpoints
-                           {:breakpoints [:mobile
-                                          768
-                                          :tablet
-                                          992
-                                          :small-monitor
-                                          1200
+                           {:breakpoints [:mobile 768
+                                          :tablet 992
+                                          :small-monitor 1200
                                           :large-monitor]
                             :debounce-ms 166}])
   (dev-setup)
