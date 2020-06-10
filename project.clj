@@ -12,7 +12,11 @@
                  [clj-commons/secretary "1.2.4"]
                  [garden "1.3.10"]
                  [ns-tracker "0.4.0"]
-                 [breaking-point "0.1.2"]]
+                 [breaking-point "0.1.2"]
+                 [metasoarous/oz "1.6.0-alpha6"
+                  :exclusions [cljsjs/vega cljsjs/vega-lite cljsjs/vega-embed cljsjs/vega-tooltip
+                               cljsjs/react cljsjs/react-dom cljsjs/react-dom-server cljsjs/create-react-class]]
+                 ]
 
   :plugins [[lein-shadow "0.2.0"]
             [lein-garden "0.3.0"]
