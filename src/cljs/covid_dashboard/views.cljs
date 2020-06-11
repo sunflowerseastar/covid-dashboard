@@ -3,6 +3,7 @@
    [breaking-point.core :as bp]
    [covid-dashboard.subs :as subs]
    [covid-dashboard.vegas :refer [line-plot-vega-lite map-us-chloropleth-vega]]
+   [covid-dashboard.d3s :refer [line-chart-d3]]
    [oz.core :as oz]
    [re-com.core :as re-com]
    [re-frame.core :as re-frame]
@@ -15,7 +16,7 @@
    :class "home-col-left"
    :gap "1em"
    :children [[re-com/box :size "1" :child [line-plot-vega-lite]]
-              [re-com/box :size "1" :child "left bottom"]]])
+              [re-com/box :size "1" :child [line-chart-d3]]]])
 
 (defn home-col-center []
   [:div.home-col-center
