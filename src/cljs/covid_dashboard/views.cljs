@@ -49,7 +49,7 @@
                :description "A choropleth map depicting U.S. unemployment rates by county in 2009."
                :width 960
                :height 500
-               :autosize "none"
+               :autosize {:type "fit" :contains "padding"}
 
                :data [{:name "unemp"
                        :url "https://covid-dashboard.sunflowerseastar.com/data/unemployment.tsv"
