@@ -85,7 +85,7 @@
    :gap "1em"
    :children [[re-com/box :size "1" :child [home-col-left]]
               [re-com/box :size "1"
-               :child [:div
+               :child [:div.container
                        [home-title]
                        [oz.core/vega-lite line-plot]
                        [oz.core/vega map-test]

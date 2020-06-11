@@ -7,6 +7,10 @@ body {
   height: 100vh;
 }
 
+.container canvas {
+  border: 3px solid red !important;
+}
+
 .level1 {
   color: green;
 }
