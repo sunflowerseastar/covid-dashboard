@@ -21,18 +21,6 @@
    :label "go to About Page"
    :href "#/about"])
 
-(defn home-col-left []
-  [re-com/v-box
-   :gap "1em"
-   :children [[re-com/box :size "1" :child "top"]
-              [re-com/box :size "1" :child "bottom"]]])
-
-(defn home-col-right []
-  [re-com/v-box
-   :gap "1em"
-   :children [[re-com/box :size "1" :child "right top"]
-              [re-com/box :size "1" :child "right bottom"]]])
-
 (defn group-data [& names]
   (apply concat (for [n names]
                   (map-indexed (fn [i y] {:x i :y y :col n})
@@ -79,20 +67,34 @@
                                  :hover {:fill { :value "red"} }}
                         :transform [{:type "geoshape" :projection "projection" }]}]})
 
+(defn home-col-center []
+  [:div.container
+   [home-title]
+   [oz.core/vega-lite line-plot]
+   [oz.core/vega map-test]
+   [link-to-about-page]
+   [:div
+    [:h3 (str "screen-width: " @(re-frame/subscribe [::bp/screen-width]))]
+    [:h3 (str "screen: " @(re-frame/subscribe [::bp/screen]))]]])
+
+(defn home-col-left []
+  [re-com/v-box
+   :gap "1em"
+   :children [[re-com/box :size "1" :child "top"]
+              [re-com/box :size "1" :child "bottom"]]])
+
+(defn home-col-right []
+  [re-com/v-box
+   :gap "1em"
+   :children [[re-com/box :size "1" :child "right top"]
+              [re-com/box :size "1" :child "right bottom"]]])
+
 (defn home-panel []
   [re-com/h-box
    :class "middle"
    :gap "1em"
    :children [[re-com/box :size "1" :child [home-col-left]]
-              [re-com/box :size "1"
-               :child [:div.container
-                       [home-title]
-                       [oz.core/vega-lite line-plot]
-                       [oz.core/vega map-test]
-                       [link-to-about-page]
-                       [:div
-                        [:h3 (str "screen-width: " @(re-frame/subscribe [::bp/screen-width]))]
-                        [:h3 (str "screen: " @(re-frame/subscribe [::bp/screen]))]]]]
+              [re-com/box :size "1" :child [home-col-center]]
               [re-com/box :size "1" :child [home-col-right]]]])
 
 
