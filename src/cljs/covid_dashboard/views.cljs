@@ -5,7 +5,8 @@
    [covid-dashboard.vegas :refer [line-plot-vega-lite map-us-chloropleth-vega]]
    [oz.core :as oz]
    [re-com.core :as re-com]
-   [re-frame.core :as re-frame]))
+   [re-frame.core :as re-frame]
+   [cljsjs.d3 :as d3]))
 
 ;; home
 
