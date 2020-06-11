@@ -15,8 +15,7 @@
                  [breaking-point "0.1.2"]
                  [metasoarous/oz "1.6.0-alpha6"
                   :exclusions [cljsjs/vega cljsjs/vega-lite cljsjs/vega-embed cljsjs/vega-tooltip
-                               cljsjs/react cljsjs/react-dom cljsjs/react-dom-server cljsjs/create-react-class]]
-                 ]
+                               cljsjs/react cljsjs/react-dom cljsjs/react-dom-server cljsjs/create-react-class]]]
 
   :plugins [[lein-shadow "0.2.0"]
             [lein-garden "0.3.0"]
@@ -44,7 +43,6 @@
                              :linux   "xdg-open"}}}
 
   :shadow-cljs {:nrepl {:port 8777}
-                
                 :builds {:app {:target :browser
                                :output-dir "resources/public/js/compiled"
                                :asset-path "/js/compiled"
@@ -58,8 +56,8 @@
                                           {day8.re-frame.tracing day8.re-frame.tracing-stubs}}}
 
                                :devtools {:http-root "resources/public"
-                                          :http-port 8280
-                                          }}
+                                          :http-port 8280}}
+
                          :browser-test
                          {:target :browser-test
                           :ns-regexp "-test$"
@@ -89,9 +87,6 @@
    {:dependencies [[binaryage/devtools "1.0.0"]
                    [day8.re-frame/re-frame-10x "0.6.5"]]
     :source-paths ["dev"]}
-
-   :prod {}
-   
-}
+   :prod {}}
 
   :prep-tasks [["garden" "once"]])

@@ -2,10 +2,13 @@
   (:require [garden.def :refer [defstyles]]))
 
 (defstyles screen
-  [:body {:color "orange"}]
-  [:.middle {:background "#e1e1e1" :height "100vh"}]
-  [:.container [:canvas {:border "3px solid red !important"
-                         ;; :width "100% !important"
-                         ;; :height "100% !important"
-                         }]]
-  [:.level1 {:color "green"}])
+  [:.home-panel {:height "100vh" :background "lavender"}]
+
+  [:.home-col-center {:background "#e1e1e1"}]
+  [:.home-col-left {:background "#bbb"}]
+  [:.home-col-right {:background "#999"}]
+
+  [:.canvas-container [:canvas {:width "100% !important" :height "100% !important"}]]
+
+  [:.border {:border "3px solid green !important"}]
+  )
