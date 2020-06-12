@@ -95,50 +95,16 @@
              :orient "auto"}
     [:path {:d "M0,-5L10,0L0,5"}]]])
 
-(defn graph-render []
-  (println "graph-render")
-  (let [width 901
-        height 501]
-    [:svg {:width width :height height}
-     [svg-markers]
-     [:g.graph]]))
-
-#_(defn graph []
-  (println "graph")
-  (r/create-class
-   {:display-name "graph"
-    :reagent-render graph-render
-    :component-did-update (fn [this]
-                            (do
-                              (println "graph cdu")
-                              (graph! highlighted-nodes attrs graph-data)))
-    :component-did-mount (fn [this]
-                           (do
-                             (println "graph cdm")
-                             (graph! highlighted-nodes attrs graph-data)))}))
-
 (defn graph-render-2 []
   (println "graph-render-2")
   (let [width 901
         height 501]
     [:div#d3-container [:svg {:width width :height height}
                         [svg-markers]
-                        [:g.graph]] ]))
+                        [:g.graph]]]))
 
 (defn line-chart-d3 []
   (r/create-class
    {:display-name "line-chart-d3"
     :reagent-render graph-render-2
-    :component-did-mount (fn [this]
-                            (do
-                              (println "line-chart-d3 cdm")
-                              (ibm-stock)))}))
-
-#_(defn line-chart-d3-x []
-    (do
-      (ibm-stock)
-      [:div
-       [:div {:id "graph-container"}
-        [graph]]
-       [:div#time.chart
-        [:svg]] ]))
+    :component-did-mount #(ibm-stock)}))
