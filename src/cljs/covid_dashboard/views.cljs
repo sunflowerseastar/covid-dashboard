@@ -3,7 +3,7 @@
    [breaking-point.core :as bp]
    [covid-dashboard.subs :as subs]
    [covid-dashboard.vegas :refer [line-plot-vega-lite map-us-chloropleth-vega]]
-   [covid-dashboard.d3s :refer [line-chart-d3]]
+   [covid-dashboard.d3s :refer [line-chart-d3 bubble-map-d3]]
    [oz.core :as oz]
    [re-com.core :as re-com]
    [re-frame.core :as re-frame]
@@ -27,7 +27,7 @@
    :class "home-col-right"
    :gap "1em"
    :size "auto"
-   :children [[re-com/box :size "1" :child "right top"]
+   :children [[re-com/box :size "1" :child [bubble-map-d3]]
               [re-com/box :size "1" :child [:div.canvas-container [map-us-chloropleth-vega]]]]])
 
 (defn home-panel []

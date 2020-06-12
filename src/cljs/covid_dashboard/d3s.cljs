@@ -5,6 +5,8 @@
    [reagent.core :as r]
    [cljsjs.d3 :as d3]))
 
+(def margin {:top 20, :right 20, :bottom 30, :left 50})
+
 (defn get-scales [width height]
   [(.. js/d3 -time scale (range #js [0 width]))
    (.. js/d3 -scale linear (range #js [height 0]))])
@@ -58,8 +60,7 @@
 
 (defn ibm-stock [starting-width]
   (do (println "ibm-stock")
-      (let [margin {:top 20, :right 20, :bottom 30, :left 50}
-            width (- starting-width (:left margin) (:right margin))
+      (let [width (- starting-width (:left margin) (:right margin))
             height (* starting-width 0.6)
             parse-date (.. js/d3 -time (format "%d-%b-%y") -parse)
             [x y] (get-scales width height)
@@ -79,3 +80,48 @@
    {:display-name "line-chart-d3"
     :reagent-render (fn [this] [:div#d3-line-chart-container [:svg [:g.graph]]])
     :component-did-mount #(ibm-stock (/ @(re-frame/subscribe [::bp/screen-width]) 3))}))
+
+(defn get-svg-2 [margin width height]
+  (.. js/d3 (select "#d3-bubble-map-container svg")
+      (attr "width" (+ width (:left margin) (:right margin)))
+      (attr "height" (+ height (:top margin) (:bottom margin)))
+      (append "g")
+      (attr "transform" (str "translate(" (:left margin) \, (:top margin) \) ))))
+
+(defn bubble-map [starting-width]
+  (println "bubble-map")
+  (let [width (- starting-width (:left margin) (:right margin))
+        height (* starting-width 0.6)]
+    (.json js/d3 "https://covid-dashboard.sunflowerseastar.com/data/population.json"
+           (fn [error population-data]
+             (.json js/d3  "https://covid-dashboard.sunflowerseastar.com/data/counties-albers-10m.json"
+               (fn [error-2 us]
+                 ;; (println us)
+                 (let [data (js/Map.)
+                     _ (dorun (map #(.set data % (get data %)) (js->clj population-data)))
+                     svg (get-svg-2 margin width height)]
+
+                 (do
+                   (println "before2")
+                   ;; (dorun (map #(.set data % (get data %)) (js->clj population-data)))
+                   (println data)
+                   (.. svg (append "path")
+                       ;; (datum (.feature js/d3 us (-> us .-objects .-nation)))
+                       )
+
+
+                   )
+                 ;; (.forIn population-data #(.set data % (get data %)))
+                 ))
+               ;; (set-domains x y data)
+               ;; (build-x-axis height svg x-axis)
+               ;; (build-y-axis svg y-axis)
+               ;; (add-line svg line data)
+               )))
+    ))
+
+(defn bubble-map-d3 []
+  (r/create-class
+   {:display-name "bubble-map-d3"
+    :reagent-render (fn [this] [:div#d3-bubble-map-container [:svg {:viewBox [0 0 975 610]}]])
+    :component-did-mount #(bubble-map (/ @(re-frame/subscribe [::bp/screen-width]) 3))}))
