@@ -1,5 +1,7 @@
 (ns covid-dashboard.d3s
-  (:require [cljsjs.d3 :as d3]))
+  (:require
+   [reagent.core :as r]
+   [cljsjs.d3 :as d3]))
 
 (defn get-dimensions [margin]
   [(- 960 (:left margin) (:right margin))
@@ -19,7 +21,7 @@
       (y #(y (.-close %)))))
 
 (defn get-svg [margin width height]
-  (.. js/d3 (select "svg")
+  (.. js/d3 (select "#d3-container svg")
       (attr "width" (+ width (:left margin) (:right margin)))
       (attr "height" (+ height (:top margin) (:bottom margin)))
       (append "g")
@@ -57,7 +59,7 @@
       (attr "d" line)))
 
 (defn ibm-stock []
-  (do (println "ibm-stock!")
+  (do (println "ibm-stock 234234!")
       (let [margin {:top 20, :right 20, :bottom 30, :left 50}
             [width height] (get-dimensions margin)
             parse-date (.. js/d3 -time (format "%d-%b-%y") -parse)
@@ -65,7 +67,10 @@
             [x-axis y-axis] (get-axes x y)
             line (get-line x y)
             svg (get-svg margin width height)]
-        (.csv js/d3 "https://covid-dashboard.sunflowerseastar.com/data/ibm.csv"
+        (do
+          (println "HISDFSDF")
+          (println svg)
+          (.csv js/d3 "https://covid-dashboard.sunflowerseastar.com/data/ibm.csv"
               (fn [error data]
                 (do (println data)
                     (.forEach data
@@ -75,10 +80,65 @@
 
                 (build-x-axis height svg x-axis)
                 (build-y-axis svg y-axis)
-                (add-line svg line data))))))
+                (add-line svg line data)))))))
+
+(defn graph! []
+  ;; (graph-enter! highlighted-nodes attrs graph-data)
+  ;; (graph-update!)
+  ;; (graph-exit! highlighted-nodes attrs graph-data)
+  )
+
+(defn svg-markers []
+  [:defs
+   [:marker {:id "end-arrow" :viewBox "0 -5 10 10" :refX 17 :refY 0
+             :markerWidth 6 :markerHeight 6 :markerUnits "strokeWidth"
+             :orient "auto"}
+    [:path {:d "M0,-5L10,0L0,5"}]]])
+
+(defn graph-render []
+  (println "graph-render")
+  (let [width 901
+        height 501]
+    [:svg {:width width :height height}
+     [svg-markers]
+     [:g.graph]]))
+
+#_(defn graph []
+  (println "graph")
+  (r/create-class
+   {:display-name "graph"
+    :reagent-render graph-render
+    :component-did-update (fn [this]
+                            (do
+                              (println "graph cdu")
+                              (graph! highlighted-nodes attrs graph-data)))
+    :component-did-mount (fn [this]
+                           (do
+                             (println "graph cdm")
+                             (graph! highlighted-nodes attrs graph-data)))}))
+
+(defn graph-render-2 []
+  (println "graph-render-2")
+  (let [width 901
+        height 501]
+    [:div#d3-container [:svg {:width width :height height}
+                        [svg-markers]
+                        [:g.graph]] ]))
 
 (defn line-chart-d3 []
-  (do
-    (ibm-stock)
-    [:div#time.chart
-     [:svg]]))
+  (r/create-class
+   {:display-name "line-chart-d3"
+    :reagent-render graph-render-2
+    :component-did-mount (fn [this]
+                            (do
+                              (println "line-chart-d3 cdm")
+                              (ibm-stock)))}))
+
+#_(defn line-chart-d3-x []
+    (do
+      (ibm-stock)
+      [:div
+       [:div {:id "graph-container"}
+        [graph]]
+       [:div#time.chart
+        [:svg]] ]))
