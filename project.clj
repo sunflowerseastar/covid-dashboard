@@ -16,7 +16,7 @@
                  [metasoarous/oz "1.6.0-alpha6"
                   :exclusions [cljsjs/vega cljsjs/vega-lite cljsjs/vega-embed cljsjs/vega-tooltip
                                cljsjs/react cljsjs/react-dom cljsjs/react-dom-server cljsjs/create-react-class]]
-                 [cljsjs/d3 "3.5.16-0"]]
+                 [cljsjs/d3 "5.12.0-0"]]
 
   :plugins [[lein-shadow "0.2.0"]
             [lein-garden "0.3.0"]
