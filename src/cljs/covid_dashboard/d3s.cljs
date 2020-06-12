@@ -19,7 +19,7 @@
       (y #(y (.-close %)))))
 
 (defn get-svg [margin width height]
-  (.. js/d3 (select "#d3-container svg")
+  (.. js/d3 (select "#d3-line-chart-container svg")
       (attr "width" (+ width (:left margin) (:right margin)))
       (attr "height" (+ height (:top margin) (:bottom margin)))
       (append "g")
@@ -57,7 +57,7 @@
       (attr "d" line)))
 
 (defn ibm-stock [starting-width]
-  (do (println "ibm-stock 234234!")
+  (do (println "ibm-stock")
       (let [margin {:top 20, :right 20, :bottom 30, :left 50}
             width (- starting-width (:left margin) (:right margin))
             height (* starting-width 0.6)
@@ -66,34 +66,16 @@
             [x-axis y-axis] (get-axes x y)
             line (get-line x y)
             svg (get-svg margin width height)]
-        (do
-          (println "HISDFSDF")
-          (println svg)
-          (.csv js/d3 "https://covid-dashboard.sunflowerseastar.com/data/ibm.csv"
+        (.csv js/d3 "https://covid-dashboard.sunflowerseastar.com/data/ibm.csv"
               (fn [error data]
-                (do (println data)
-                    (.forEach data
-                              #(coerce-datum parse-date %)))
-
+                (.forEach data #(coerce-datum parse-date %))
                 (set-domains x y data)
-
                 (build-x-axis height svg x-axis)
                 (build-y-axis svg y-axis)
-                (add-line svg line data)))))))
-
-(defn svg-markers []
-  [:defs
-   [:marker {:id "end-arrow" :viewBox "0 -5 10 10" :refX 17 :refY 0
-             :markerWidth 6 :markerHeight 6 :markerUnits "strokeWidth"
-             :orient "auto"}
-    [:path {:d "M0,-5L10,0L0,5"}]]])
-
-(defn graph-render-2 []
-  (println "graph-render-2")
-    [:div#d3-container [:svg [:g.graph]]])
+                (add-line svg line data))))))
 
 (defn line-chart-d3 []
   (r/create-class
    {:display-name "line-chart-d3"
-    :reagent-render graph-render-2
+    :reagent-render (fn [this] [:div#d3-line-chart-container [:svg [:g.graph]]])
     :component-did-mount #(ibm-stock (/ @(re-frame/subscribe [::bp/screen-width]) 3))}))

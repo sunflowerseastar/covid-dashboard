@@ -11,4 +11,10 @@
   [:.canvas-container [:canvas {:width "100% !important" :height "100% !important"}]]
 
   [:.border {:border "3px solid green !important"}]
+
+  [:#d3-line-chart-container
+   [:.axis [:path {:fill "none" :stroke "#000" :shape-rendering "crispedges"}]
+    [:line {:fill "none" :stroke "#000" :shape-rendering "crispedges"}]
+    [:&:.x [:path {:displays "none"}]]]
+   [:.line {:fill "none" :stroke "steelblue" :stroke-width "1.5px"}]]
   )
