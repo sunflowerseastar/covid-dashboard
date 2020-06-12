@@ -8,15 +8,11 @@
 (def margin {:top 20, :right 20, :bottom 30, :left 50})
 
 (defn get-scales [width height]
-  [(.. js/d3 -time scale (range #js [0 width]))
-   (.. js/d3 -scale linear (range #js [height 0]))])
-
-(defn get-axes [x y]
-  [(.. js/d3 -svg axis (scale x) (orient "bottom"))
-   (.. js/d3 -svg axis (scale y) (orient "left"))])
+  [(.. js/d3 scaleTime (range #js [0 width]))
+   (.. js/d3 scaleLinear (range #js [height 0]))])
 
 (defn get-line [x y]
-  (.. js/d3 -svg line
+  (.. js/d3 line
       (x #(x (.-date %)))
       (y #(y (.-close %)))))
 
@@ -27,30 +23,9 @@
       (append "g")
       (attr "transform" (str "translate(" (:left margin) \, (:top margin) \) ))))
 
-(defn coerce-datum [parse-date d]
-  (aset d "date" (parse-date (.-date d)))
-  (aset d "close" (js/parseFloat (.-close d))))
-
 (defn set-domains [x y data]
   (.domain x (.extent js/d3 data #(.-date %)))
   (.domain y (.extent js/d3 data #(.-close %))))
-
-(defn build-x-axis [height svg x-axis]
-  (.. svg (append "g")
-      (attr "class" "x axis")
-      (attr "transform" (str "translate(0," height \)))
-      (call x-axis)))
-
-(defn build-y-axis [svg y-axis]
-  (.. svg (append "g")
-      (attr "class" "y axis")
-      (call y-axis)
-      (append "text")
-      (attr "transform" "rotate(-90)")
-      (attr "y" 6)
-      (attr "dy" ".71em")
-      (style "text-anchor" "end")
-      (text "Price ($)")))
 
 (defn add-line [svg line data]
   (.. svg (append "path")
@@ -59,21 +34,25 @@
       (attr "d" line)))
 
 (defn ibm-stock [starting-width]
-  (do (println "ibm-stock")
-      (let [width (- starting-width (:left margin) (:right margin))
-            height (* starting-width 0.6)
-            parse-date (.. js/d3 -time (format "%d-%b-%y") -parse)
-            [x y] (get-scales width height)
-            [x-axis y-axis] (get-axes x y)
-            line (get-line x y)
-            svg (get-svg margin width height)]
-        (.csv js/d3 "https://covid-dashboard.sunflowerseastar.com/data/ibm.csv"
-              (fn [error data]
-                (.forEach data #(coerce-datum parse-date %))
-                (set-domains x y data)
-                (build-x-axis height svg x-axis)
-                (build-y-axis svg y-axis)
-                (add-line svg line data))))))
+  (let [width (- starting-width (:left margin) (:right margin))
+        height (* starting-width 0.6)
+        parse-date (.timeParse js/d3 "%d-%b-%y")
+        [x y] (get-scales width height)
+        line (get-line x y)
+        svg (get-svg margin width height)]
+    (-> (.csv js/d3 "https://covid-dashboard.sunflowerseastar.com/data/ibm.csv")
+        (.then (fn [ibm-data-response]
+                 (let [data (->> ibm-data-response js->clj
+                                 (map (fn [d]
+                                        {:date (parse-date (get d "date")) :close (js/parseFloat (get d "close"))})
+                                      ) clj->js)]
+                   (set-domains x y data)
+                   (.. js/d3 (select ".x.axis")
+                       (call (.axisBottom js/d3 x)))
+                   (.. js/d3 (select ".y.axis")
+                       (call (.axisLeft js/d3 y)))
+                   (add-line svg line data))))
+        (.catch #(js/console.log %)))))
 
 (defn line-chart-d3 []
   (r/create-class
@@ -92,32 +71,34 @@
   (println "bubble-map")
   (let [width (- starting-width (:left margin) (:right margin))
         height (* starting-width 0.6)]
-    (.json js/d3 "https://covid-dashboard.sunflowerseastar.com/data/population.json"
-           (fn [error population-data]
-             (.json js/d3  "https://covid-dashboard.sunflowerseastar.com/data/counties-albers-10m.json"
-               (fn [error-2 us]
-                 ;; (println us)
-                 (let [data (js/Map.)
-                     _ (dorun (map #(.set data % (get data %)) (js->clj population-data)))
-                     svg (get-svg-2 margin width height)]
+    (-> (.json js/d3 "https://covid-dashboard.sunflowerseastar.com/data/population.json")
+        (.then
+         (fn [population-data]
+           (-> (.json js/d3  "https://covid-dashboard.sunflowerseastar.com/data/counties-albers-10m.json")
+               (.then
+                (fn [us]
+                  ;; (println us)
+                  (let [data (js/Map.)
+                        _ (dorun (map #(.set data % (get data %)) (js->clj population-data)))
+                        svg (get-svg-2 margin width height)]
 
-                 (do
-                   (println "before2")
-                   ;; (dorun (map #(.set data % (get data %)) (js->clj population-data)))
-                   (println data)
-                   (.. svg (append "path")
-                       ;; (datum (.feature js/d3 us (-> us .-objects .-nation)))
-                       )
+                    (do
+                      ;; (println "before2")
+                      ;; (dorun (map #(.set data % (get data %)) (js->clj population-data)))
+                      ;; (println data)
+                      (.. svg (append "path")
+                          ;; (datum (.feature js/d3 us (-> us .-objects .-nation)))
+                          )
 
 
-                   )
-                 ;; (.forIn population-data #(.set data % (get data %)))
-                 ))
+                      )
+                    ;; (.forIn population-data #(.set data % (get data %)))
+                    )))
                ;; (set-domains x y data)
                ;; (build-x-axis height svg x-axis)
                ;; (build-y-axis svg y-axis)
                ;; (add-line svg line data)
-               )))
+               ))))
     ))
 
 (defn bubble-map-d3 []
