@@ -1,5 +1,7 @@
 (ns covid-dashboard.d3s
   (:require
+   [d3-geo :refer [geoPath]]
+   [topojson-client :refer [feature mesh]]
    [breaking-point.core :as bp]
    [re-frame.core :as re-frame]
    [reagent.core :as r]
@@ -67,6 +69,12 @@
       (append "g")
       (attr "transform" (str "translate(" (:left margin) \, (:top margin) \) ))))
 
+#_(defn radius []
+    (.scaleSqrt js/d3 [0 (.quantile js/d3 (-> (.values data) (.sort "ascending")) 0.985)]
+                [0 15]))
+
+(defn format [x] (.format js/d3 ",.0f" x))
+
 (defn bubble-map [starting-width]
   (println "bubble-map")
   (let [width (- starting-width (:left margin) (:right margin))
@@ -78,28 +86,72 @@
                (.then
                 (fn [us]
                   ;; (println us)
-                  (let [data (js/Map.)
+                  (let [myGeoPath (geoPath)
+                        data (js/Map.)
                         _ (dorun (map #(.set data % (get data %)) (js->clj population-data)))
-                        svg (get-svg-2 margin width height)]
+                        svg (get-svg-2 margin width height)
+                        radius #(.scaleSqrt js/d3 [0 (.quantile js/d3 (-> (.values %) (.sort "ascending")) 0.985)] [0 15])]
 
                     (do
-                      ;; (println "before2")
-                      ;; (dorun (map #(.set data % (get data %)) (js->clj population-data)))
-                      ;; (println data)
-                      (.. svg (append "path")
-                          ;; (datum (.feature js/d3 us (-> us .-objects .-nation)))
+                      (-> svg
+                          (.append "path")
+                          (.datum (feature us (-> us .-objects .-nation)))
+                          (.attr "fill", "#ccc")
+                          (.attr "d" myGeoPath))
+
+                      (-> svg
+                          (.append "path")
+                          (.datum (mesh us (-> us .-objects .-states) (fn [a b] (not= a b))))
+                          (.attr "fill" "none")
+                          (.attr "stroke" "white")
+                          (.attr "stroke-linejoin" "round")
+                          (.attr "d" myGeoPath))
+
+                      ;; const legend = svg
+                      ;; .append('g')
+                      ;; .attr('fill', '#777')
+                      ;; .attr('transform', 'translate(925,608)')
+                      ;; .attr('text-anchor', 'middle')
+                      ;; .style('font', '10px sans-serif')
+                      ;; .selectAll('g')
+                      ;; .data([1e6, 5e6, 1e7])
+                      ;; .join('g');
+
+                      ;; legend
+                      ;; .append('circle')
+                      ;; .attr('fill', 'none')
+                      ;; .attr('stroke', '#ccc')
+                      ;; .attr('cy', (d) => -radius(d))
+                      ;; .attr('r', radius);
+
+                      ;; legend
+                      ;; .append('text')
+                      ;; .attr('y', (d) => -2 * radius(d))
+                      ;; .attr('dy', '1.3em')
+                      ;; .text(format('.1s'));
+
+                      (-> svg
+                          (.append "g")
+                          (.attr "fill" "brown")
+                          (.attr "fill-opacity" 0.5)
+                          (.attr "stroke" "#fff")
+                          (.attr "stroke-width" 0.5)
+                          (.selectAll "circle")
+                          (.data (->> (feature us (-> us .-objects .-counties))
+                                      ;; TODO observe intermediate values to troubleshoot
+                                      ;; .-features
+                                      ;; (.map (fn [d] ((= (get d "value") (get data (get d "id"))) d)))
+                                      ;; (sort (fn [a b] (- (get b "value")) (get a "value")))
+                                      ))
+                          (.join "circle")
+
+                          (.attr "transform" (fn [d] (str "translate(" (.centroid myGeoPath d) ")")))
+                          (.attr "r" (fn [d] (radius (get d "value"))))
+                          (.append "title")
+                          (.text (fn [d] (str (-> d .-properties .-name) " " (format (get d "value")))))
                           )
 
-
-                      )
-                    ;; (.forIn population-data #(.set data % (get data %)))
-                    )))
-               ;; (set-domains x y data)
-               ;; (build-x-axis height svg x-axis)
-               ;; (build-y-axis svg y-axis)
-               ;; (add-line svg line data)
-               ))))
-    ))
+                      ))))))))))
 
 (defn bubble-map-d3 []
   (r/create-class
