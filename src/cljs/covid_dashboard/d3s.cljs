@@ -1,11 +1,9 @@
 (ns covid-dashboard.d3s
   (:require
+   [breaking-point.core :as bp]
+   [re-frame.core :as re-frame]
    [reagent.core :as r]
    [cljsjs.d3 :as d3]))
-
-(defn get-dimensions [margin]
-  [(- 960 (:left margin) (:right margin))
-   (- 500 (:top margin) (:bottom margin))])
 
 (defn get-scales [width height]
   [(.. js/d3 -time scale (range #js [0 width]))
@@ -58,10 +56,11 @@
       (attr "class" "line")
       (attr "d" line)))
 
-(defn ibm-stock []
+(defn ibm-stock [starting-width]
   (do (println "ibm-stock 234234!")
       (let [margin {:top 20, :right 20, :bottom 30, :left 50}
-            [width height] (get-dimensions margin)
+            width (- starting-width (:left margin) (:right margin))
+            height (* starting-width 0.6)
             parse-date (.. js/d3 -time (format "%d-%b-%y") -parse)
             [x y] (get-scales width height)
             [x-axis y-axis] (get-axes x y)
@@ -82,12 +81,6 @@
                 (build-y-axis svg y-axis)
                 (add-line svg line data)))))))
 
-(defn graph! []
-  ;; (graph-enter! highlighted-nodes attrs graph-data)
-  ;; (graph-update!)
-  ;; (graph-exit! highlighted-nodes attrs graph-data)
-  )
-
 (defn svg-markers []
   [:defs
    [:marker {:id "end-arrow" :viewBox "0 -5 10 10" :refX 17 :refY 0
@@ -97,14 +90,10 @@
 
 (defn graph-render-2 []
   (println "graph-render-2")
-  (let [width 901
-        height 501]
-    [:div#d3-container [:svg {:width width :height height}
-                        [svg-markers]
-                        [:g.graph]]]))
+    [:div#d3-container [:svg [:g.graph]]])
 
 (defn line-chart-d3 []
   (r/create-class
    {:display-name "line-chart-d3"
     :reagent-render graph-render-2
-    :component-did-mount #(ibm-stock)}))
+    :component-did-mount #(ibm-stock (/ @(re-frame/subscribe [::bp/screen-width]) 3))}))
