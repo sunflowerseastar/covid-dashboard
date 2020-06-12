@@ -5,7 +5,8 @@
 		"highlight.js": "9.18.1",
 		"react": "16.13.1",
 		"react-dom": "16.13.1",
-		"react-highlight.js": "1.0.7"
+		"react-highlight.js": "1.0.7",
+		"vega-tooltip": "0.23.0"
 	},
 	"devDependencies": {
 		"karma": "4.4.1",
