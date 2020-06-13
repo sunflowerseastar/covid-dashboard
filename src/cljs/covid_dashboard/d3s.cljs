@@ -107,28 +107,30 @@
                           (.attr "stroke-linejoin" "round")
                           (.attr "d" myGeoPath))
 
-                      ;; const legend = svg
-                      ;; .append('g')
-                      ;; .attr('fill', '#777')
-                      ;; .attr('transform', 'translate(925,608)')
-                      ;; .attr('text-anchor', 'middle')
-                      ;; .style('font', '10px sans-serif')
-                      ;; .selectAll('g')
-                      ;; .data([1e6, 5e6, 1e7])
-                      ;; .join('g');
+                      (-> svg
+                          (.append "g")
+                          (.attr "fill" "#777")
+                          (.attr "transform" "translate(925 608)")
+                          (.attr "text-anchor" "middle")
+                          (.style "font" "10px sans-serif")
+                          (.selectAll "g")
+                          (.data [1e6 5e6 1e7])
+                          (.join "g"))
 
                       ;; legend
-                      ;; .append('circle')
-                      ;; .attr('fill', 'none')
-                      ;; .attr('stroke', '#ccc')
-                      ;; .attr('cy', (d) => -radius(d))
-                      ;; .attr('r', radius);
+                      (-> svg
+                          (.append "circle")
+                          (.attr "fill" "none")
+                          (.attr "stroke" "#ccc")
+                          (.attr "cy" (fn [d] (* -1 (radius d))))
+                          (.attr "r" radius))
 
                       ;; legend
-                      ;; .append('text')
-                      ;; .attr('y', (d) => -2 * radius(d))
-                      ;; .attr('dy', '1.3em')
-                      ;; .text(format('.1s'));
+                      (-> svg
+                          (.append "text")
+                          (.attr "y" (fn [d] (* -2 (radius d))))
+                          (.attr "dy" "1.3em")
+                          (.text (format ".1s")))
 
                       (-> svg
                           (.append "g")
