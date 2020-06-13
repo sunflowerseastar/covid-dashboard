@@ -69,10 +69,6 @@
       (append "g")
       (attr "transform" (str "translate(" (:left margin) \, (:top margin) \) ))))
 
-#_(defn radius []
-    (.scaleSqrt js/d3 [0 (.quantile js/d3 (-> (.values data) (.sort "ascending")) 0.985)]
-                [0 15]))
-
 (defn format [x] (.format js/d3 ",.0f" x))
 
 (defn bubble-map [starting-width]
@@ -107,30 +103,31 @@
                           (.attr "stroke-linejoin" "round")
                           (.attr "d" myGeoPath))
 
-                      (-> svg
-                          (.append "g")
-                          (.attr "fill" "#777")
-                          (.attr "transform" "translate(925 608)")
-                          (.attr "text-anchor" "middle")
-                          (.style "font" "10px sans-serif")
-                          (.selectAll "g")
-                          (.data [1e6 5e6 1e7])
-                          (.join "g"))
+                      ;; legend
+                      ;; (-> svg
+                      ;;     (.append "g")
+                      ;;     (.attr "fill" "#777")
+                      ;;     (.attr "transform" "translate(925 608)")
+                      ;;     (.attr "text-anchor" "middle")
+                      ;;     (.style "font" "10px sans-serif")
+                      ;;     (.selectAll "g")
+                      ;;     (.data [1e6 5e6 1e7])
+                      ;;     (.join "g"))
 
                       ;; legend
-                      (-> svg
-                          (.append "circle")
-                          (.attr "fill" "none")
-                          (.attr "stroke" "#ccc")
-                          (.attr "cy" (fn [d] (* -1 (radius d))))
-                          (.attr "r" radius))
+                      ;; (-> svg
+                      ;;     (.append "circle")
+                      ;;     (.attr "fill" "none")
+                      ;;     (.attr "stroke" "#ccc")
+                      ;;     (.attr "cy" (fn [d] (* -1 (radius d))))
+                      ;;     (.attr "r" radius))
 
                       ;; legend
-                      (-> svg
-                          (.append "text")
-                          (.attr "y" (fn [d] (* -2 (radius d))))
-                          (.attr "dy" "1.3em")
-                          (.text (format ".1s")))
+                      ;; (-> svg
+                      ;;     (.append "text")
+                      ;;     (.attr "y" (fn [d] (* -2 (radius d))))
+                      ;;     (.attr "dy" "1.3em")
+                      ;;     (.text (format ".1s")))
 
                       (-> svg
                           (.append "g")
@@ -148,7 +145,7 @@
                           (.join "circle")
 
                           (.attr "transform" (fn [d] (str "translate(" (.centroid myGeoPath d) ")")))
-                          (.attr "r" (fn [d] (radius (get d "value"))))
+                          ;; (.attr "r" (fn [d] (radius (get d "value"))))
                           (.append "title")
                           (.text (fn [d] (str (-> d .-properties .-name) " " (format (get d "value")))))
                           )
