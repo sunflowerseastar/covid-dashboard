@@ -85,10 +85,20 @@
                   ;; (println us)
                   (let [myGeoPath (geoPath)
                         data (js/Map.)
-                        _ (dorun (map #(.set data % (get data %)) (js->clj population-data)))
+                        z1 (dorun (map #(do
+                                          ;; (spyx (type population-data) (type (js->clj population-data)))
+                                          ;; (spyx (first %) (second %))
+                                          (.set data (first %) (second %))) (js->clj population-data)))
                         svg (get-svg-2 margin width height)
-                        radius #(.scaleSqrt js/d3 [0 (.quantile js/d3 (-> (.values %) (.sort "ascending")) 0.985)] [0 15])]
+                        radius #(.scaleSqrt js/d3 [0
+                                                   (.quantile js/d3
+                                                              (-> (.values %)
+                                                                  (.sort "ascending")) 0.985)
+                                                   ] [0 15])]
 
+                    ;; (spyx (js->clj population-data) (js->clj data))
+                    ;; (spyx data)
+                    (spyx (.get data "34029"))
                     (do
                       (-> svg
                           (.append "path")
@@ -130,6 +140,7 @@
                       ;;     (.attr "dy" "1.3em")
                       ;;     (.text (format ".1s")))
 
+                      (spyx data)
                       (-> svg
                           (.append "g")
                           (.attr "fill" "brown")
@@ -137,16 +148,33 @@
                           (.attr "stroke" "#fff")
                           (.attr "stroke-width" 0.5)
                           (.selectAll "circle")
-                          (.data (->> (feature us (-> us .-objects .-counties))
+                          (.data (it-> (feature us (-> us .-objects .-counties))
                                       ;; TODO observe intermediate values to troubleshoot
-                                      ;; .-features
-                                      ;; (.map (fn [d] ((= (get d "value") (get data (get d "id"))) d)))
-                                      ;; (sort (fn [a b] (- (get b "value")) (get a "value")))
+
+                                      ;; (spyx it)
+                                      (.-features it)
+                                      ;; (spyx)
+                                      (js->clj it)
+                                      (map (fn [x] (do
+                                                     ;; (spyx (.get data (get x "id")))
+                                                     ;; (spyx (get x "id"))
+                                                     (assoc x :value (.get data (get x "id"))))) it)
+                                      ;; (.map it (fn [x] (do (spyx x) x)))
+                                      ;; (sort-by :value)
+                                      (clj->js it)
+                                      ;; (.log js/console it)
+                                      ;; (.map (.-prototype js/Array) (fn [d] ((= (get d "value") (get data (get d "id"))) d)))
+                                      ;; (spyx)
+                                      ;; (.log js/console)
+                                      ;; (js/sort (fn [a b] (- (get b "value")) (get a "value")))
                                       ))
                           (.join "circle")
 
                           (.attr "transform" (fn [d] (str "translate(" (.centroid myGeoPath d) ")")))
-                          ;; (.attr "r" (fn [d] (radius (get d "value"))))
+                          (.attr "r" 10)
+                          ;; (.attr "r" (fn [d] (do
+                          ;;                      (spyx d)
+                          ;;                      (radius (get d "value")))))
                           (.append "title")
                           (.text (fn [d] (str (-> d .-properties .-name) " " (format (get d "value")))))
                           )
