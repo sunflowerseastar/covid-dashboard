@@ -78,29 +78,35 @@
        (fn [population-data]
          (-> (.json js/d3  "https://covid-dashboard.sunflowerseastar.com/data/counties-albers-10m.json")
              (.then
-              (fn [us]
-                ;; (println us)
+              (fn [counties-albers-10m-data]
+                ;; (println counties-albers-10m-data)
                 (let [myGeoPath (geoPath)
-                      data (js/Map.)
-                      _ (dorun (map #(.set data (first %) (second %)) (js->clj population-data)))
+                      population-data-map (js/Map.)
+                      _ (dorun (map #(.set population-data-map (first %) (second %)) (js->clj population-data)))
                       svg (svg-with-width-and-height "d3-bubble-map-container" starting-width (* starting-width 0.6))
-                      radius #(.scaleSqrt js/d3
-                                          [0 (.quantile js/d3 (-> (.-values %) (.sort "ascending")) 0.985)]
-                                          [0 15])]
+                      radius
+                      #(do
+                         ;; make sure this looks right to apply the quantile function on it
+                         (spyx %)
+                         (.scaleSqrt js/d3
+                                     [0 (.quantile js/d3 (-> %
+                                                             ;; (spyx)
+                                                             .-values (.sort "ascending")) 0.985)]
+                                     [0 15]))]
 
-                  ;; (spyx (js->clj population-data) (js->clj data))
-                  ;; (spyx data)
-                  (spyx (.get data "34029"))
+                  ;; (spyx (js->clj population-data) (js->clj population-data-map))
+                  ;; (spyx population-data-map)
+                  (spyx (.get population-data-map "34029"))
                   (do
                     (-> svg
                         (.append "path")
-                        (.datum (feature us (-> us .-objects .-nation)))
+                        (.datum (feature counties-albers-10m-data (-> counties-albers-10m-data .-objects .-nation)))
                         (.attr "fill", "#ccc")
                         (.attr "d" myGeoPath))
 
                     (-> svg
                         (.append "path")
-                        (.datum (mesh us (-> us .-objects .-states) (fn [a b] (not= a b))))
+                        (.datum (mesh counties-albers-10m-data (-> counties-albers-10m-data .-objects .-states) (fn [a b] (not= a b))))
                         (.attr "fill" "none")
                         (.attr "stroke" "white")
                         (.attr "stroke-linejoin" "round")
@@ -132,7 +138,7 @@
                     ;;     (.attr "dy" "1.3em")
                     ;;     (.text (format ".1s")))
 
-                    (spyx data)
+                    ;; (spyx population-data-map)
                     (-> svg
                         (.append "g")
                         (.attr "fill" "brown")
@@ -140,20 +146,25 @@
                         (.attr "stroke" "#fff")
                         (.attr "stroke-width" 0.5)
                         (.selectAll "circle")
-                        (.data (it-> (feature us (-> us .-objects .-counties))
+                        (.data (it-> (feature counties-albers-10m-data (-> counties-albers-10m-data .-objects .-counties))
                                      (.-features it)
                                      (js->clj it)
-                                     (map (fn [x] (assoc x :value (.get data (get x "id")))) it)
+                                     (map (fn [x] (assoc x :value (.get population-data-map (get x "id")))) it)
                                      (clj->js it)
                                      ;; (js/sort (fn [a b] (- (get b "value")) (get a "value")))
                                      ))
+
                         (.join "circle")
 
                         (.attr "transform" (fn [d] (str "translate(" (.centroid myGeoPath d) ")")))
                         (.attr "r" 10)
-                        ;; (.attr "r" (fn [d] (do
-                        ;;                      (spyx d)
-                        ;;                      (radius (get d "value")))))
+                        ;; TODO does this have value?
+                        ;; (spyx)
+                        #_(.attr "r" (fn [d] (do
+                                             (spyx d)
+                                             ;; TODO figure out why d doesn't have a "value"
+                                             ;; (spyx (get d "value"))
+                                             (radius (get d "value")))))
                         (.append "title")
                         (.text (fn [d] (str (-> d .-properties .-name) " " (format (get d "value")))))))))))))))
 
