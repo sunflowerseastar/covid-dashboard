@@ -87,7 +87,7 @@
                       _ (dorun (map #(.set population-data-map (first %) (second %)) (js->clj population-data)))
                       svg (svg-with-width-and-height "d3-bubble-map-container" starting-width (* starting-width 0.6))
                       ;; TODO change hard-coded 1000000 to high-end of domain of populationDataMap values
-                      radius (.scaleSqrt js/d3 (clj->js [0 1000000]) (clj->js [0 10]))
+                      scale-radius #((.scaleSqrt js/d3 (clj->js [0 1000000]) (clj->js [0 10])) (or % 0))
                       ]
 
                   (do
@@ -105,6 +105,7 @@
                         (.attr "stroke-linejoin" "round")
                         (.attr "d" myGeoPath))
 
+                    ;; TODO legend
                     ;; legend
                     ;; (-> svg
                     ;;     (.append "g")
@@ -121,13 +122,13 @@
                     ;;     (.append "circle")
                     ;;     (.attr "fill" "none")
                     ;;     (.attr "stroke" "#ccc")
-                    ;;     (.attr "cy" (fn [d] (* -1 (radius d))))
-                    ;;     (.attr "r" radius))
+                    ;;     (.attr "cy" (fn [d] (* -1 (scale-radius d))))
+                    ;;     (.attr "r" scale-radius))
 
                     ;; legend
                     ;; (-> svg
                     ;;     (.append "text")
-                    ;;     (.attr "y" (fn [d] (* -2 (radius d))))
+                    ;;     (.attr "y" (fn [d] (* -2 (scale-radius d))))
                     ;;     (.attr "dy" "1.3em")
                     ;;     (.text (format ".1s")))
 
@@ -143,17 +144,17 @@
                         (.data (->> (feature counties-albers-10m-data (-> counties-albers-10m-data .-objects .-counties))
                                     (.-features)
                                     (js->clj)
-                                    (map (fn [x] (assoc x :value (.get population-data-map (get x "id")))))
+                                    (map #(assoc % :value (.get population-data-map (get % "id"))))
                                     (sort-by :value)
                                     (clj->js)))
                         (.join "circle")
+                        (.attr "transform" #(str "translate(" (.centroid myGeoPath %) ")"))
+                        (.attr "r" #(scale-radius (.-value %)))
 
-                        (.attr "transform" (fn [d] (str "translate(" (.centroid myGeoPath d) ")")))
-
-                        (.attr "r" #(radius (or (.-value %) 0)))
-
-                        (.append "title")
-                        (.text (fn [d] (str (-> d .-properties .-name) " " (format (get d "value")))))))))))))))
+                        ;; TODO title
+                        ;; (.append "title")
+                        ;; (.text (fn [d] (str (-> d .-properties .-name) " " (format (.-value d)))))
+                        ))))))))))
 
 (defn bubble-map-d3 []
   (r/create-class
