@@ -5,7 +5,8 @@
    [breaking-point.core :as bp]
    [re-frame.core :as re-frame]
    [reagent.core :as r]
-   [cljsjs.d3 :as d3]))
+   [cljsjs.d3 :as d3]
+   [tupelo.core :refer [it-> spyx]]))
 
 (def margin {:top 20, :right 20, :bottom 30, :left 50})
 
