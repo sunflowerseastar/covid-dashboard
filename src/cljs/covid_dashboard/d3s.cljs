@@ -139,32 +139,35 @@
                     ;;     (.text (format ".1s")))
 
                     ;; (spyx population-data-map)
+                    (spyx counties-albers-10m-data)
                     (-> svg
                         (.append "g")
-                        (.attr "fill" "brown")
-                        (.attr "fill-opacity" 0.5)
+
+                        (.attr "fill" "purple")
+                        (.attr "fill-opacity" 0.2)
                         (.attr "stroke" "#fff")
                         (.attr "stroke-width" 0.5)
-                        (.selectAll "circle")
-                        (.data (it-> (feature counties-albers-10m-data (-> counties-albers-10m-data .-objects .-counties))
-                                     (.-features it)
-                                     (js->clj it)
-                                     (map (fn [x] (assoc x :value (.get population-data-map (get x "id")))) it)
-                                     (clj->js it)
-                                     ;; (js/sort (fn [a b] (- (get b "value")) (get a "value")))
-                                     ))
 
+                        (.selectAll "circle")
+                        (.data (->> (feature counties-albers-10m-data (-> counties-albers-10m-data .-objects .-counties))
+                                    (.-features)
+                                    (js->clj)
+                                    (map (fn [x] (assoc x :value (.get population-data-map (get x "id")))))
+                                    (sort-by :value)
+                                    (clj->js)))
                         (.join "circle")
 
                         (.attr "transform" (fn [d] (str "translate(" (.centroid myGeoPath d) ")")))
+
                         (.attr "r" 10)
                         ;; TODO does this have value?
                         ;; (spyx)
                         #_(.attr "r" (fn [d] (do
-                                             (spyx d)
-                                             ;; TODO figure out why d doesn't have a "value"
-                                             ;; (spyx (get d "value"))
-                                             (radius (get d "value")))))
+                                               (spyx d)
+                                               ;; TODO figure out why d doesn't have a "value"
+                                               ;; (spyx (get d "value"))
+                                               (radius (get d "value")))))
+
                         (.append "title")
                         (.text (fn [d] (str (-> d .-properties .-name) " " (format (get d "value")))))))))))))))
 
