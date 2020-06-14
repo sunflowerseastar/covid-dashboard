@@ -71,6 +71,8 @@
 
 (defn format [x] (.format js/d3 ",.0f" x))
 
+(def radius-data )
+
 (defn bubble-map [starting-width]
   (println "bubble-map")
   (-> (.json js/d3 "https://covid-dashboard.sunflowerseastar.com/data/population.json")
@@ -84,19 +86,10 @@
                       population-data-map (js/Map.)
                       _ (dorun (map #(.set population-data-map (first %) (second %)) (js->clj population-data)))
                       svg (svg-with-width-and-height "d3-bubble-map-container" starting-width (* starting-width 0.6))
-                      radius
-                      #(do
-                         ;; make sure this looks right to apply the quantile function on it
-                         (spyx %)
-                         (.scaleSqrt js/d3
-                                     [0 (.quantile js/d3 (-> %
-                                                             ;; (spyx)
-                                                             .-values (.sort "ascending")) 0.985)]
-                                     [0 15]))]
+                      ;; TODO change hard-coded 1000000 to high-end of domain of populationDataMap values
+                      radius (.scaleSqrt js/d3 (clj->js [0 1000000]) (clj->js [0 10]))
+                      ]
 
-                  ;; (spyx (js->clj population-data) (js->clj population-data-map))
-                  ;; (spyx population-data-map)
-                  (spyx (.get population-data-map "34029"))
                   (do
                     (-> svg
                         (.append "path")
@@ -138,8 +131,6 @@
                     ;;     (.attr "dy" "1.3em")
                     ;;     (.text (format ".1s")))
 
-                    ;; (spyx population-data-map)
-                    (spyx counties-albers-10m-data)
                     (-> svg
                         (.append "g")
 
@@ -159,14 +150,7 @@
 
                         (.attr "transform" (fn [d] (str "translate(" (.centroid myGeoPath d) ")")))
 
-                        (.attr "r" 10)
-                        ;; TODO does this have value?
-                        ;; (spyx)
-                        #_(.attr "r" (fn [d] (do
-                                               (spyx d)
-                                               ;; TODO figure out why d doesn't have a "value"
-                                               ;; (spyx (get d "value"))
-                                               (radius (get d "value")))))
+                        (.attr "r" #(radius (or (.-value %) 0)))
 
                         (.append "title")
                         (.text (fn [d] (str (-> d .-properties .-name) " " (format (get d "value")))))))))))))))
