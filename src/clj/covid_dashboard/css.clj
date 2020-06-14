@@ -9,6 +9,7 @@
   [:.home-col-right {:background "#999"}]
 
   [:.d3-container {:border "1px solid black" :width "100% !important"}]
+  [:#d3-bubble-map-container {:border "1px solid magenta"}]
   [:.canvas-container [:canvas {:width "100% !important" :height "100% !important"}]]
 
   [:.border {:border "3px solid green !important"}]

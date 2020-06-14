@@ -38,7 +38,8 @@
 
 (defn- panels [panel-name]
   (case panel-name
-    :home-panel [home-panel]
+    ;; :home-panel [home-panel]
+    :home-panel [:div.d3-container [bubble-map-d3]]
     [:div]))
 
 (defn show-panel [panel-name]
