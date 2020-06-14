@@ -14,26 +14,22 @@
 (defn home-col-left []
   [re-com/v-box
    :class "home-col-left"
-   :gap "1em"
    :children [[re-com/box :size "1" :child [line-plot-vega-lite]]
               [re-com/box :size "1" :child [line-chart-d3]]]])
 
 (defn home-col-center []
-  [:div.home-col-center
-   [:div.canvas-container [map-us-chloropleth-vega]]])
+  [:div.home-col-center [:div.d3-container [bubble-map-d3]]])
 
 (defn home-col-right []
   [re-com/v-box
    :class "home-col-right"
-   :gap "1em"
    :size "auto"
-   :children [[re-com/box :size "1" :child [bubble-map-d3]]
-              [re-com/box :size "1" :child [:div.canvas-container [map-us-chloropleth-vega]]]]])
+   :children [[re-com/box :size "1" :child "right top"]
+              [re-com/box :size "1" :child [map-us-chloropleth-vega]]]])
 
 (defn home-panel []
   [re-com/h-box
    :class "home-panel"
-   :gap "1em"
    :children [[re-com/box :size "1" :child [home-col-left]]
               [re-com/box :size "1" :child [home-col-center]]
               [re-com/box :size "1" :child [home-col-right]]]])
