@@ -6,7 +6,9 @@
    [re-frame.core :as re-frame]
    [reagent.core :as r]
    [cljsjs.d3 :as d3]
-   [tupelo.core :refer [it-> spyx]]))
+   [tupelo.core :refer [it-> spyx]]
+   [goog.string :as gstring]
+   [goog.string.format]))
 
 (def margin {:top 100, :right 100, :bottom 100, :left 100})
 
@@ -210,7 +212,8 @@
        (fn [[population-data counties-albers-10m-data]]
          (let [myGeoPath (geoPath)
                population-data-map (js/Map.)
-               _ (dorun (map #(.set population-data-map (first %) (second %)) (js->clj population-data)))
+               filtered-population-data (->> population-data (filter #(->> % first empty? not)))
+               _ (dorun (map #(.set population-data-map (->> % first (gstring/format "%05d")) (second %)) filtered-population-data))
                svg (.. js/d3 (select "#bubble-map-covid-us-d3-svg-root") (attr "width" starting-width) (attr "height" (* starting-width 0.6)))
 
                ;; TODO change hard-coded 1000000 to high-end of domain of populationDataMap values
