@@ -17,7 +17,8 @@
                   :exclusions [cljsjs/vega cljsjs/vega-lite cljsjs/vega-embed cljsjs/vega-tooltip
                                cljsjs/react cljsjs/react-dom cljsjs/react-dom-server cljsjs/create-react-class]]
                  [cljsjs/d3 "5.12.0-0"]
-                 [tupelo "0.9.201"]]
+                 [tupelo "0.9.201"]
+                 [incanter/incanter-core "1.9.3"]]
 
   :plugins [[lein-shadow "0.2.0"]
             [lein-garden "0.3.0"]
