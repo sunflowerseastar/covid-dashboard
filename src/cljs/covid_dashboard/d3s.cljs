@@ -63,7 +63,7 @@
     :reagent-render (fn [this] [:div#d3-line-chart-container [:svg [:g.graph]]])
     :component-did-mount #(ibm-stock (/ @(re-frame/subscribe [::bp/screen-width]) 3))}))
 
-(defn format [x] (.format js/d3 ",.0f" x))
+(defn d3-format [x] (.format js/d3 ",.0f" x))
 
 (def files-population ["https://covid-dashboard.sunflowerseastar.com/data/population.json" "https://covid-dashboard.sunflowerseastar.com/data/counties-albers-10m.json"])
 
@@ -115,7 +115,7 @@
            ;;     (.append "text")
            ;;     (.attr "y" (fn [d] (* -2 (scale-radius d))))
            ;;     (.attr "dy" "1.3em")
-           ;;     (.text (format ".1s")))
+           ;;     (.text (d3-format ".1s")))
 
            ;; marks
            (-> svg
@@ -139,7 +139,7 @@
 
                ;; TODO title
                ;; (.append "title")
-               ;; (.text (fn [d] (str (-> d .-properties .-name) " " (format (.-value d)))))
+               ;; (.text (fn [d] (str (-> d .-properties .-name) " " (d3-format (.-value d)))))
                ))))))
 
 (defn bubble-map-population-d3 []
