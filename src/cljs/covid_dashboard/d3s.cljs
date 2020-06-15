@@ -85,69 +85,10 @@
                       scale-radius #((.scaleSqrt js/d3 (clj->js [0 1000000]) (clj->js [0 10])) (or % 0))
                       ]
 
-                  (do
-                    (-> svg
-                        (.append "path")
-                        (.datum (feature counties-albers-10m-data (-> counties-albers-10m-data .-objects .-nation)))
-                        (.attr "fill", "#ccc")
-                        (.attr "d" myGeoPath))
+                  (spyx "hi" (count (js->clj counties-albers-10m-data)))
 
-                    (-> svg
-                        (.append "path")
-                        (.datum (mesh counties-albers-10m-data (-> counties-albers-10m-data .-objects .-states) (fn [a b] (not= a b))))
-                        (.attr "fill" "none")
-                        (.attr "stroke" "white")
-                        (.attr "stroke-linejoin" "round")
-                        (.attr "d" myGeoPath))
 
-                    ;; legend setup
-                    (-> svg
-                        (.append "g")
-                        (.attr "fill" "#777")
-                        (.attr "transform" (str "translate(50 100)"))
-                        (.attr "text-anchor" "middle")
-                        (.style "font" "10px sans-serif")
-                        (.selectAll "g")
-                        (.data (clj->js [1000000 5000000 10000000]))
-                        (.join "g")
-                        ;; (.call (fn [d] (do (.log js/console d))))
-                        (.append "circle")
-                        (.attr "fill" "none")
-                        (.attr "stroke" "#f00")
-                        (.attr "cy" #(* -1 (scale-radius %)))
-                        (.attr "r" scale-radius))
-
-                    ;; legend text
-                    ;; (-> svg
-                    ;;     (.append "text")
-                    ;;     (.attr "y" (fn [d] (* -2 (scale-radius d))))
-                    ;;     (.attr "dy" "1.3em")
-                    ;;     (.text (format ".1s")))
-
-                    ;; marks
-                    (-> svg
-                        (.append "g")
-
-                        (.attr "fill" "purple")
-                        (.attr "fill-opacity" 0.2)
-                        (.attr "stroke" "#fff")
-                        (.attr "stroke-width" 0.5)
-
-                        (.selectAll "circle")
-                        (.data (->> (feature counties-albers-10m-data (-> counties-albers-10m-data .-objects .-counties))
-                                    (.-features)
-                                    (js->clj)
-                                    (map #(assoc % :value (.get population-data-map (get % "id"))))
-                                    (sort-by :value)
-                                    (clj->js)))
-                        (.join "circle")
-                        (.attr "transform" #(str "translate(" (.centroid myGeoPath %) ")"))
-                        (.attr "r" #(scale-radius (.-value %)))
-
-                        ;; TODO title
-                        ;; (.append "title")
-                        ;; (.text (fn [d] (str (-> d .-properties .-name) " " (format (.-value d)))))
-                        ))))))))))
+                  ))))))))
 
 (defn bubble-map-d3 []
   (r/create-class
