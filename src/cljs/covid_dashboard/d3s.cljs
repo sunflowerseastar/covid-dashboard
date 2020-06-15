@@ -68,7 +68,7 @@
 (def radius-data )
 
 (defn bubble-map [starting-width]
-  (println "bubble-map")
+  (println "bubble-map" starting-width)
   (-> (.json js/d3 "https://covid-dashboard.sunflowerseastar.com/data/population.json")
       (.then
        (fn [population-data]
@@ -100,40 +100,29 @@
                         (.attr "stroke-linejoin" "round")
                         (.attr "d" myGeoPath))
 
-                    ;; TODO legend
                     ;; legend setup
                     (-> svg
                         (.append "g")
-                        (.attr "fill" "#f00")
-                        (.attr "transform" "translate(100 100)")
+                        (.attr "fill" "#777")
+                        (.attr "transform" (str "translate(50 100)"))
                         (.attr "text-anchor" "middle")
-                        (.style "font" "100px sans-serif")
+                        (.style "font" "10px sans-serif")
                         (.selectAll "g")
-                        (.data [1000000 5000000 10000000])
-                        ;; (spyx (clj->js [1000000 5000000 10000000]))
+                        (.data (clj->js [1000000 5000000 10000000]))
                         (.join "g")
-                        ;; )
-
-                        ;; legend circles
-                        ;; (-> svg
+                        ;; (.call (fn [d] (do (.log js/console d))))
                         (.append "circle")
-                        (.attr "fill" "#f00")
-                        (.attr "stroke" "#ccc")
-                        (.attr "cy" (fn [d] (do
-                                              (spyx d)
-                                              (* -1 (scale-radius d)))))
-                        (.attr "r" scale-radius)
-
-                        )
+                        (.attr "fill" "none")
+                        (.attr "stroke" "#f00")
+                        (.attr "cy" #(* -1 (scale-radius %)))
+                        (.attr "r" scale-radius))
 
                     ;; legend text
                     ;; (-> svg
                     ;;     (.append "text")
                     ;;     (.attr "y" (fn [d] (* -2 (scale-radius d))))
                     ;;     (.attr "dy" "1.3em")
-                    ;;     (.text (format ".1s"))
-
-                    ;;     )
+                    ;;     (.text (format ".1s")))
 
                     ;; marks
                     (-> svg
