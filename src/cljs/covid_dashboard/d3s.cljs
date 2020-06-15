@@ -2,11 +2,8 @@
   (:require
    [d3-geo :refer [geoPath]]
    [topojson-client :refer [feature mesh]]
-   [breaking-point.core :as bp]
-   [re-frame.core :as re-frame]
-   [reagent.core :as r]
    [cljsjs.d3 :as d3]
-   [tupelo.core :refer [it-> spyx]]
+   [reagent.core :refer [create-class]]
    [goog.string :as gstring]
    [goog.string.format]))
 
@@ -65,7 +62,7 @@
 
 (defn bubble-map-covid-us-d3 []
   (let [svg-el-id "bubble-map-covid-us-d3-svg-root"]
-    (r/create-class
+    (create-class
      {:display-name "bubble-map-covid-us-d3"
-      :reagent-render (fn [this] [:svg {:id svg-el-id :viewBox [0 0 975 610]} [:g.hello]])
-      :component-did-mount (fn [this] (bubble-map-covid svg-el-id))})))
+      :component-did-mount (fn [this] (bubble-map-covid svg-el-id))
+      :reagent-render (fn [this] [:svg {:id svg-el-id :viewBox [0 0 975 610]} [:g.hello]])})))

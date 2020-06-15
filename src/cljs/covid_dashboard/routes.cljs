@@ -6,8 +6,7 @@
    [secretary.core :as secretary]
    [goog.events :as gevents]
    [re-frame.core :as re-frame]
-   [covid-dashboard.events :as events]
-   ))
+   [covid-dashboard.events :as events]))
 
 (defn hook-browser-navigation! []
   (doto (History.)
@@ -22,12 +21,7 @@
   ;; --------------------
   ;; define routes here
   (defroute "/" []
-    (re-frame/dispatch [::events/set-active-panel :home-panel])
-    )
-
-  (defroute "/about" []
-    (re-frame/dispatch [::events/set-active-panel :about-panel]))
-
+    (re-frame/dispatch [::events/set-active-page :home-page]))
 
   ;; --------------------
   (hook-browser-navigation!))

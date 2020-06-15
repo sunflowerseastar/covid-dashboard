@@ -4,7 +4,7 @@
 (defstyles screen
 
   ;; home
-  [:.home-panel {:height "100vh" :background "lavender"}]
+  [:.home-page {:height "100vh" :background "lavender"}]
   [:.home-col-center {:background "#e1e1e1" :border "1px solid"}]
   [:.home-col-left {:background "#bbb"}]
   [:.home-col-right {:background "#999"}]
