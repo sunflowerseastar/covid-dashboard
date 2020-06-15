@@ -59,4 +59,4 @@
   [oz.core/vega-lite line-plot])
 
 (defn map-us-chloropleth-vega []
-  [:div.canvas-container [oz.core/vega map-test]])
+  [:div.vegas-container [oz.core/vega map-test]])

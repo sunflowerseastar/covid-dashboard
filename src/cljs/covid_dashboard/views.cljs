@@ -12,11 +12,11 @@
 (defn home-col-left []
   [re-com/v-box
    :class "home-col-left"
-   :children [[re-com/box :size "1" :child [bubble-map-covid-us-d3]]
+   :children [[re-com/box :size "1" :child "x"]
               [re-com/box :size "1" :child "x"]]])
 
 (defn home-col-center []
-  [:div.home-col-center [:div.d3-container "x"]])
+  [:div.home-col-center [bubble-map-covid-us-d3]])
 
 (defn home-col-right []
   [re-com/v-box
@@ -29,7 +29,7 @@
   [re-com/h-box
    :class "home-panel"
    :children [[re-com/box :size "1" :child [home-col-left]]
-              [re-com/box :size "1" :child [home-col-center]]
+              [re-com/box :size "3" :class "home-col-center" :child [bubble-map-covid-us-d3]]
               [re-com/box :size "1" :child [home-col-right]]]])
 
 ;; main
