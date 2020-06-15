@@ -106,32 +106,41 @@
                         (.attr "d" myGeoPath))
 
                     ;; TODO legend
-                    ;; legend
-                    ;; (-> svg
-                    ;;     (.append "g")
-                    ;;     (.attr "fill" "#777")
-                    ;;     (.attr "transform" "translate(925 608)")
-                    ;;     (.attr "text-anchor" "middle")
-                    ;;     (.style "font" "10px sans-serif")
-                    ;;     (.selectAll "g")
-                    ;;     (.data [1e6 5e6 1e7])
-                    ;;     (.join "g"))
+                    ;; legend setup
+                    (-> svg
+                        (.append "g")
+                        (.attr "fill" "#f00")
+                        (.attr "transform" "translate(100 100)")
+                        (.attr "text-anchor" "middle")
+                        (.style "font" "100px sans-serif")
+                        (.selectAll "g")
+                        (.data [1000000 5000000 10000000])
+                        ;; (spyx (clj->js [1000000 5000000 10000000]))
+                        (.join "g")
+                        ;; )
 
-                    ;; legend
+                    ;; legend circles
                     ;; (-> svg
-                    ;;     (.append "circle")
-                    ;;     (.attr "fill" "none")
-                    ;;     (.attr "stroke" "#ccc")
-                    ;;     (.attr "cy" (fn [d] (* -1 (scale-radius d))))
-                    ;;     (.attr "r" scale-radius))
+                        (.append "circle")
+                        (.attr "fill" "#f00")
+                        (.attr "stroke" "#ccc")
+                        (.attr "cy" (fn [d] (do
+                                              (spyx d)
+                                              (* -1 (scale-radius d)))))
+                        (.attr "r" scale-radius)
 
-                    ;; legend
+                        )
+
+                    ;; legend text
                     ;; (-> svg
                     ;;     (.append "text")
                     ;;     (.attr "y" (fn [d] (* -2 (scale-radius d))))
                     ;;     (.attr "dy" "1.3em")
-                    ;;     (.text (format ".1s")))
+                    ;;     (.text (format ".1s"))
 
+                    ;;     )
+
+                    ;; marks
                     (-> svg
                         (.append "g")
 
@@ -159,5 +168,5 @@
 (defn bubble-map-d3 []
   (r/create-class
    {:display-name "bubble-map-d3"
-    :reagent-render (fn [this] [:div#d3-bubble-map-container [:svg {:viewBox [0 0 975 610]}]])
+    :reagent-render (fn [this] [:div#d3-bubble-map-container [:svg {:viewBox [0 0 975 610]} [:g.hello]]])
     :component-did-mount #(bubble-map @(re-frame/subscribe [::bp/screen-width]))}))
