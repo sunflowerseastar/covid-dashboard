@@ -2,9 +2,7 @@
   (:require
    [breaking-point.core :as bp]
    [covid-dashboard.subs :as subs]
-   [covid-dashboard.vegas :refer [line-plot-vega-lite map-us-chloropleth-vega]]
    [covid-dashboard.d3s :refer [bubble-map-covid-us-d3]]
-   [oz.core :as oz]
    [re-com.core :as re-com]
    [re-frame.core :as re-frame]
    [cljsjs.d3 :as d3]))
@@ -25,7 +23,7 @@
    :class "home-col-right"
    :size "auto"
    :children [[re-com/box :size "1" :child "x"]
-              [re-com/box :size "1" :child [map-us-chloropleth-vega]]]])
+              [re-com/box :size "1" :child "x"]]])
 
 (defn home-panel []
   [re-com/h-box
