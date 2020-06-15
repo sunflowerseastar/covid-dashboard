@@ -63,12 +63,6 @@
     :reagent-render (fn [this] [:div#d3-line-chart-container [:svg [:g.graph]]])
     :component-did-mount #(ibm-stock (/ @(re-frame/subscribe [::bp/screen-width]) 3))}))
 
-(defn svg-with-width-and-height [el-id width height]
-  (.. js/d3 (select (str "#" el-id " svg"))
-      (attr "width" width)
-      (attr "height" height)
-      (append "g")))
-
 (defn format [x] (.format js/d3 ",.0f" x))
 
 (def radius-data )
@@ -85,7 +79,8 @@
                 (let [myGeoPath (geoPath)
                       population-data-map (js/Map.)
                       _ (dorun (map #(.set population-data-map (first %) (second %)) (js->clj population-data)))
-                      svg (svg-with-width-and-height "d3-bubble-map-container" starting-width (* starting-width 0.6))
+                      svg (.. js/d3 (select "#bubble-map-d3-svg-root") (attr "width" starting-width) (attr "height" (* starting-width 0.6)))
+
                       ;; TODO change hard-coded 1000000 to high-end of domain of populationDataMap values
                       scale-radius #((.scaleSqrt js/d3 (clj->js [0 1000000]) (clj->js [0 10])) (or % 0))
                       ]
@@ -119,8 +114,8 @@
                         (.join "g")
                         ;; )
 
-                    ;; legend circles
-                    ;; (-> svg
+                        ;; legend circles
+                        ;; (-> svg
                         (.append "circle")
                         (.attr "fill" "#f00")
                         (.attr "stroke" "#ccc")
@@ -168,5 +163,5 @@
 (defn bubble-map-d3 []
   (r/create-class
    {:display-name "bubble-map-d3"
-    :reagent-render (fn [this] [:div#d3-bubble-map-container [:svg {:viewBox [0 0 975 610]} [:g.hello]]])
+    :reagent-render (fn [this] [:div#d3-bubble-map-container [:svg#bubble-map-d3-svg-root {:viewBox [0 0 975 610]} [:g.hello]]])
     :component-did-mount #(bubble-map @(re-frame/subscribe [::bp/screen-width]))}))
