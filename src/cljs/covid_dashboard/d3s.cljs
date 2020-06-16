@@ -25,23 +25,22 @@
            (-> svg
                (.append "path")
                (.datum (feature counties-albers-10m-data (-> counties-albers-10m-data .-objects .-nation)))
-               (.attr "fill", "#ccc")
+               (.attr "fill", "#f3f3f3")
                (.attr "d" myGeoPath))
 
            (-> svg
                (.append "path")
                (.datum (mesh counties-albers-10m-data (-> counties-albers-10m-data .-objects .-states) (fn [a b] (not= a b))))
                (.attr "fill" "none")
-               (.attr "stroke" "white")
+               (.attr "stroke" "#fff")
                (.attr "stroke-linejoin" "round")
                (.attr "d" myGeoPath))
 
            ;; marks
            (-> svg
                (.append "g")
-
-               (.attr "fill" "blue")
-               (.attr "fill-opacity" 0.2)
+               (.attr "fill" "#ff8c94")
+               (.attr "fill-opacity" 0.5)
                (.attr "stroke" "#fff")
                (.attr "stroke-width" 0.5)
 
@@ -52,9 +51,14 @@
                            (map #(assoc % :value (.get population-data-map (get % "id"))))
                            (sort-by :value)
                            (clj->js)))
-               (.join "circle")
-               (.attr "transform" #(str "translate(" (.centroid myGeoPath %) ")"))
-               (.attr "r" #(scale-radius (.-value %)))))))))
+               (.join
+                (fn [enter]
+                  (-> enter
+                      (.append "circle")
+                      (.attr "transform" #(str "translate(" (.centroid myGeoPath %) ")"))
+                      (.attr "r" #(scale-radius (.-value %)))))
+                (fn [update] update)
+                (fn [exit] (.remove exit)))))))))
 
 (defn bubble-map-covid-us-d3 []
   (let [svg-el-id "bubble-map-covid-us-d3-svg-root"]
