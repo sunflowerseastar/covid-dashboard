@@ -7,9 +7,7 @@
    [covid-dashboard.events :as events]
    [covid-dashboard.routes :as routes]
    [covid-dashboard.views :as views]
-   [covid-dashboard.config :as config]
-   ))
-
+   [covid-dashboard.config :as config]))
 
 (defn dev-setup []
   (when config/debug?
@@ -19,7 +17,7 @@
   (re-frame/clear-subscription-cache!)
   (let [root-el (.getElementById js/document "app")]
     (rdom/unmount-component-at-node root-el)
-    (rdom/render [views/main-page] root-el)))
+    (rdom/render [views/home-page] root-el)))
 
 (defn init []
   (routes/app-routes)

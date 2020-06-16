@@ -20,11 +20,7 @@
                svg (.. js/d3 (select (str "#" svg-el-id)))
 
                ;; TODO change hard-coded 1000000 to high-end of domain of populationDataMap values
-               scale-radius #((.scaleSqrt js/d3 (clj->js [0 1000]) (clj->js [0 10])) (or % 0))]
-
-           (-> svg
-               (.attr "width" 975)
-               (.attr "height" 610))
+               scale-radius #((.scaleSqrt js/d3 (clj->js [0 1000]) (clj->js [0 7])) (or % 0))]
 
            (-> svg
                (.append "path")
@@ -63,6 +59,6 @@
 (defn bubble-map-covid-us-d3 []
   (let [svg-el-id "bubble-map-covid-us-d3-svg-root"]
     (create-class
-     {:display-name "bubble-map-covid-us-d3"
+     {:display-name "bubble-map-covid-us-d3-component"
       :component-did-mount (fn [this] (bubble-map-covid svg-el-id))
-      :reagent-render (fn [this] [:svg {:id svg-el-id :viewBox [0 0 975 610]} [:g.hello]])})))
+      :reagent-render (fn [this] [:svg {:id svg-el-id :class "svg-container" :viewBox [0 0 985 630]}])})))
