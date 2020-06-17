@@ -36,6 +36,9 @@
                (.attr "stroke-linejoin" "round")
                (.attr "d" myGeoPath))
 
+           ;; const t = svg.transition().duration(750);
+           ;; (def t (-> svg .transition (.duration 750)))
+
            ;; marks
            (-> svg
                (.append "g")
@@ -58,7 +61,18 @@
                       (.attr "transform" #(str "translate(" (.centroid myGeoPath %) ")"))
                       (.attr "r" #(scale-radius (.-value %)))))
                 (fn [update] update)
-                (fn [exit] (.remove exit)))))))))
+                (fn [exit]
+                  (-> exit
+                      (.call (fn [circle]
+                               (-> circle
+                                   (.transition (-> svg .transition (.duration 750)))
+                                   .remove)
+                               )))
+                  (.remove exit)
+                  )
+                )
+
+               ))))))
 
 (defn bubble-map-covid-us-d3 []
   (let [svg-el-id "bubble-map-covid-us-d3-svg-root"]
