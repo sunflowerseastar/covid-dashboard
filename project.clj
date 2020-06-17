@@ -17,6 +17,7 @@
                   :exclusions [cljsjs/vega cljsjs/vega-lite cljsjs/vega-embed cljsjs/vega-tooltip
                                cljsjs/react cljsjs/react-dom cljsjs/react-dom-server cljsjs/create-react-class]]
                  [cljsjs/d3 "5.12.0-0"]
+                 [day8.re-frame/http-fx "v0.2.0"]
                  [tupelo "0.9.201"]]
 
   :plugins [[lein-shadow "0.2.0"]
