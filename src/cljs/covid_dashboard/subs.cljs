@@ -3,9 +3,9 @@
    [re-frame.core :as re-frame]))
 
 (re-frame/reg-sub
- ::name
+ ::total-confirmed
  (fn [db]
-   (:name db)))
+   (:total-confirmed db)))
 
 (re-frame/reg-sub
  ::active-page

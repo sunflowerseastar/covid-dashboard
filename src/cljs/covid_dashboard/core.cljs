@@ -21,6 +21,7 @@
 
 (defn init []
   (routes/app-routes)
+  (re-frame/dispatch [:handler-with-http])
   (re-frame/dispatch-sync [::events/initialize-db])
   (re-frame/dispatch-sync [::bp/set-breakpoints
                            {:breakpoints [:mobile 768

@@ -1,4 +1,5 @@
 (ns covid-dashboard.db)
 
 (def default-db
-  {:name "re-frame"})
+  {:is-fetching false
+   :total-confirmed nil})
