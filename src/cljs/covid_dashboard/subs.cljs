@@ -8,6 +8,11 @@
    (:total-confirmed db)))
 
 (re-frame/reg-sub
+ ::confirmed-by-region
+ (fn [db]
+   (:confirmed-by-region db)))
+
+(re-frame/reg-sub
  ::active-page
  (fn [db _]
    (:active-page db)))

@@ -12,11 +12,19 @@
     (when @total-confirmed
       [:div.total-confirmed-panel [:p "Total Confirmed"] [:p @total-confirmed]])))
 
+(defn panel-2 []
+  (let [confirmed-by-region (re-frame/subscribe [::subs/confirmed-by-region])]
+    (when @confirmed-by-region
+      [:div.panel-2 [:p "Confirmed Cases by Country/Region/Sovereignty"]
+       [:table [:tbody (map (fn [[region value]]
+                              [:tr {:key (str region value)} [:td region] [:td value]])
+                            @confirmed-by-region)]]])))
+
 (defn home-col-left []
   [re-com/v-box
    :class "home-col-left"
-   :children [[re-com/box :size "1" :child [total-confirmed-panel]]
-              [re-com/box :size "1" :child "x"]]])
+   :children [[re-com/box :child [total-confirmed-panel]]
+              [re-com/box :size "1" :child [panel-2]]]])
 
 (defn home-col-center []
   [:div.home-col-center [bubble-map-covid-us-d3]])
@@ -39,4 +47,4 @@
                    :class "home-page"
                    :children [[re-com/box :size "1" :child [home-col-left]]
                               [re-com/box :size "3" :class "home-col-center" :child [bubble-map-covid-us-d3]]
-                              [re-com/box :size "1" :child [home-col-right]]]]]])}))
+                              #_[re-com/box :size "1" :child [home-col-right]]]]]])}))
