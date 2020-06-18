@@ -29,7 +29,7 @@
  (fn [{:keys [db]} _]
    {:db (assoc db :is-fetching true)
     :http-xhrio {:method :get
-                 :uri "http://localhost:3000/total-confirmed"
+                 :uri "/api/total-confirmed"
                  :timeout 8000
                  :response-format (ajax/json-response-format {:keywords? true})
                  :on-success [::assoc-total-confirmed]
