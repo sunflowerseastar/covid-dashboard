@@ -1,11 +1,12 @@
 (ns covid-dashboard.d3s
+  "d3.js visualizations and wrapper components"
   (:require
-   [d3-geo :refer [geoPath]]
-   [topojson-client :refer [feature mesh]]
    [cljsjs.d3 :as d3]
-   [reagent.core :refer [create-class]]
+   [d3-geo :as d3-geo]
    [goog.string :as gstring]
-   [goog.string.format]))
+   [goog.string.format]
+   [reagent.core :as reagent]
+   [topojson-client :as topo]))
 
 (def files-covid ["https://covid-dashboard.sunflowerseastar.com/data/06-14-2020.csv" "https://covid-dashboard.sunflowerseastar.com/data/counties-albers-10m.json"])
 
@@ -13,7 +14,7 @@
   (-> (.all js/Promise [(.csv js/d3 (first files-covid) #(vector (.-FIPS %) (.-Confirmed %))) (.json js/d3 (second files-covid))])
       (.then
        (fn [[population-data counties-albers-10m-data]]
-         (let [myGeoPath (geoPath)
+         (let [myGeoPath (d3-geo/geoPath)
                population-data-map (js/Map.)
                filtered-population-data (->> population-data (filter #(->> % first empty? not)))
                _ (dorun (map #(.set population-data-map (->> % first (gstring/format "%05d")) (second %)) filtered-population-data))
@@ -24,13 +25,13 @@
 
            (-> svg
                (.append "path")
-               (.datum (feature counties-albers-10m-data (-> counties-albers-10m-data .-objects .-nation)))
+               (.datum (topo/feature counties-albers-10m-data (-> counties-albers-10m-data .-objects .-nation)))
                (.attr "fill", "#f3f3f3")
                (.attr "d" myGeoPath))
 
            (-> svg
                (.append "path")
-               (.datum (mesh counties-albers-10m-data (-> counties-albers-10m-data .-objects .-states) (fn [a b] (not= a b))))
+               (.datum (topo/mesh counties-albers-10m-data (-> counties-albers-10m-data .-objects .-states) (fn [a b] (not= a b))))
                (.attr "fill" "none")
                (.attr "stroke" "#fff")
                (.attr "stroke-linejoin" "round")
@@ -48,7 +49,7 @@
                (.attr "stroke-width" 0.5)
 
                (.selectAll "circle")
-               (.data (->> (feature counties-albers-10m-data (-> counties-albers-10m-data .-objects .-counties))
+               (.data (->> (topo/feature counties-albers-10m-data (-> counties-albers-10m-data .-objects .-counties))
                            (.-features)
                            (js->clj)
                            (map #(assoc % :value (.get population-data-map (get % "id"))))
@@ -76,7 +77,7 @@
 
 (defn bubble-map-covid-us-d3 []
   (let [svg-el-id "bubble-map-covid-us-d3-svg-root"]
-    (create-class
+    (reagent/create-class
      {:display-name "bubble-map-covid-us-d3-component"
       :component-did-mount (fn [this] (bubble-map-covid svg-el-id))
       :reagent-render (fn [this] [:svg {:id svg-el-id :class "svg-container" :viewBox [0 0 985 630]}])})))

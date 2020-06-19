@@ -1,13 +1,13 @@
 (ns covid-dashboard.core
   (:require
-   [reagent.core :as reagent]
-   [reagent.dom :as rdom]
-   [re-frame.core :as re-frame]
    [breaking-point.core :as bp]
+   [covid-dashboard.config :as config]
    [covid-dashboard.events :as events]
    [covid-dashboard.routes :as routes]
    [covid-dashboard.views :as views]
-   [covid-dashboard.config :as config]))
+   [re-frame.core :as re-frame]
+   [reagent.core :as reagent]
+   [reagent.dom :as rdom]))
 
 (defn dev-setup []
   (when config/debug?

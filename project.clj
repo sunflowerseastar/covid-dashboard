@@ -1,24 +1,24 @@
 (defproject covid-dashboard "0.1.0-SNAPSHOT"
-  :dependencies [[org.clojure/clojure "1.10.1"]
+  :dependencies [[breaking-point "0.1.2"]
+                 [clj-commons/secretary "1.2.4"]
+                 [cljsjs/d3 "5.12.0-0"]
+                 [day8.re-frame/http-fx "v0.2.0"]
+                 [day8.re-frame/tracing "0.5.5"]
+                 [garden "1.3.10"]
+                 [ns-tracker "0.4.0"]
+                 [org.clojure/clojure "1.10.1"]
                  [org.clojure/clojurescript "1.10.764"
                   :exclusions [com.google.javascript/closure-compiler-unshaded
                                org.clojure/google-closure-library
                                org.clojure/google-closure-library-third-party]]
-                 [thheller/shadow-cljs "2.9.3"]
-                 [reagent "0.10.0"]
-                 [re-frame "0.12.0"]
-                 [day8.re-frame/tracing "0.5.5"]
                  [re-com "2.8.0"]
-                 [clj-commons/secretary "1.2.4"]
-                 [garden "1.3.10"]
-                 [ns-tracker "0.4.0"]
-                 [breaking-point "0.1.2"]
-                 [cljsjs/d3 "5.12.0-0"]
-                 [day8.re-frame/http-fx "v0.2.0"]
+                 [re-frame "0.12.0"]
+                 [reagent "0.10.0"]
+                 [thheller/shadow-cljs "2.9.3"]
                  [tupelo "0.9.201"]]
 
-  :plugins [[lein-shadow "0.2.0"]
-            [lein-garden "0.3.0"]
+  :plugins [[lein-garden "0.3.0"]
+            [lein-shadow "0.2.0"]
             [lein-shell "0.5.0"]]
 
   :min-lein-version "2.9.0"
@@ -83,11 +83,8 @@
                             ["shadow" "compile" "karma-test"]
                             ["shell" "karma" "start" "--single-run" "--reporters" "junit,dots"]]}
 
-  :profiles
-  {:dev
-   {:dependencies [[binaryage/devtools "1.0.0"]
-                   [day8.re-frame/re-frame-10x "0.6.5"]]
-    :source-paths ["dev"]}
-   :prod {}}
+  :profiles {:dev {:dependencies [[binaryage/devtools "1.0.0"] [day8.re-frame/re-frame-10x "0.6.5"]]
+                   :source-paths ["dev"]}
+             :prod {}}
 
   :prep-tasks [["garden" "once"]])

@@ -1,11 +1,11 @@
 (ns covid-dashboard.views
   (:require
-   [covid-dashboard.d3s :refer [bubble-map-covid-us-d3]]
+   [cljsjs.d3 :as d3]
+   [covid-dashboard.d3s :as d3s]
+   [covid-dashboard.subs :as subs]
    [re-com.core :as re-com]
    [re-frame.core :as re-frame]
-   [reagent.core :refer [create-class]]
-   [covid-dashboard.subs :as subs]
-   [cljsjs.d3 :as d3]))
+   [reagent.core :as reagent]))
 
 (defn panel-1 []
   (let [total-confirmed (re-frame/subscribe [::subs/total-confirmed])]
@@ -26,9 +26,6 @@
    :children [[re-com/box :child [panel-1]]
               [re-com/box :size "1" :child [panel-2]]]])
 
-(defn home-col-center []
-  [:div.home-col-center [bubble-map-covid-us-d3]])
-
 (defn home-col-right []
   [re-com/v-box
    :class "home-col-right"
@@ -37,7 +34,7 @@
               [re-com/box :size "1" :child "x"]]])
 
 (defn home-page []
-  (create-class
+  (reagent/create-class
    {:display-name "home-page"
     :reagent-render
     (fn [this]
@@ -46,5 +43,5 @@
        :children [[re-com/h-box
                    :class "home-page"
                    :children [[re-com/box :size "1" :child [home-col-left]]
-                              [re-com/box :size "3" :class "home-col-center" :child [bubble-map-covid-us-d3]]
+                              [re-com/box :size "3" :class "home-col-center" :child [d3s/bubble-map-covid-us-d3]]
                               #_[re-com/box :size "1" :child [home-col-right]]]]]])}))
