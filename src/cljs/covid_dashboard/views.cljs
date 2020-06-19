@@ -30,8 +30,11 @@
   [re-com/v-box
    :class "home-col-right"
    :size "auto"
-   :children [[re-com/box :size "1" :child "x"]
-              [re-com/box :size "1" :child "x"]]])
+   :children [[re-com/box :size "1"
+               :child [re-com/h-box :size "1"
+                       :children [[re-com/box :size "1" :child "panel 4"]
+                                  [re-com/box :size "1" :child "panel 5"]]]]
+              [re-com/box :size "1" :child "panel 6"]]])
 
 (defn home-page []
   (reagent/create-class
@@ -44,4 +47,4 @@
                    :class "home-page"
                    :children [[re-com/box :size "1" :child [home-col-left]]
                               [re-com/box :size "3" :class "home-col-center" :child [d3s/bubble-map-covid-us-d3]]
-                              #_[re-com/box :size "1" :child [home-col-right]]]]]])}))
+                              [re-com/box :size "1" :child [home-col-right]]]]]])}))
