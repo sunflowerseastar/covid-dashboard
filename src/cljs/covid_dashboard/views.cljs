@@ -29,6 +29,14 @@
                               [:tr {:key (str region value)} [:td region] [:td value]])
                             deaths-by-region)]]])))
 
+(defn panel-5 []
+  (let [us-state-level-deaths-recovered (re-frame/subscribe [::subs/us-state-level-deaths-recovered])]
+    (when @us-state-level-deaths-recovered
+      [:div.panel-2 [:p "US State Level"] [:h4 "Deaths, Recovered"]
+       [:table [:tbody (map (fn [[state deaths recovered]]
+                              [:tr {:key state} [:td state] [:td deaths] [:td recovered]])
+                            @us-state-level-deaths-recovered)]]])))
+
 (defn home-col-left []
   [re-com/v-box
    :class "home-col-left"
@@ -42,7 +50,7 @@
    :children [[re-com/box :size "1"
                :child [re-com/h-box :size "1"
                        :children [[re-com/box :size "1" :child [panel-4]]
-                                  [re-com/box :size "1" :child "panel 5"]]]]
+                                  [re-com/box :size "1" :child [panel-5]]]]]
               [re-com/box :size "1" :child "panel 6"]]])
 
 (defn home-page []

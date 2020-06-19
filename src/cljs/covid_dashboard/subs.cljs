@@ -22,3 +22,7 @@
  (fn [db]
    (:total-confirmed db)))
 
+(re-frame/reg-sub
+ ::us-state-level-deaths-recovered
+ (fn [db]
+   (:us-state-level-deaths-recovered db)))

@@ -17,10 +17,11 @@
 
 (re-frame/reg-event-db
  ::assoc-api-all
- (fn [db [_ {:keys [confirmed-by-region global-deaths total-confirmed]}]]
+ (fn [db [_ {:keys [confirmed-by-region global-deaths total-confirmed us-state-level-deaths-recovered]}]]
    (assoc db :confirmed-by-region confirmed-by-region
           :global-deaths global-deaths
-          :total-confirmed total-confirmed)))
+          :total-confirmed total-confirmed
+          :us-state-level-deaths-recovered us-state-level-deaths-recovered)))
 
 (re-frame/reg-event-db
  ::failure-http-result
