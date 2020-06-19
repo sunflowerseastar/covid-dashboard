@@ -10,7 +10,7 @@
 (defn panel-1 []
   (let [total-confirmed (re-frame/subscribe [::subs/total-confirmed])]
     (when @total-confirmed
-      [:div [:p "Total Confirmed"] [:p @total-confirmed]])))
+      [:div [:p "Total Confirmed"] [:h3 @total-confirmed]])))
 
 (defn panel-2 []
   (let [confirmed-by-region (re-frame/subscribe [::subs/confirmed-by-region])]
@@ -19,6 +19,15 @@
        [:table [:tbody (map (fn [[region value]]
                               [:tr {:key (str region value)} [:td region] [:td value]])
                             @confirmed-by-region)]]])))
+
+(defn panel-4 []
+  (let [global-deaths (re-frame/subscribe [::subs/global-deaths])]
+    (when-let [{:keys [deaths-by-region total-deaths]} @global-deaths]
+      [:div.panel-4 [:p "Global Deaths"]
+       [:h3 total-deaths]
+       [:table [:tbody (map (fn [[region value]]
+                              [:tr {:key (str region value)} [:td region] [:td value]])
+                            deaths-by-region)]]])))
 
 (defn home-col-left []
   [re-com/v-box
@@ -32,7 +41,7 @@
    :size "auto"
    :children [[re-com/box :size "1"
                :child [re-com/h-box :size "1"
-                       :children [[re-com/box :size "1" :child "panel 4"]
+                       :children [[re-com/box :size "1" :child [panel-4]]
                                   [re-com/box :size "1" :child "panel 5"]]]]
               [re-com/box :size "1" :child "panel 6"]]])
 
