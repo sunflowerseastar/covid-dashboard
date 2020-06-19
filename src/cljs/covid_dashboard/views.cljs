@@ -7,10 +7,10 @@
    [covid-dashboard.subs :as subs]
    [cljsjs.d3 :as d3]))
 
-(defn total-confirmed-panel []
+(defn panel-1 []
   (let [total-confirmed (re-frame/subscribe [::subs/total-confirmed])]
     (when @total-confirmed
-      [:div.total-confirmed-panel [:p "Total Confirmed"] [:p @total-confirmed]])))
+      [:div [:p "Total Confirmed"] [:p @total-confirmed]])))
 
 (defn panel-2 []
   (let [confirmed-by-region (re-frame/subscribe [::subs/confirmed-by-region])]
@@ -23,7 +23,7 @@
 (defn home-col-left []
   [re-com/v-box
    :class "home-col-left"
-   :children [[re-com/box :child [total-confirmed-panel]]
+   :children [[re-com/box :child [panel-1]]
               [re-com/box :size "1" :child [panel-2]]]])
 
 (defn home-col-center []
