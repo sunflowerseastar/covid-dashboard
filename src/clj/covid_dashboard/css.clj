@@ -2,11 +2,18 @@
   (:require [garden.def :refer [defstyles]]))
 
 (defstyles screen
-  [:.home-page {:height "100vh"}]
+  [:.home-page {:height "100vh" :padding "10px" :box-sizing "border-box"}]
+
+  [:td {:padding "3px 4px 2px 2px"}]
 
   [:.display-flex {:width "100%"}]
 
-  [:.home-col-left {:background "yellow"}]
+  ;; [:.home-col-left {:background "yellow"}]
+
+  [:.panel {:border "1px solid #e1e1e1"}]
+  [:.panel-interior {:background "#fdfdfd"}]
+
+  [:.padding-1 {:box-sizing "border-box" :padding "8px 5px 8px 10px"}]
 
   [:.panel-2 {:background "#eee"}]
   [:.panel-2-scroll {:overflow-y "auto"}]
