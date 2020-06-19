@@ -60,7 +60,7 @@
                [re-com/h-box :size "1" :gap gap-size :children
                 [[re-com/box :size "1" :class "panel" :child [panel-4]]
                  [re-com/box :size "1" :class "panel" :child [panel-5]]]]]
-              [re-com/box :size "1" :child "panel 6"]]])
+              [re-com/box :size "1" :child [d3s/line-chart]]]])
 
 (defn home-page []
   (reagent/create-class
