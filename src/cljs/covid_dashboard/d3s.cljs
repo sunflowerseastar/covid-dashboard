@@ -97,21 +97,25 @@
                   (map (fn [d] {:date (parse-date (first d)) :value (js/parseFloat (second d))}))
                   clj->js)
 
+        svg (-> js/d3 (.select (str "#" svg-el-id)))
+        width (-> (.node svg) (.-clientWidth))
+        height 200
+
         x-scale (-> (.scaleUtc js/d3)
                     (.domain (.extent js/d3 data (fn [d] (.-date d))))
-                    (.range (clj->js [0 300])))
+                    (.range (clj->js [0 width])))
 
         y-scale (-> (.scaleLinear js/d3)
                     (.domain (clj->js [0 (.max js/d3 data (fn [d] (.-value d)))]))
-                    (.range (clj->js [200 0])))
+                    (.range (clj->js [height 0])))
 
         my-line (-> (.line js/d3)
                     (.defined (fn [d] (do ;; (.log js/console d)
                                         (not (js/isNaN (.-value d))))))
                     (.x (fn [d] (x-scale (.-date d))))
-                    (.y (fn [d] (y-scale (.-value d)))))
+                    (.y (fn [d] (y-scale (.-value d)))))]
 
-        svg (.. js/d3 (select (str "#" svg-el-id)))]
+    (-> svg (.attr "viewBox" (clj->js [0 0 (-> (.node svg) (.-clientWidth)) height])))
 
     (-> svg (.append "path")
         (.datum data)
