@@ -93,7 +93,12 @@
 (defn parse-date [x] ((.timeParse js/d3 "%m/%d/%Y") x))
 
 (defn line-chart [svg-el-id line-chart-data]
-  (let [data (->> line-chart-data
+  (let [
+        margin 30
+
+        format-value (.format js/d3 ".0s")
+
+        data (->> line-chart-data
                   (map (fn [d] {:date (parse-date (first d)) :value (js/parseFloat (second d))}))
                   clj->js)
 
@@ -113,9 +118,30 @@
                     (.defined (fn [d] (do ;; (.log js/console d)
                                         (not (js/isNaN (.-value d))))))
                     (.x (fn [d] (x-scale (.-date d))))
-                    (.y (fn [d] (y-scale (.-value d)))))]
+                    (.y (fn [d] (y-scale (.-value d)))))
+
+        x-axis (fn [g] (-> (.attr g "transform" (str "translate(0," (- height margin) ")"))
+                         (.call (-> (.axisBottom js/d3 x-scale)
+                                    (.ticks (/ width 80))
+                                    (.tickSizeOuter 0)))))
+
+        y-axis (fn [g] (-> (.attr g "transform" (str "translate(" margin ",0)"))
+                         (.call (-> (.axisLeft js/d3 y-scale)
+                                    (.tickFormat format-value)))
+                         (.call (fn [g] (-> (.select g ".tick:last-of-type text")
+                                            (.clone)
+                                            (.attr "x" 3)
+                                            (.attr "text-anchor" "start")
+                                            (.attr "font-weight" "bold")
+                                            (.text "Confirmed"))))))]
 
     (-> svg (.attr "viewBox" (clj->js [0 0 (-> (.node svg) (.-clientWidth)) height])))
+
+    (-> svg (.append "g")
+        (.call x-axis))
+
+    (-> svg (.append "g")
+        (.call y-axis))
 
     (-> svg (.append "path")
         (.datum data)
