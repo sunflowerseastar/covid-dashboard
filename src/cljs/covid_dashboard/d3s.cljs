@@ -103,7 +103,7 @@
 
         y-scale (-> (.scaleLinear js/d3)
                     (.domain (clj->js [0 (.max js/d3 data (fn [d] (.-value d)))]))
-                    (.range (clj->js [0 200])))
+                    (.range (clj->js [200 0])))
 
         my-line (-> (.line js/d3)
                     (.defined (fn [d] (do ;; (.log js/console d)
@@ -123,16 +123,7 @@
         (.attr "d" my-line))))
 
 (defn line-chart-d3 [line-chart-data]
-  (let [svg-el-id "line-chart-root-svg"
-        data2 [["01/14/2010" 28.33]
-               ["01/15/2010" 27.86]
-               ["01/19/2010" 29.09]
-               ["01/20/2010" 15.64]
-               ["01/21/2010" 28.15]
-               ["01/22/2010" 26.75]
-               ["01/25/2010" 0.47]
-               ["01/26/2010" 27.86]
-               ["01/27/2010" 28.12]]]
+  (let [svg-el-id "line-chart-root-svg"]
     (reagent/create-class
      {:display-name "line-chart-d3"
       :reagent-render (fn [this] [:svg {:id svg-el-id :class "svg-container" :viewBox [0 0 300 200]}])
