@@ -90,13 +90,12 @@
 
 
 
-(defn parse-date [x] ((.timeParse js/d3 "%d/%m/%Y") x))
+(defn parse-date [x] ((.timeParse js/d3 "%m/%d/%Y") x))
 
 (defn line-chart [svg-el-id line-chart-data]
-  (let [data (->> line-chart-data js->clj
-                  (map (fn [d]
-                         {:date (parse-date (get d "Date")) :value (js/parseFloat (get d "Close"))})
-                       ) clj->js)
+  (let [data (->> line-chart-data
+                  (map (fn [d] {:date (parse-date (first d)) :value (js/parseFloat (second d))}))
+                  clj->js)
 
         x-scale (-> (.scaleUtc js/d3)
                     (.domain (.extent js/d3 data (fn [d] (.-date d))))
@@ -125,16 +124,16 @@
 
 (defn line-chart-d3 []
   (let [svg-el-id "line-chart-root-svg"
-        line-chart-data (clj->js [{:Date "14/01/2010" :Close 28.33}
-                                  {:Date "15/01/2010" :Close 27.86}
-                                  {:Date "19/01/2010" :Close 29.09}
-                                  {:Date "20/01/2010" :Close 15.64}
-                                  {:Date "21/01/2010" :Close 28.15}
-                                  {:Date "22/01/2010" :Close 26.75}
-                                  {:Date "25/01/2010" :Close 27.47}
-                                  {:Date "26/01/2010" :Close 27.86}
-                                  {:Date "27/01/2010" :Close 28.12}])]
+        data2 [["01/14/2010" 28.33]
+               ["01/15/2010" 27.86]
+               ["01/19/2010" 29.09]
+               ["01/20/2010" 15.64]
+               ["01/21/2010" 28.15]
+               ["01/22/2010" 26.75]
+               ["01/25/2010" 0.47]
+               ["01/26/2010" 27.86]
+               ["01/27/2010" 28.12]]]
     (reagent/create-class
      {:display-name "line-chart-d3"
       :reagent-render (fn [this] [:svg {:id svg-el-id :class "svg-container" :viewBox [0 0 300 200]}])
-      :component-did-mount #(line-chart svg-el-id line-chart-data)})))
+      :component-did-mount #(line-chart svg-el-id data2)})))
