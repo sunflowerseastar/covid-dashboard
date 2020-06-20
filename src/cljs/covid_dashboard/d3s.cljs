@@ -90,76 +90,51 @@
 
 
 
-(def margin {:top 100, :right 100, :bottom 100, :left 100})
-
 (defn parse-date [x] ((.timeParse js/d3 "%d/%m/%Y") x))
 
 (defn line-chart [svg-el-id line-chart-data]
-  (-> (.csv js/d3 "https://covid-dashboard.sunflowerseastar.com/data/aapl2.csv")
-      (.then (fn [aapl2-data]
-               (let [data (->> line-chart-data js->clj
-                               (map (fn [d]
-                                      {:date (parse-date (get d "Date")) :value (js/parseFloat (get d "Close"))})
-                                    ) clj->js)
+  (let [data (->> line-chart-data js->clj
+                  (map (fn [d]
+                         {:date (parse-date (get d "Date")) :value (js/parseFloat (get d "Close"))})
+                       ) clj->js)
 
+        x-scale (-> (.scaleUtc js/d3)
+                    (.domain (.extent js/d3 data (fn [d] (.-date d))))
+                    (.range (clj->js [0 300])))
 
-                     x-scale (-> (.scaleUtc js/d3)
-                                 (.domain (.extent js/d3 data (fn [d] (.-date d))))
-                                 (.range (clj->js [0 300]))
-                                 )
+        y-scale (-> (.scaleLinear js/d3)
+                    (.domain (clj->js [0 (.max js/d3 data (fn [d] (.-value d)))]))
+                    (.range (clj->js [0 200])))
 
-                     y-scale (-> (.scaleLinear js/d3)
-                                 (.domain (clj->js [0 (.max js/d3 data (fn [d] (.-value d)))]))
-                                 (.range (clj->js [0 200])))
+        my-line (-> (.line js/d3)
+                    (.defined (fn [d] (do ;; (.log js/console d)
+                                        (not (js/isNaN (.-value d))))))
+                    (.x (fn [d] (x-scale (.-date d))))
+                    (.y (fn [d] (y-scale (.-value d)))))
 
-                     my-line (-> (.line js/d3)
-                                   (.defined (fn [d] (do
-                                                       ;; (.log js/console d)
-                                                       (not (js/isNaN (.-value d))))))
-                                   (.x (fn [d] (x-scale (.-date d))))
-                                   (.y (fn [d] (y-scale (.-value d)))))
+        svg (.. js/d3 (select (str "#" svg-el-id)))]
 
-                     svg (.. js/d3 (select (str "#" svg-el-id)))
-
-                     ]
-
-                 ;; (.log js/console svg)
-                 ;; (.log js/console data)
-                 ;; (spyx (my-line data))
-                 ;; (spyx ((.line js/d3) (clj->js line-chart-data)))
-
-                 (-> svg (.append "path")
-                     (.datum data)
-                     (.attr "fill" "none")
-                     (.attr "stroke" "steelblue")
-                     (.attr "stroke-width" 1.5)
-                     (.attr "stroke-linejoin" "round")
-                     (.attr "stroke-linecap" "round")
-                     (.attr "d" my-line))
-                 )))
-      (.catch #(js/console.log %))))
+    (-> svg (.append "path")
+        (.datum data)
+        (.attr "fill" "none")
+        (.attr "stroke" "steelblue")
+        (.attr "stroke-width" 1.5)
+        (.attr "stroke-linejoin" "round")
+        (.attr "stroke-linecap" "round")
+        (.attr "d" my-line))))
 
 (defn line-chart-d3 []
   (let [svg-el-id "line-chart-root-svg"
-        ;; line-chart-data [[10 60] [40 90] [60 10] [190 10]]
-
-        line-chart-data (clj->js [
-
-                         {:Date "14/01/2010" :Close 28.33}
-                         {:Date "15/01/2010" :Close 27.86}
-                         {:Date "19/01/2010" :Close 29.09}
-                         {:Date "20/01/2010" :Close 5.64}
-                         {:Date "21/01/2010" :Close 28.15}
-                         {:Date "22/01/2010" :Close 26.75}
-                         {:Date "25/01/2010" :Close 27.47}
-                         {:Date "26/01/2010" :Close 27.86}
-                         {:Date "27/01/2010" :Close 28.12}
-
-
-                         ])
-
-        ]
+        line-chart-data (clj->js [{:Date "14/01/2010" :Close 28.33}
+                                  {:Date "15/01/2010" :Close 27.86}
+                                  {:Date "19/01/2010" :Close 29.09}
+                                  {:Date "20/01/2010" :Close 15.64}
+                                  {:Date "21/01/2010" :Close 28.15}
+                                  {:Date "22/01/2010" :Close 26.75}
+                                  {:Date "25/01/2010" :Close 27.47}
+                                  {:Date "26/01/2010" :Close 27.86}
+                                  {:Date "27/01/2010" :Close 28.12}])]
     (reagent/create-class
-    {:display-name "line-chart-d3"
-     :reagent-render (fn [this] [:svg {:id svg-el-id :class "svg-container" :viewBox [0 0 300 200]}])
-     :component-did-mount #(line-chart svg-el-id line-chart-data)})))
+     {:display-name "line-chart-d3"
+      :reagent-render (fn [this] [:svg {:id svg-el-id :class "svg-container" :viewBox [0 0 300 200]}])
+      :component-did-mount #(line-chart svg-el-id line-chart-data)})))
