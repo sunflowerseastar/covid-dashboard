@@ -18,6 +18,11 @@
    (:global-deaths db)))
 
 (re-frame/reg-sub
+ ::time-series-confirmed-global
+ (fn [db]
+   (:time-series-confirmed-global db)))
+
+(re-frame/reg-sub
  ::total-confirmed
  (fn [db]
    (:total-confirmed db)))
