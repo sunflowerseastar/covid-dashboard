@@ -122,7 +122,7 @@
         (.attr "stroke-linecap" "round")
         (.attr "d" my-line))))
 
-(defn line-chart-d3 []
+(defn line-chart-d3 [line-chart-data]
   (let [svg-el-id "line-chart-root-svg"
         data2 [["01/14/2010" 28.33]
                ["01/15/2010" 27.86]
@@ -136,4 +136,4 @@
     (reagent/create-class
      {:display-name "line-chart-d3"
       :reagent-render (fn [this] [:svg {:id svg-el-id :class "svg-container" :viewBox [0 0 300 200]}])
-      :component-did-mount #(line-chart svg-el-id data2)})))
+      :component-did-mount #(line-chart svg-el-id line-chart-data)})))
