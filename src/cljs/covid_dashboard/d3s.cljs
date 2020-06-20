@@ -108,32 +108,33 @@
 
         x-scale (-> (.scaleUtc js/d3)
                     (.domain (.extent js/d3 data (fn [d] (.-date d))))
-                    (.range (clj->js [0 width])))
+                    (.range (clj->js [margin width])))
 
         y-scale (-> (.scaleLinear js/d3)
                     (.domain (clj->js [0 (.max js/d3 data (fn [d] (.-value d)))]))
-                    (.range (clj->js [height 0])))
+                    (.range (clj->js [(- height margin) 0])))
 
         my-line (-> (.line js/d3)
-                    (.defined (fn [d] (do ;; (.log js/console d)
-                                        (not (js/isNaN (.-value d))))))
+                    (.defined (fn [d] (not (js/isNaN (.-value d)))))
                     (.x (fn [d] (x-scale (.-date d))))
                     (.y (fn [d] (y-scale (.-value d)))))
 
         x-axis (fn [g] (-> (.attr g "transform" (str "translate(0," (- height margin) ")"))
-                         (.call (-> (.axisBottom js/d3 x-scale)
-                                    (.ticks (/ width 80))
-                                    (.tickSizeOuter 0)))))
+                           (.call (-> (.axisBottom js/d3 x-scale)
+                                      (.ticks (/ width 80))
+                                      (.tickSizeOuter 0)))
+                           (.call (fn [g] (-> (.select g ".domain") (.remove))))))
 
         y-axis (fn [g] (-> (.attr g "transform" (str "translate(" margin ",0)"))
-                         (.call (-> (.axisLeft js/d3 y-scale)
-                                    (.tickFormat format-value)))
-                         (.call (fn [g] (-> (.select g ".tick:last-of-type text")
-                                            (.clone)
-                                            (.attr "x" 3)
-                                            (.attr "text-anchor" "start")
-                                            (.attr "font-weight" "bold")
-                                            (.text "Confirmed"))))))]
+                           (.call (-> (.axisLeft js/d3 y-scale)
+                                      (.tickFormat format-value)))
+                           (.call (fn [g] (-> (.select g ".domain") (.remove))))
+                           (.call (fn [g] (-> (.select g ".tick:last-of-type text")
+                                              (.clone)
+                                              (.attr "x" 6)
+                                              (.attr "text-anchor" "start")
+                                              (.attr "font-weight" "bold")
+                                              (.text "Confirmed"))))))]
 
     (-> svg (.attr "viewBox" (clj->js [0 0 (-> (.node svg) (.-clientWidth)) height])))
 
