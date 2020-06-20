@@ -6,6 +6,7 @@
    [goog.string :as gstring]
    [goog.string.format]
    [reagent.core :as reagent]
+   ;; [tupelo.core :refer [spyx]]
    [topojson-client :as topo]))
 
 (def files-covid ["https://covid-dashboard.sunflowerseastar.com/data/06-14-2020.csv" "https://covid-dashboard.sunflowerseastar.com/data/counties-albers-10m.json"])
@@ -151,18 +152,20 @@
          (let [parse-date (.timeParse js/d3 "%d-%b-%y")
                data (->> response js->clj
                          (map (fn [d]
-                                {:date (parse-date (get d "date")) :close (js/parseFloat (get d "close"))})
-                              ) clj->js)
+                                {:date (get d "date") :value (js/parseFloat (get d "close"))})
+                              )
+                         (take 20)
+                         clj->js)
                svg (.. js/d3 (select (str "#" svg-el-id)))
 
-               x-scale (-> (.scaleUtc js/d3)
-                           (.domain (.extent js/d3 data (fn [d] (do
-                                                                  (.log js/console d)
-                                                                  (.-date d)))))
+               x-scale (-> (.scaleTime js/d3)
+                           (.domain (clj->js [0 1000]))
+                           (.domain (clj->js [(js/Date. 2007 0 1) (js/Date. 2010 0 11)]))
+                           ;; (.domain (.extent js/d3 data (fn [d] (.-date d))))
                            (.range (clj->js [0 300])))
 
                y-scale (-> (.scaleLinear js/d3)
-                           (.domain (clj->js [0 1000]))
+                           (.domain (clj->js [0 500]))
                            (.range (clj->js [0 300])))
 
                ]
@@ -183,7 +186,10 @@
                (.attr "stroke-linejoin" "round")
                (.attr "stroke-linecap" "round")
                (.attr "d" (-> (.line js/d3)
+                              ;; (.log js/console js/isNan)
+                              ;; (.defined (fn [_] true))
                               (.defined (fn [d] (not (js/isNaN (.-value d)))))
+                              ;; (spyx "hi")
                               (.x (fn [d] (x-scale (.-date d))))
                               (.y (fn [d] (y-scale (.-value d))))))
 
@@ -192,11 +198,13 @@
 
            ;; response
            (.log js/console data)
+           (.log js/console svg)
            )
          ))))
 
 (defn line-chart []
-  (reagent/create-class
-   {:display-name "line-chart"
-    :reagent-render (fn [this] [:div#line-chart-container [:svg [:g.graph]]])
-    :component-did-mount #(make-line-chart "line-chart-container")}))
+  (let [svg-el-id "line-chart-svg-root"]
+    (reagent/create-class
+     {:display-name "line-chart"
+      :component-did-mount #(make-line-chart svg-el-id)
+      :reagent-render (fn [this] [:svg {:id svg-el-id :class "svg-container" :viewBox [0 0 950 650]}])})))
