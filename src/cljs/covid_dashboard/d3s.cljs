@@ -113,10 +113,7 @@
   (.domain y (.extent js/d3 data #(.-close %))))
 
 (defn add-line [svg line data]
-  (.. svg (append "path")
-      (datum data)
-      (attr "class" "line")
-      (attr "d" line)))
+  )
 
 (defn ibm-stock [starting-width]
   (let [width (- starting-width (:left margin) (:right margin))
@@ -136,7 +133,12 @@
                          (call (.axisBottom js/d3 x)))
                    (.. js/d3 (select ".y.axis")
                          (call (.axisLeft js/d3 y)))
-                   (add-line svg line data))))
+                   ;; (add-line svg line data)
+                   (.. svg (append "path")
+                       (datum data)
+                       (attr "class" "line")
+                       (attr "d" line))
+                   )))
         (.catch #(js/console.log %)))))
 
 (defn line-chart-d3 []
