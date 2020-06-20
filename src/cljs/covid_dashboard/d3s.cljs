@@ -131,10 +131,10 @@
                                  (map (fn [d]
                                         {:date (parse-date (get d "date")) :close (js/parseFloat (get d "close"))})
                                       ) clj->js)]
-                   ;; (set-domains x y data)
-                   #_(.. js/d3 (select ".x.axis")
+                   (set-domains x y data)
+                   (.. js/d3 (select ".x.axis")
                          (call (.axisBottom js/d3 x)))
-                   #_(.. js/d3 (select ".y.axis")
+                   (.. js/d3 (select ".y.axis")
                          (call (.axisLeft js/d3 y)))
                    (add-line svg line data))))
         (.catch #(js/console.log %)))))
@@ -144,67 +144,3 @@
    {:display-name "line-chart-d3"
     :reagent-render (fn [this] [:div#d3-line-chart-container [:svg [:g.graph]]])
     :component-did-mount #(ibm-stock 500)}))
-
-(defn make-line-chart [svg-el-id]
-  (-> (.csv js/d3 "https://covid-dashboard.sunflowerseastar.com/data/ibm.csv")
-      (.then
-       (fn [response]
-         (let [parse-date (.timeParse js/d3 "%d-%b-%y")
-               data (->> response js->clj
-                         (map (fn [d]
-                                {:date (get d "date") :value (js/parseFloat (get d "close"))})
-                              )
-                         (take 20)
-                         clj->js)
-               svg (.. js/d3 (select (str "#" svg-el-id)))
-
-               x-scale (-> (.scaleTime js/d3)
-                           (.domain (clj->js [0 1000]))
-                           (.domain (clj->js [(js/Date. 2007 0 1) (js/Date. 2010 0 11)]))
-                           ;; (.domain (.extent js/d3 data (fn [d] (.-date d))))
-                           (.range (clj->js [0 300])))
-
-               y-scale (-> (.scaleLinear js/d3)
-                           (.domain (clj->js [0 500]))
-                           (.range (clj->js [0 300])))
-
-               ]
-
-           ;; (-> svg
-           ;;     (.append "g")
-           ;;     (.call x-axis))
-           ;; (-> svg
-           ;;     (.append "g")
-           ;;     (.call y-axis))
-
-           (-> svg
-               (.append "path")
-               (.datum data)
-               (.attr "fill" "none")
-               (.attr "stroke" "steelblue")
-               (.attr "stroke-width" 1.5)
-               (.attr "stroke-linejoin" "round")
-               (.attr "stroke-linecap" "round")
-               (.attr "d" (-> (.line js/d3)
-                              ;; (.log js/console js/isNan)
-                              ;; (.defined (fn [_] true))
-                              (.defined (fn [d] (not (js/isNaN (.-value d)))))
-                              ;; (spyx "hi")
-                              (.x (fn [d] (x-scale (.-date d))))
-                              (.y (fn [d] (y-scale (.-value d))))))
-
-               )
-
-
-           ;; response
-           (.log js/console data)
-           (.log js/console svg)
-           )
-         ))))
-
-(defn line-chart []
-  (let [svg-el-id "line-chart-svg-root"]
-    (reagent/create-class
-     {:display-name "line-chart"
-      :component-did-mount #(make-line-chart svg-el-id)
-      :reagent-render (fn [this] [:svg {:id svg-el-id :class "svg-container" :viewBox [0 0 950 650]}])})))

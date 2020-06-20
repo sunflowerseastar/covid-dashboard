@@ -15,6 +15,9 @@
                  [re-frame "0.12.0"]
                  [reagent "0.10.0"]
                  [thheller/shadow-cljs "2.9.3"]
+                 [metasoarous/oz "1.6.0-alpha6"
+                  :exclusions [cljsjs/vega cljsjs/vega-lite cljsjs/vega-embed cljsjs/vega-tooltip
+                               cljsjs/react cljsjs/react-dom cljsjs/react-dom-server cljsjs/create-react-class]]
                  [tupelo "0.9.201"]]
 
   :plugins [[lein-garden "0.3.0"]
