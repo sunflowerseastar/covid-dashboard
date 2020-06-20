@@ -94,8 +94,8 @@
 
 (defn parse-date [x] ((.timeParse js/d3 "%d/%m/%Y") x))
 
-(defn line-chart [svg-el-id]
-  (-> (.csv js/d3 "https://covid-dashboard.sunflowerseastar.com/data/aapl.csv")
+(defn line-chart [svg-el-id line-chart-data]
+  (-> (.csv js/d3 "https://covid-dashboard.sunflowerseastar.com/data/aapl2.csv")
       (.then (fn [aapl2-data]
                (let [data (->> aapl2-data js->clj
                                (map (fn [d]
@@ -114,7 +114,7 @@
 
                      my-line (-> (.line js/d3)
                                    (.defined (fn [d] (do
-                                                       (.log js/console d)
+                                                       ;; (.log js/console d)
                                                        (not (js/isNaN (.-value d))))))
                                    (.x (fn [d] (x-scale (.-date d))))
                                    (.y (fn [d] (y-scale (.-value d)))))
@@ -123,10 +123,10 @@
 
                      ]
 
-                 (.log js/console svg)
-                 (.log js/console data)
-                 (spyx (my-line data))
-                 (spyx ((.line js/d3) (clj->js [[10 60] [40 90] [60 10] [190 10]])))
+                 ;; (.log js/console svg)
+                 ;; (.log js/console data)
+                 ;; (spyx (my-line data))
+                 (spyx ((.line js/d3) (clj->js line-chart-data)))
 
                  (-> svg (.append "path")
                      (.datum data)
@@ -140,8 +140,9 @@
       (.catch #(js/console.log %))))
 
 (defn line-chart-d3 []
-  (let [svg-el-id "line-chart-root-svg"]
+  (let [svg-el-id "line-chart-root-svg"
+        line-chart-data [[10 60] [40 90] [60 10] [190 10]]]
     (reagent/create-class
     {:display-name "line-chart-d3"
      :reagent-render (fn [this] [:svg {:id svg-el-id :class "svg-container" :viewBox [0 0 300 200]}])
-     :component-did-mount #(line-chart svg-el-id)})))
+     :component-did-mount #(line-chart svg-el-id line-chart-data)})))
