@@ -48,7 +48,7 @@
 (defn panel-6 []
   (let [time-series-confirmed-global (re-frame/subscribe [::subs/time-series-confirmed-global])]
     (when @time-series-confirmed-global
-      [d3s/line-chart-d3 @time-series-confirmed-global])))
+      [:div.panel-interior.padding-1 [d3s/line-chart-d3 @time-series-confirmed-global]])))
 
 (defn home-col-left []
   [re-com/v-box
@@ -66,7 +66,7 @@
                [re-com/h-box :size "1" :gap gap-size :children
                 [[re-com/box :size "1" :class "panel" :child [panel-4]]
                  [re-com/box :size "1" :class "panel" :child [panel-5]]]]]
-              [re-com/box :size "1" :child [panel-6]]]])
+              [re-com/box :class "panel" :child [panel-6]]]])
 
 (defn home-page []
   (reagent/create-class

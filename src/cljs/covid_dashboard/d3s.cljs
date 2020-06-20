@@ -116,7 +116,7 @@
     (-> svg (.append "path")
         (.datum data)
         (.attr "fill" "none")
-        (.attr "stroke" "steelblue")
+        (.attr "stroke" "#bbb")
         (.attr "stroke-width" 1.5)
         (.attr "stroke-linejoin" "round")
         (.attr "stroke-linecap" "round")
