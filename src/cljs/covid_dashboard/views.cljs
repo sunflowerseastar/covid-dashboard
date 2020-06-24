@@ -54,6 +54,7 @@
   [re-com/v-box
    :class "home-col-left"
    :gap gap-size
+   :size "auto"
    :children [[re-com/box :class "panel" :child [panel-1]]
               [re-com/box :size "1" :class "panel" :child [panel-2]]]])
 

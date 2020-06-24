@@ -6,8 +6,6 @@
 
   [:td {:padding "3px 4px 2px 2px"}]
 
-  [:.display-flex {:width "100%"}]
-
   ;; [:.home-col-left {:background "yellow"}]
 
   [:.panel {:border "1px solid #e1e1e1"}]
