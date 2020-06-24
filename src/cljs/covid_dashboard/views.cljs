@@ -15,22 +15,41 @@
     (when @total-confirmed
       [:div.panel-interior.padding-1 [:p "Total Confirmed"] [:h2 @total-confirmed]])))
 
-(defn panel-2 []
+(defn panel-2-0 []
   (let [confirmed-by-region (re-frame/subscribe [::subs/confirmed-by-region])]
     (when @confirmed-by-region
       [re-com/v-box :size "1" :class "panel-interior" :children
        [[re-com/box :class "padding-1" :child [:p "Confirmed Cases by Region"]]
-        [re-com/box :size "1" :class "panel-2-scroll" :child
+        [re-com/box :size "1" :class "scroll-y-auto" :child
          [:table [:tbody (map (fn [[region value]]
                                 [:tr {:key (str region value)} [:td region] [:td value]])
                               @confirmed-by-region)]]]]])))
+
+(defn panel-2-1 []
+  [:div [:p "panel-2-1"]])
+
+(defn panel-2-2 []
+  [:div [:p "panel-2-2"]])
+
+(def curr (reagent/atom 0))
+
+(defn panel-2 []
+  (let [sub-panels [panel-2-0 panel-2-1 panel-2-2]
+        sub-panel-count (count sub-panels)]
+    [re-com/v-box :size "1" :children
+     [[re-com/box :size "1" :child [(get sub-panels @curr)]]
+      [re-com/box :size "50px" :child
+       [re-com/h-box :size "1" :class "children-align-self-center" :children
+        [[re-com/box :child [:a {:on-click #(reset! curr (if (= (dec @curr) -1) (dec sub-panel-count) (dec @curr)))} "left"]]
+         [re-com/box :size "1" :child [:p.margin-0-auto (str "curr " @curr)]]
+         [re-com/box :child [:a {:on-click #(reset! curr (if (= (inc @curr) sub-panel-count) 0 (inc @curr)))} "right"]]]]]]]))
 
 (defn panel-4 []
   (let [global-deaths (re-frame/subscribe [::subs/global-deaths])]
     (when-let [{:keys [deaths-by-region total-deaths]} @global-deaths]
       [re-com/v-box :size "1" :class "panel-interior" :children
        [[re-com/box :class "padding-1" :child [:div [:p "Global Deaths"] [:h2 total-deaths]]]
-        [re-com/box :size "1" :class "panel-2-scroll" :child
+        [re-com/box :size "1" :class "scroll-y-auto" :child
          [:table [:tbody (map (fn [[region value]]
                                 [:tr {:key (str region value)} [:td region] [:td value]])
                               deaths-by-region)]]]]])))
@@ -40,7 +59,7 @@
     (when @us-state-level-deaths-recovered
       [re-com/v-box :size "1" :class "panel-interior" :children
        [[re-com/box :class "padding-1" :child [:div [:p "US State Level"] [:h3 "Deaths, Recovered"]]]
-        [re-com/box :size "1" :class "panel-2-scroll" :child
+        [re-com/box :size "1" :class "scroll-y-auto" :child
          [:table [:tbody (map (fn [[state deaths recovered]]
                                 [:tr {:key state} [:td state] [:td deaths] [:td recovered]])
                               @us-state-level-deaths-recovered)]]]]])))

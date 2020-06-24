@@ -11,9 +11,12 @@
   [:.panel {:border "1px solid #e1e1e1"}]
   [:.panel-interior {:background "#fdfdfd"}]
 
+  [:.controls {:border "3px solid orange"}]
+
   [:.padding-1 {:box-sizing "border-box" :padding "8px 5px 8px 10px"}]
 
-  [:.panel-2 {:background "#eee"}]
-  [:.panel-2-scroll {:overflow-y "auto"}]
+  [:.margin-0-auto {:margin "0 auto"}]
+  [:.children-align-self-center [:div {:align-self "center"}]]
 
+  [:.scroll-y-auto {:overflow-y "auto"}]
   [:.svg-container {:position "relative" :top "50%" :transform "translateY(-50%)" :width "100%"}])
