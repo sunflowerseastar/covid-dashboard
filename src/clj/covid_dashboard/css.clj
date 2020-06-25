@@ -4,6 +4,7 @@
 (defstyles screen
   [:.home-page {:height "100vh" :padding "10px" :box-sizing "border-box"}]
 
+  [:a {:cursor "pointer"}]
   [:td {:padding "3px 4px 2px 2px"}]
 
   ;; [:.home-col-left {:background "yellow"}]
