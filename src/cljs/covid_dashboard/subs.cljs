@@ -18,6 +18,11 @@
    (:confirmed-by-region db)))
 
 (re-frame/reg-sub
+ ::confirmed-by-us-county
+ (fn [db]
+   (:confirmed-by-us-county db)))
+
+(re-frame/reg-sub
  ::global-deaths
  (fn [db]
    (:global-deaths db)))

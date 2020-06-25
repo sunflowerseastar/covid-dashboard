@@ -3,6 +3,7 @@
 (def default-db
   {:confirmed-by-province nil
    :confirmed-by-region nil
+   :confirmed-by-us-county nil
    :global-deaths nil
    :is-fetching false
    :time-series-confirmed-global nil

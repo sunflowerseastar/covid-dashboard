@@ -19,12 +19,14 @@
  ::assoc-api-all
  (fn [db [_ {:keys [confirmed-by-province
                     confirmed-by-region
+                    confirmed-by-us-county
                     global-deaths
                     time-series-confirmed-global
                     total-confirmed
                     us-state-level-deaths-recovered]}]]
    (assoc db :confirmed-by-province confirmed-by-province
           :confirmed-by-region confirmed-by-region
+          :confirmed-by-us-county confirmed-by-us-county
           :global-deaths global-deaths
           :time-series-confirmed-global time-series-confirmed-global
           :total-confirmed total-confirmed

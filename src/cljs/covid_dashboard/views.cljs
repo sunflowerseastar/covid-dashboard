@@ -35,14 +35,24 @@
                                 [:tr {:key (str province value)} [:td value] [:td province] [:td country]])
                               @confirmed-by-province)]]]]])))
 
+(defn panel-2-2 []
+  (let [confirmed-by-us-county (re-frame/subscribe [::subs/confirmed-by-us-county])]
+    (when @confirmed-by-us-county
+      [re-com/v-box :size "1" :class "panel-interior" :children
+       [[re-com/box :class "padding-1" :child [:p "Confirmed Cases by U.S. County"]]
+        [re-com/box :size "1" :class "scroll-y-auto" :child
+         [:table [:tbody (map (fn [[value us-county country]]
+                                [:tr {:key (str us-county value)} [:td value] [:td us-county] [:td country]])
+                              @confirmed-by-us-county)]]]]])))
+
 (def curr (reagent/atom 0))
 
 (defn panel-2 []
-  (let [sub-panels [panel-2-0 panel-2-1]
+  (let [sub-panels [panel-2-0 panel-2-1 panel-2-2]
         sub-panel-count (count sub-panels)]
     [re-com/v-box :size "1" :children
      [[re-com/box :size "1" :child [(get sub-panels @curr)]]
-      [re-com/box :size "50px" :child
+      [re-com/box :size "40px" :child
        [re-com/h-box :size "1" :class "children-align-self-center" :children
         [[re-com/box :child [:a {:on-click #(reset! curr (if (= (dec @curr) -1) (dec sub-panel-count) (dec @curr)))} "left"]]
          [re-com/box :size "1" :child [:p.margin-0-auto (str "curr " @curr)]]
