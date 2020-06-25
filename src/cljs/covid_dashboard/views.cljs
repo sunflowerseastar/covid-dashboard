@@ -56,7 +56,14 @@
                               deaths-by-region)]]]]])))
 
 (defn panel-4-1 []
-  [:p "4-1"])
+  (let [global-recovered (re-frame/subscribe [::subs/global-recovered])]
+    (when-let [{:keys [recovered-by-region total-recovered]} @global-recovered]
+      [v-box :size "1" :class "panel-interior" :children
+       [[box :class "padding-1" :child [:div [:p "Global Recovered"] [:h2 total-recovered]]]
+        [box :size "1" :class "scroll-y-auto" :child
+         [:table [:tbody (map (fn [[region value]]
+                                [:tr {:key (str region value)} [:td region] [:td value]])
+                              recovered-by-region)]]]]])))
 
 (defn panel-5 []
   (let [us-states-deaths-recovered (re-frame/subscribe [::subs/us-states-deaths-recovered])]
@@ -89,7 +96,7 @@
    :size "auto"
    :children [[box :size "1" :child
                [h-box :size "1" :gap gap-size :children
-                [[box :size "1" :class "panel" :child [sub-panel-container [panel-4-0]]]
+                [[box :size "1" :class "panel" :child [sub-panel-container [panel-4-0 panel-4-1]]]
                  [box :size "1" :class "panel" :child [panel-5]]]]]
               [box :class "panel" :child [panel-6]]]])
 

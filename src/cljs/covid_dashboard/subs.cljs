@@ -28,6 +28,11 @@
    (:global-deaths db)))
 
 (re-frame/reg-sub
+ ::global-recovered
+ (fn [db]
+   (:global-recovered db)))
+
+(re-frame/reg-sub
  ::time-series-confirmed-global
  (fn [db]
    (:time-series-confirmed-global db)))

@@ -21,6 +21,7 @@
                     confirmed-by-region
                     confirmed-by-us-county
                     global-deaths
+                    global-recovered
                     time-series-confirmed-global
                     total-confirmed
                     us-states-deaths-recovered]}]]
@@ -28,6 +29,7 @@
           :confirmed-by-region confirmed-by-region
           :confirmed-by-us-county confirmed-by-us-county
           :global-deaths global-deaths
+          :global-recovered global-recovered
           :time-series-confirmed-global time-series-confirmed-global
           :total-confirmed total-confirmed
           :us-states-deaths-recovered us-states-deaths-recovered)))
