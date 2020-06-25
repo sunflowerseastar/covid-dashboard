@@ -8,6 +8,11 @@
    (:active-page db)))
 
 (re-frame/reg-sub
+ ::confirmed-by-province
+ (fn [db]
+   (:confirmed-by-province db)))
+
+(re-frame/reg-sub
  ::confirmed-by-region
  (fn [db]
    (:confirmed-by-region db)))

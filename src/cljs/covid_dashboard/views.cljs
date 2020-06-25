@@ -19,22 +19,26 @@
   (let [confirmed-by-region (re-frame/subscribe [::subs/confirmed-by-region])]
     (when @confirmed-by-region
       [re-com/v-box :size "1" :class "panel-interior" :children
-       [[re-com/box :class "padding-1" :child [:p "Confirmed Cases by Region"]]
+       [[re-com/box :class "padding-1" :child [:p "Confirmed Cases by Country/Region"]]
         [re-com/box :size "1" :class "scroll-y-auto" :child
          [:table [:tbody (map (fn [[region value]]
-                                [:tr {:key (str region value)} [:td region] [:td value]])
+                                [:tr {:key (str region value)} [:td value] [:td region]])
                               @confirmed-by-region)]]]]])))
 
 (defn panel-2-1 []
-  [:div [:p "panel-2-1"]])
-
-(defn panel-2-2 []
-  [:div [:p "panel-2-2"]])
+  (let [confirmed-by-province (re-frame/subscribe [::subs/confirmed-by-province])]
+    (when @confirmed-by-province
+      [re-com/v-box :size "1" :class "panel-interior" :children
+       [[re-com/box :class "padding-1" :child [:p "Confirmed Cases by State/Province"]]
+        [re-com/box :size "1" :class "scroll-y-auto" :child
+         [:table [:tbody (map (fn [[value province country]]
+                                [:tr {:key (str province value)} [:td value] [:td province] [:td country]])
+                              @confirmed-by-province)]]]]])))
 
 (def curr (reagent/atom 0))
 
 (defn panel-2 []
-  (let [sub-panels [panel-2-0 panel-2-1 panel-2-2]
+  (let [sub-panels [panel-2-0 panel-2-1]
         sub-panel-count (count sub-panels)]
     [re-com/v-box :size "1" :children
      [[re-com/box :size "1" :child [(get sub-panels @curr)]]
