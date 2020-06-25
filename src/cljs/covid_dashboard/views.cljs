@@ -2,7 +2,7 @@
   (:require
    [cljsjs.d3 :as d3]
    [oz.core :as oz]
-   [covid-dashboard.components :as components]
+   [covid-dashboard.components :refer [sub-panel-container]]
    [covid-dashboard.d3s :as d3s]
    [covid-dashboard.static :refer [gap-size]]
    [covid-dashboard.subs :as subs]
@@ -45,7 +45,7 @@
                                 [:tr {:key (str us-county value)} [:td value] [:td us-county] [:td country]])
                               @confirmed-by-us-county)]]]]])))
 
-(defn panel-4 []
+(defn panel-4-0 []
   (let [global-deaths (re-frame/subscribe [::subs/global-deaths])]
     (when-let [{:keys [deaths-by-region total-deaths]} @global-deaths]
       [v-box :size "1" :class "panel-interior" :children
@@ -54,6 +54,9 @@
          [:table [:tbody (map (fn [[region value]]
                                 [:tr {:key (str region value)} [:td region] [:td value]])
                               deaths-by-region)]]]]])))
+
+(defn panel-4-1 []
+  [:p "4-1"])
 
 (defn panel-5 []
   (let [us-state-level-deaths-recovered (re-frame/subscribe [::subs/us-state-level-deaths-recovered])]
@@ -77,7 +80,7 @@
    :size "auto"
    :children [[box :class "panel" :child [panel-1]]
               [box :size "1" :class "panel" :child
-               [components/sub-panel-container [panel-2-0 panel-2-1 panel-2-2]]]]])
+               [sub-panel-container [panel-2-0 panel-2-1 panel-2-2]]]]])
 
 (defn home-col-right []
   [v-box
@@ -86,7 +89,7 @@
    :size "auto"
    :children [[box :size "1" :child
                [h-box :size "1" :gap gap-size :children
-                [[box :size "1" :class "panel" :child [panel-4]]
+                [[box :size "1" :class "panel" :child [sub-panel-container [panel-4-0]]]
                  [box :size "1" :class "panel" :child [panel-5]]]]]
               [box :class "panel" :child [panel-6]]]])
 
