@@ -92,7 +92,7 @@
 
 (defn parse-date [x] ((.timeParse js/d3 "%m/%d/%Y") x))
 
-(defn line-chart [svg-el-id line-chart-data]
+(defn line-chart [svg-el-id height line-chart-data]
   (let [
         margin 30
 
@@ -104,7 +104,6 @@
 
         svg (-> js/d3 (.select (str "#" svg-el-id)))
         width (-> (.node svg) (.-clientWidth))
-        height 200
 
         x-scale (-> (.scaleUtc js/d3)
                     (.domain (.extent js/d3 data (fn [d] (.-date d))))
@@ -154,8 +153,8 @@
         (.attr "d" my-line))))
 
 (defn line-chart-d3 [line-chart-data]
-  (let [svg-el-id "line-chart-root-svg"]
+  (let [height 200 svg-el-id "line-chart-root-svg"]
     (reagent/create-class
      {:display-name "line-chart-d3"
-      :reagent-render (fn [this] [:svg {:id svg-el-id :class "svg-container" :viewBox [0 0 300 200]}])
-      :component-did-mount #(line-chart svg-el-id line-chart-data)})))
+      :reagent-render (fn [this] [:svg {:id svg-el-id :class "svg-container" :viewBox [0 0 300 height]}])
+      :component-did-mount #(line-chart svg-el-id height line-chart-data)})))
