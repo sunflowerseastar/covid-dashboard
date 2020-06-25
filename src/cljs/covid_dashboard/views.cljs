@@ -2,13 +2,13 @@
   (:require
    [cljsjs.d3 :as d3]
    [oz.core :as oz]
+   [covid-dashboard.components :as components]
    [covid-dashboard.d3s :as d3s]
+   [covid-dashboard.static :refer [gap-size]]
    [covid-dashboard.subs :as subs]
    [re-com.core :as re-com]
    [re-frame.core :as re-frame]
    [reagent.core :as reagent]))
-
-(def gap-size "10px")
 
 (defn panel-1 []
   (let [total-confirmed (re-frame/subscribe [::subs/total-confirmed])]
@@ -45,19 +45,6 @@
                                 [:tr {:key (str us-county value)} [:td value] [:td us-county] [:td country]])
                               @confirmed-by-us-county)]]]]])))
 
-(defn sub-panel-container [sub-panels]
-  (reagent/with-let [curr (reagent/atom 0)
-                     sub-panel-count (count sub-panels)]
-    [re-com/v-box :size "1" :children
-     [[re-com/box :size "1" :child [(get sub-panels @curr)]]
-      [re-com/box :size "40px" :child
-       [re-com/h-box :size "1" :class "children-align-self-center" :children
-        [[re-com/gap :size gap-size]
-         [re-com/box :child [:a {:on-click #(reset! curr (if (= (dec @curr) -1) (dec sub-panel-count) (dec @curr)))} "←"]]
-         [re-com/box :size "1" :child [:p.margin-0-auto (str "curr " @curr)]]
-         [re-com/box :child [:a {:on-click #(reset! curr (if (= (inc @curr) sub-panel-count) 0 (inc @curr)))} "→"]]
-         [re-com/gap :size gap-size]]]]]]))
-
 (defn panel-4 []
   (let [global-deaths (re-frame/subscribe [::subs/global-deaths])]
     (when-let [{:keys [deaths-by-region total-deaths]} @global-deaths]
@@ -90,7 +77,7 @@
    :size "auto"
    :children [[re-com/box :class "panel" :child [panel-1]]
               [re-com/box :size "1" :class "panel" :child
-               [sub-panel-container [panel-2-0 panel-2-1 panel-2-2]]]]])
+               [components/sub-panel-container [panel-2-0 panel-2-1 panel-2-2]]]]])
 
 (defn home-col-right []
   [re-com/v-box
