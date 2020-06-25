@@ -107,7 +107,9 @@
    :size "auto"
    :children [[box :class "panel" :child [panel-1]]
               [box :size "1" :class "panel" :child
-               [sub-panel-container [panel-2-0 panel-2-1 panel-2-2]]]]])
+               [sub-panel-container [["Confirmed Country" panel-2-0]
+                                     ["Confirmed State" panel-2-1]
+                                     ["Confirmed County" panel-2-2]]]]]])
 
 (defn home-col-right []
   [v-box
@@ -116,8 +118,11 @@
    :size "auto"
    :children [[box :size "1" :child
                [h-box :size "1" :gap gap-size :children
-                [[box :size "1" :class "panel" :child [sub-panel-container [panel-4-0 panel-4-1]]]
-                 [box :size "1" :class "panel" :child [sub-panel-container [panel-5-1 panel-5-2 panel-5-3]]]]]]
+                [[box :size "1" :class "panel" :child [sub-panel-container [["Global Deaths" panel-4-0]
+                                                                            ["Global Recovered" panel-4-1]]]]
+                 [box :size "1" :class "panel" :child [sub-panel-container [["US Deaths/Recovered" panel-5-1]
+                                                                            ["US Tested" panel-5-2]
+                                                                            ["US Hospitalized" panel-5-3]]]]]]]
               [box :class "panel" :child [panel-6]]]])
 
 (defn home-page []
