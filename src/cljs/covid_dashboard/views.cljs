@@ -95,10 +95,15 @@
                                 [:tr {:key state} [:td state] [:td deaths] [:td recovered]])
                               @us-states-hospitalized)]]]]])))
 
-(defn panel-6 []
+(defn panel-6-0 []
   (let [time-series-confirmed-global (re-frame/subscribe [::subs/time-series-confirmed-global])]
     (when @time-series-confirmed-global
-      [:div.panel-interior.padding-1 [d3s/line-chart-d3 @time-series-confirmed-global]])))
+      [:div.panel-interior.padding-2 [d3s/line-chart-d3 @time-series-confirmed-global]])))
+
+(defn panel-6-1 []
+  (let [time-series-confirmed-global (re-frame/subscribe [::subs/time-series-confirmed-global])]
+    (when @time-series-confirmed-global
+      [:div.panel-interior.padding-2 [d3s/line-chart-log-d3 @time-series-confirmed-global]])))
 
 (defn home-col-left []
   [v-box
@@ -123,7 +128,8 @@
                  [box :size "1" :class "panel" :child [sub-panel-container [["US Deaths/Recovered" panel-5-1]
                                                                             ["US Tested" panel-5-2]
                                                                             ["US Hospitalized" panel-5-3]]]]]]]
-              [box :class "panel" :child [panel-6]]]])
+              [box :class "panel" :size "255px" :child [sub-panel-container [["Global Confirmed Linear" panel-6-0]
+                                                                             ["Global Confirmed Log" panel-6-1]]]]]])
 
 (defn home-page []
   (reagent/create-class

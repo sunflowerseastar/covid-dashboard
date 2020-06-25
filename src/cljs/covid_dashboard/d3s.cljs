@@ -92,6 +92,7 @@
 
 (defn parse-date [x] ((.timeParse js/d3 "%m/%d/%Y") x))
 
+
 (defn line-chart [svg-el-id height line-chart-data]
   (let [
         margin 30
@@ -107,18 +108,19 @@
 
         x-scale (-> (.scaleUtc js/d3)
                     (.domain (.extent js/d3 data (fn [d] (.-date d))))
-                    (.range (clj->js [margin width])))
+                    (.range (clj->js [(* margin 1.3) (- width 20)])))
 
         y-scale (-> (.scaleLinear js/d3)
                     (.domain (clj->js [0 (.max js/d3 data (fn [d] (.-value d)))]))
-                    (.range (clj->js [(- height margin) 0])))
+                    (.nice)
+                    (.range (clj->js [(- height (* margin 1.3)) 0])))
 
         my-line (-> (.line js/d3)
                     (.defined (fn [d] (not (js/isNaN (.-value d)))))
                     (.x (fn [d] (x-scale (.-date d))))
                     (.y (fn [d] (y-scale (.-value d)))))
 
-        x-axis (fn [g] (-> (.attr g "transform" (str "translate(0," (- height margin) ")"))
+        x-axis (fn [g] (-> (.attr g "transform" (str "translate(0," (- height 20) ")"))
                            (.call (-> (.axisBottom js/d3 x-scale)
                                       (.ticks (/ width 80))
                                       (.tickSizeOuter 0)))
@@ -126,14 +128,14 @@
 
         y-axis (fn [g] (-> (.attr g "transform" (str "translate(" margin ",0)"))
                            (.call (-> (.axisLeft js/d3 y-scale)
+                                      (.ticks 5)
                                       (.tickFormat format-value)))
                            (.call (fn [g] (-> (.select g ".domain") (.remove))))
                            (.call (fn [g] (-> (.select g ".tick:last-of-type text")
                                               (.clone)
                                               (.attr "x" 6)
                                               (.attr "text-anchor" "start")
-                                              (.attr "font-weight" "bold")
-                                              (.text "Confirmed"))))))]
+                                              (.text "Confirmed - linear"))))))]
 
     (-> svg (.attr "viewBox" (clj->js [0 0 (-> (.node svg) (.-clientWidth)) height])))
 
@@ -158,3 +160,82 @@
      {:display-name "line-chart-d3"
       :reagent-render (fn [this] [:svg {:id svg-el-id :class "svg-container" :viewBox [0 0 300 height]}])
       :component-did-mount #(line-chart svg-el-id height line-chart-data)})))
+
+
+
+
+
+
+
+
+
+
+
+
+(defn line-chart-log [svg-el-id height line-chart-data]
+  (let [
+        margin 30
+
+        format-value (.format js/d3 ".0s")
+
+        data (->> line-chart-data
+                  (map (fn [d] {:date (parse-date (first d)) :value (js/parseFloat (second d))}))
+                  clj->js)
+
+        svg (-> js/d3 (.select (str "#" svg-el-id)))
+        width (-> (.node svg) (.-clientWidth))
+
+        x-scale (-> (.scaleUtc js/d3)
+                    (.domain (.extent js/d3 data (fn [d] (.-date d))))
+                    (.range (clj->js [(* margin 1.3) (- width 20)])))
+
+        y-scale (-> (.scaleLog js/d3)
+                    (.domain (clj->js [1000 (.max js/d3 data (fn [d] (.-value d)))]))
+                    (.nice)
+                    (.range (clj->js [(- height (* margin 1.3)) 8])))
+
+        my-line (-> (.line js/d3)
+                    (.defined (fn [d] (not (js/isNaN (.-value d)))))
+                    (.x (fn [d] (x-scale (.-date d))))
+                    (.y (fn [d] (y-scale (.-value d)))))
+
+        x-axis (fn [g] (-> (.attr g "transform" (str "translate(0," (- height 20) ")"))
+                           (.call (-> (.axisBottom js/d3 x-scale)
+                                      (.ticks 3)
+                                      (.tickSizeOuter 0)))
+                           (.call (fn [g] (-> (.select g ".domain") (.remove))))))
+
+        y-axis (fn [g] (-> (.attr g "transform" (str "translate(" margin ",9)"))
+                           (.call (-> (.axisLeft js/d3 y-scale)
+                                      (.ticks 3)
+                                      (.tickFormat format-value)))
+                           (.call (fn [g] (-> (.select g ".domain") (.remove))))
+                           (.call (fn [g] (-> (.select g ".tick:last-of-type text")
+                                              (.clone)
+                                              (.attr "x" 6)
+                                              (.attr "text-anchor" "start")
+                                              (.text "Confirmed - log"))))))]
+
+    (-> svg (.attr "viewBox" (clj->js [0 0 (-> (.node svg) (.-clientWidth)) height])))
+
+    (-> svg (.append "g")
+        (.call x-axis))
+
+    (-> svg (.append "g")
+        (.call y-axis))
+
+    (-> svg (.append "path")
+        (.datum data)
+        (.attr "fill" "none")
+        (.attr "stroke" "#bbb")
+        (.attr "stroke-width" 1.5)
+        (.attr "stroke-linejoin" "round")
+        (.attr "stroke-linecap" "round")
+        (.attr "d" my-line))))
+
+(defn line-chart-log-d3 [line-chart-data]
+  (let [height 200 svg-el-id "line-chart-log-root-svg"]
+    (reagent/create-class
+     {:display-name "line-chart-log-d3"
+      :reagent-render (fn [this] [:svg {:id svg-el-id :class "svg-container" :viewBox [0 0 300 height]}])
+      :component-did-mount #(line-chart-log svg-el-id height line-chart-data)})))
