@@ -135,7 +135,7 @@
                                               (.clone)
                                               (.attr "x" 6)
                                               (.attr "text-anchor" "start")
-                                              (.text "Confirmed - linear"))))))]
+                                              (.text "linear"))))))]
 
     (-> svg (.attr "viewBox" (clj->js [0 0 (-> (.node svg) (.-clientWidth)) height])))
 
@@ -214,7 +214,7 @@
                                               (.clone)
                                               (.attr "x" 6)
                                               (.attr "text-anchor" "start")
-                                              (.text "Confirmed - log"))))))]
+                                              (.text "logarithmic"))))))]
 
     (-> svg (.attr "viewBox" (clj->js [0 0 (-> (.node svg) (.-clientWidth)) height])))
 

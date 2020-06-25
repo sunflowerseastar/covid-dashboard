@@ -105,6 +105,14 @@
     (when @time-series-confirmed-global
       [:div.panel-interior.padding-2 [d3s/line-chart-log-d3 @time-series-confirmed-global]])))
 
+(defn panel-6-2 []
+  (let [time-series-confirmed-global (re-frame/subscribe [::subs/time-series-confirmed-global])]
+    (when @time-series-confirmed-global
+      (let [daily-cases-data (->> @time-series-confirmed-global
+                                  (partition 2 1)
+                                  (map (fn [[[_ yesterday] [date today]]] (vector date (- today yesterday)))))]
+        [:div.panel-interior.padding-2 [d3s/line-chart-d3 daily-cases-data]]))))
+
 (defn home-col-left []
   [v-box
    :class "home-col-left"
@@ -128,8 +136,9 @@
                  [box :size "1" :class "panel" :child [sub-panel-container [["US Deaths/Recovered" panel-5-1]
                                                                             ["US Tested" panel-5-2]
                                                                             ["US Hospitalized" panel-5-3]]]]]]]
-              [box :class "panel" :size "255px" :child [sub-panel-container [["Global Confirmed Linear" panel-6-0]
-                                                                             ["Global Confirmed Log" panel-6-1]]]]]])
+              [box :class "panel" :size "255px" :child [sub-panel-container [["Global Confirmed" panel-6-0]
+                                                                             ["Global Confirmed" panel-6-1]
+                                                                             ["Global Daily Cases" panel-6-2]]]]]])
 
 (defn home-page []
   (reagent/create-class
