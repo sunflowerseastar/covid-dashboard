@@ -23,14 +23,14 @@
                     global-deaths
                     time-series-confirmed-global
                     total-confirmed
-                    us-state-level-deaths-recovered]}]]
+                    us-states-deaths-recovered]}]]
    (assoc db :confirmed-by-province confirmed-by-province
           :confirmed-by-region confirmed-by-region
           :confirmed-by-us-county confirmed-by-us-county
           :global-deaths global-deaths
           :time-series-confirmed-global time-series-confirmed-global
           :total-confirmed total-confirmed
-          :us-state-level-deaths-recovered us-state-level-deaths-recovered)))
+          :us-states-deaths-recovered us-states-deaths-recovered)))
 
 (re-frame/reg-event-db
  ::failure-http-result

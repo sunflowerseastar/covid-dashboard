@@ -59,14 +59,14 @@
   [:p "4-1"])
 
 (defn panel-5 []
-  (let [us-state-level-deaths-recovered (re-frame/subscribe [::subs/us-state-level-deaths-recovered])]
-    (when @us-state-level-deaths-recovered
+  (let [us-states-deaths-recovered (re-frame/subscribe [::subs/us-states-deaths-recovered])]
+    (when @us-states-deaths-recovered
       [v-box :size "1" :class "panel-interior" :children
        [[box :class "padding-1" :child [:div [:p "US State Level"] [:h3 "Deaths, Recovered"]]]
         [box :size "1" :class "scroll-y-auto" :child
          [:table [:tbody (map (fn [[state deaths recovered]]
                                 [:tr {:key state} [:td state] [:td deaths] [:td recovered]])
-                              @us-state-level-deaths-recovered)]]]]])))
+                              @us-states-deaths-recovered)]]]]])))
 
 (defn panel-6 []
   (let [time-series-confirmed-global (re-frame/subscribe [::subs/time-series-confirmed-global])]

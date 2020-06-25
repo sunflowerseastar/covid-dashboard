@@ -8,4 +8,4 @@
    :is-fetching false
    :time-series-confirmed-global nil
    :total-confirmed nil
-   :us-state-level-deaths-recovered nil})
+   :us-states-deaths-recovered nil})

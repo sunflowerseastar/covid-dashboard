@@ -38,6 +38,6 @@
    (:total-confirmed db)))
 
 (re-frame/reg-sub
- ::us-state-level-deaths-recovered
+ ::us-states-deaths-recovered
  (fn [db]
-   (:us-state-level-deaths-recovered db)))
+   (:us-states-deaths-recovered db)))
