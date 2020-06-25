@@ -65,7 +65,7 @@
                                 [:tr {:key (str region value)} [:td region] [:td value]])
                               recovered-by-region)]]]]])))
 
-(defn panel-5 []
+(defn panel-5-1 []
   (let [us-states-deaths-recovered (re-frame/subscribe [::subs/us-states-deaths-recovered])]
     (when @us-states-deaths-recovered
       [v-box :size "1" :class "panel-interior" :children
@@ -74,6 +74,26 @@
          [:table [:tbody (map (fn [[state deaths recovered]]
                                 [:tr {:key state} [:td state] [:td deaths] [:td recovered]])
                               @us-states-deaths-recovered)]]]]])))
+
+(defn panel-5-2 []
+  (let [us-states-tested (re-frame/subscribe [::subs/us-states-tested])]
+    (when-let [{:keys [tested-by-state total-tested]} @us-states-tested]
+      [v-box :size "1" :class "panel-interior" :children
+       [[box :class "padding-1" :child [:div [:p "US People Tested"] [:h2 total-tested]]]
+        [box :size "1" :class "scroll-y-auto" :child
+         [:table [:tbody (map (fn [[state deaths recovered]]
+                                [:tr {:key state} [:td state] [:td deaths] [:td recovered]])
+                              tested-by-state)]]]]])))
+
+(defn panel-5-3 []
+  (let [us-states-hospitalized (re-frame/subscribe [::subs/us-states-hospitalized])]
+    (when @us-states-hospitalized
+      [v-box :size "1" :class "panel-interior" :children
+       [[box :class "padding-1" :child [:div [:p "US State Level"] [:h3 "Hospitalizations"]]]
+        [box :size "1" :class "scroll-y-auto" :child
+         [:table [:tbody (map (fn [[state deaths recovered]]
+                                [:tr {:key state} [:td state] [:td deaths] [:td recovered]])
+                              @us-states-hospitalized)]]]]])))
 
 (defn panel-6 []
   (let [time-series-confirmed-global (re-frame/subscribe [::subs/time-series-confirmed-global])]
@@ -97,7 +117,7 @@
    :children [[box :size "1" :child
                [h-box :size "1" :gap gap-size :children
                 [[box :size "1" :class "panel" :child [sub-panel-container [panel-4-0 panel-4-1]]]
-                 [box :size "1" :class "panel" :child [panel-5]]]]]
+                 [box :size "1" :class "panel" :child [sub-panel-container [panel-5-1 panel-5-2 panel-5-3]]]]]]
               [box :class "panel" :child [panel-6]]]])
 
 (defn home-page []

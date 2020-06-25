@@ -46,3 +46,13 @@
  ::us-states-deaths-recovered
  (fn [db]
    (:us-states-deaths-recovered db)))
+
+(re-frame/reg-sub
+ ::us-states-hospitalized
+ (fn [db]
+   (:us-states-hospitalized db)))
+
+(re-frame/reg-sub
+ ::us-states-tested
+ (fn [db]
+   (:us-states-tested db)))

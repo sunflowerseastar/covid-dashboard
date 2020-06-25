@@ -24,7 +24,9 @@
                     global-recovered
                     time-series-confirmed-global
                     total-confirmed
-                    us-states-deaths-recovered]}]]
+                    us-states-deaths-recovered
+                    us-states-hospitalized
+                    us-states-tested]}]]
    (assoc db :confirmed-by-province confirmed-by-province
           :confirmed-by-region confirmed-by-region
           :confirmed-by-us-county confirmed-by-us-county
@@ -32,7 +34,9 @@
           :global-recovered global-recovered
           :time-series-confirmed-global time-series-confirmed-global
           :total-confirmed total-confirmed
-          :us-states-deaths-recovered us-states-deaths-recovered)))
+          :us-states-deaths-recovered us-states-deaths-recovered
+          :us-states-hospitalized us-states-hospitalized
+          :us-states-tested us-states-tested)))
 
 (re-frame/reg-event-db
  ::failure-http-result
