@@ -1,5 +1,6 @@
 {:npm-deps {"d3" "5.12.0"
             "d3-geo" "1.12.1"
+            "d3-geo-projection" "2.9.0"
             "topojson-client" "3.1.0"}
  :npm-dev-deps {"karma" "4.4.1"
                 "karma-chrome-launcher" "3.1.0"
