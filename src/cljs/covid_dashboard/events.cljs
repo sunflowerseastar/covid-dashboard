@@ -18,7 +18,7 @@
 (re-frame/reg-event-db
  ::assoc-api-all
  (fn [db [_ {:keys [confirmed-by-province
-                    confirmed-by-region
+                    confirmed-by-country
                     confirmed-by-us-county
                     global-deaths
                     global-recovered
@@ -28,7 +28,7 @@
                     us-states-hospitalized
                     us-states-tested]}]]
    (assoc db :confirmed-by-province confirmed-by-province
-          :confirmed-by-region confirmed-by-region
+          :confirmed-by-country confirmed-by-country
           :confirmed-by-us-county confirmed-by-us-county
           :global-deaths global-deaths
           :global-recovered global-recovered

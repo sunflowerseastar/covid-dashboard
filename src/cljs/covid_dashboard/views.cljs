@@ -16,14 +16,14 @@
       [:div.panel-interior.padding-1 [:p "Total Confirmed"] [:h2 @total-confirmed]])))
 
 (defn panel-2-0 []
-  (let [confirmed-by-region (re-frame/subscribe [::subs/confirmed-by-region])]
-    (when @confirmed-by-region
+  (let [confirmed-by-country (re-frame/subscribe [::subs/confirmed-by-country])]
+    (when @confirmed-by-country
       [v-box :size "1" :class "panel-interior" :children
        [[box :class "padding-1" :child [:p "Confirmed Cases by Country/Region"]]
         [box :size "1" :class "scroll-y-auto" :child
-         [:table [:tbody (map (fn [[region value]]
-                                [:tr {:key (str region value)} [:td value] [:td region]])
-                              @confirmed-by-region)]]]]])))
+         [:table [:tbody (map (fn [[country value]]
+                                [:tr {:key (str country value)} [:td value] [:td country]])
+                              @confirmed-by-country)]]]]])))
 
 (defn panel-2-1 []
   (let [confirmed-by-province (re-frame/subscribe [::subs/confirmed-by-province])]
@@ -47,23 +47,23 @@
 
 (defn panel-4-0 []
   (let [global-deaths (re-frame/subscribe [::subs/global-deaths])]
-    (when-let [{:keys [deaths-by-region total-deaths]} @global-deaths]
+    (when-let [{:keys [deaths-by-country total-deaths]} @global-deaths]
       [v-box :size "1" :class "panel-interior" :children
        [[box :class "padding-1" :child [:div [:p "Global Deaths"] [:h2 total-deaths]]]
         [box :size "1" :class "scroll-y-auto" :child
-         [:table [:tbody (map (fn [[region value]]
-                                [:tr {:key (str region value)} [:td region] [:td value]])
-                              deaths-by-region)]]]]])))
+         [:table [:tbody (map (fn [[country value]]
+                                [:tr {:key (str country value)} [:td country] [:td value]])
+                              deaths-by-country)]]]]])))
 
 (defn panel-4-1 []
   (let [global-recovered (re-frame/subscribe [::subs/global-recovered])]
-    (when-let [{:keys [recovered-by-region total-recovered]} @global-recovered]
+    (when-let [{:keys [recovered-by-country total-recovered]} @global-recovered]
       [v-box :size "1" :class "panel-interior" :children
        [[box :class "padding-1" :child [:div [:p "Global Recovered"] [:h2 total-recovered]]]
         [box :size "1" :class "scroll-y-auto" :child
-         [:table [:tbody (map (fn [[region value]]
-                                [:tr {:key (str region value)} [:td region] [:td value]])
-                              recovered-by-region)]]]]])))
+         [:table [:tbody (map (fn [[country value]]
+                                [:tr {:key (str country value)} [:td country] [:td value]])
+                              recovered-by-country)]]]]])))
 
 (defn panel-5-1 []
   (let [us-states-deaths-recovered (re-frame/subscribe [::subs/us-states-deaths-recovered])]

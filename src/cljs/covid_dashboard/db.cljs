@@ -2,7 +2,7 @@
 
 (def default-db
   {:confirmed-by-province nil
-   :confirmed-by-region nil
+   :confirmed-by-country nil
    :confirmed-by-us-county nil
    :global-deaths nil
    :global-recovered nil

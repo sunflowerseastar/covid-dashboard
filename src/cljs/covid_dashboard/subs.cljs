@@ -13,9 +13,9 @@
    (:confirmed-by-province db)))
 
 (re-frame/reg-sub
- ::confirmed-by-region
+ ::confirmed-by-country
  (fn [db]
-   (:confirmed-by-region db)))
+   (:confirmed-by-country db)))
 
 (re-frame/reg-sub
  ::confirmed-by-us-county
