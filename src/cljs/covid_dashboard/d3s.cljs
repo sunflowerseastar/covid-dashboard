@@ -254,7 +254,23 @@
         width (-> (.node svg) (.-clientWidth))
 
         ]
-    (spyx data)
+    ;; (spyx data)
+
+    (-> (.json js/d3 "https://covid-dashboard.sunflowerseastar.com/data/countries-50m.json" #(vector (.-FIPS %) (.-Confirmed %)))
+        (.then
+         (fn [world]
+           (let [
+                 countries (topo/feature world (-> world .-objects .-countries))
+                 outline (clj->js {"type" "Sphere"})
+                 ;; projection
+                 ]
+             ;; (spyx countries)
+             (spyx outline)
+             )
+           ))
+        )
+
+
     ))
 
 
