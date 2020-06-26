@@ -260,19 +260,32 @@
 
     ;; (spyx (->> world-bubble-map-data (reduce (fn [acc d] (assoc acc (first d) (second d))) {})))
 
+
     (spyx (.values js/Object data))
 
     (-> (.json js/d3 "https://covid-dashboard.sunflowerseastar.com/data/countries-50m.json" #(vector (.-FIPS %) (.-Confirmed %)))
         (.then
          (fn [world]
-           (let [countries (topo/feature world (-> world .-objects .-countries))
-                 projection (d3-geo/geoEqualEarth)
+           (let [
+                 ;; svg (-> js/d3 (.select (str "#" svg-el-id)))
+                 ;; width (-> (.node svg) (.-clientWidth))
+                 ;; width 600
+                 ;; height 200
+
+                 countries (topo/feature world (-> world .-objects .-countries))
+
+                 ;; projection (d3-geo/geoEqualEarth)
+                 projection (-> (d3-geo/geoEqualEarth)
+                                (.translate (clj->js [(/ width 2) (/ height 2)]))
+                                (.fitExtent (clj->js [[0.5 0.5] [(- width 0.5) (- height 0.5)]]), (clj->js {"type" "Sphere"}))
+                                (.precision 0.1)
+                                )
+
                  path (d3-geo/geoPath projection)
                  outline (clj->js {"type" "Sphere"})
 
-                 svg (-> js/d3 (.select (str "#" svg-el-id)))
-                 width (-> (.node svg) (.-clientWidth))
-                 height 500
+
+
 
                  g (-> svg (.append "g"))
 
@@ -281,12 +294,14 @@
 
                  ]
 
-             (spyx (.extent js/d3 (.values js/Object data)))
-             (spyx (radius 50) (radius 138846) (radius 1960897))
+             (-> svg (.attr "viewBox" (clj->js [0 0 width height])))
 
-             (spyx data)
+             ;; (spyx (.extent js/d3 (.values js/Object data)))
+             ;; (spyx (radius 50) (radius 138846) (radius 1960897))
 
-             (spyx (aget data "Belarus"))
+             ;; (spyx data)
+
+             ;; (spyx (aget data "Belarus"))
 
              ;; (spyx (.values js/Object data))
              ;; (spyx (.extent js/d3 (.values js/Object data)))
@@ -324,7 +339,7 @@
                  ;; (.attr "r" radius)
                  (.attr "r" (fn [d] (do
                                       ;; (spyx (-> d .-properties .-name))
-                                      (spyx (radius (aget data (-> d .-properties .-name))))
+                                      ;; (spyx (radius (aget data (-> d .-properties .-name))))
                                       ;; (spyx (radius d))
                                       (radius (aget data (-> d .-properties .-name)))
                                       ;; (radius d)
@@ -334,8 +349,8 @@
              ))))))
 
 (defn world-bubble-map-d3 [line-chart-data]
-  (let [height 200 svg-el-id "world-bubble-map-root-svg"]
+  (let [height 400 svg-el-id "world-bubble-map-root-svg"]
     (reagent/create-class
      {:display-name "world-bubble-map-d3"
-      :reagent-render (fn [this] [:svg {:id svg-el-id :class "svg-container" :viewBox [0 0 300 height]}])
+      :reagent-render (fn [this] [:svg {:id svg-el-id :class "svg-container"}])
       :component-did-mount #(world-bubble-map svg-el-id height line-chart-data)})))
