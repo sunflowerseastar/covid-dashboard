@@ -260,37 +260,18 @@
     (-> (.json js/d3 "https://covid-dashboard.sunflowerseastar.com/data/countries-50m.json" #(vector (.-FIPS %) (.-Confirmed %)))
         (.then
          (fn [world]
-           (let [
-                 countries (topo/feature world (-> world .-objects .-countries))
+           (let [countries (topo/feature world (-> world .-objects .-countries))
+                 projection (d3-geo/geoEqualEarth)
+                 path (d3-geo/geoPath projection)
                  outline (clj->js {"type" "Sphere"})
 
                  svg (-> js/d3 (.select (str "#" svg-el-id)))
                  width (-> (.node svg) (.-clientWidth))
-
-                 ;; width 975
                  height 500
-                 ;; projection (-> (d3-geo-projection/geoCylindricalEqualArea)
-                 ;;                (.parallel 30)
-                 ;;                (.translate (clj->js [(/ width 2) (/ height 2)]))
-                 ;;                (.fitExtent (clj->js [[0.5 0.5]
-                 ;;                                      [(- width 0.5) (- height 0.5)]]))
-                 ;;                (.precision 0.1))
-                 projection (d3-geo/geoEqualEarth)
-                 ;; projection d3-geo/
-                 path (d3-geo/geoPath projection)
+
                  g (-> svg (.append "g"))
 
-
                  ]
-             ;; (spyx countries)
-             ;; (spyx outline)
-             ;; (spyx projection)
-             ;; (.log js/console path)
-             ;; (spyx svg)
-
-             (spyx (.-features countries))
-             ;; (.log js/console (path (.-features countries)))
-             (.log js/console path)
 
              (-> g
                  (.append "g")
@@ -299,15 +280,9 @@
                  (.join "path")
                  (.call (fn [d] (.log js/console d)))
                  (.attr "fill" "black")
-                 (.attr "d" path)
-                 )
-             )
-           ))
-        )
+                 (.attr "d" path))
 
-
-    ))
-
+             ))))))
 
 (defn world-bubble-map-d3 [line-chart-data]
   (let [height 200 svg-el-id "world-bubble-map-root-svg"]
