@@ -239,3 +239,28 @@
      {:display-name "line-chart-log-d3"
       :reagent-render (fn [this] [:svg {:id svg-el-id :class "svg-container" :viewBox [0 0 300 height]}])
       :component-did-mount #(line-chart-log svg-el-id height line-chart-data)})))
+
+(defn world-bubble-map [svg-el-id height world-bubble-map-data]
+  (let [
+        margin 30
+
+        format-value (.format js/d3 ".0s")
+
+        data (->> world-bubble-map-data
+                  (map (fn [d] {(first d) (js/parseFloat (second d))}))
+                  clj->js)
+
+        svg (-> js/d3 (.select (str "#" svg-el-id)))
+        width (-> (.node svg) (.-clientWidth))
+
+        ]
+    (spyx data)
+    ))
+
+
+(defn world-bubble-map-d3 [line-chart-data]
+  (let [height 200 svg-el-id "world-bubble-map-root-svg"]
+    (reagent/create-class
+     {:display-name "world-bubble-map-d3"
+      :reagent-render (fn [this] [:svg {:id svg-el-id :class "svg-container" :viewBox [0 0 300 height]}])
+      :component-did-mount #(world-bubble-map svg-el-id height line-chart-data)})))

@@ -140,6 +140,11 @@
                                                                              ["Global Confirmed" panel-6-1]
                                                                              ["Global Daily Cases" panel-6-2]]]]]])
 
+(defn panel-3-1 []
+  (let [confirmed-by-country (re-frame/subscribe [::subs/confirmed-by-country])]
+    (when @confirmed-by-country
+      [d3s/world-bubble-map-d3 @confirmed-by-country])))
+
 (defn home-page []
   (reagent/create-class
    {:display-name "home-page"
@@ -149,5 +154,5 @@
        :height "100%"
        :children [[h-box :class "home-page" :gap gap-size :children
                    [[box :size "2" :child [home-col-left]]
-                    [box :size "5" :class "home-col-center" :child [d3s/bubble-map-covid-us-d3]]
+                    [box :size "5" :class "home-col-center" :child [panel-3-1]]
                     [box :size "3" :child [home-col-right]]]]]])}))
