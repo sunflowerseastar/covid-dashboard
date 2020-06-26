@@ -2,6 +2,7 @@
   "d3.js visualizations and wrapper components"
   (:require
    [cljsjs.d3 :as d3]
+   [d3-geo-projection :as d3-geo-projection]
    [d3-geo :as d3-geo]
    [goog.string :as gstring]
    [goog.string.format]
@@ -262,10 +263,44 @@
            (let [
                  countries (topo/feature world (-> world .-objects .-countries))
                  outline (clj->js {"type" "Sphere"})
-                 ;; projection
+
+                 svg (-> js/d3 (.select (str "#" svg-el-id)))
+                 width (-> (.node svg) (.-clientWidth))
+
+                 ;; width 975
+                 height 500
+                 ;; projection (-> (d3-geo-projection/geoCylindricalEqualArea)
+                 ;;                (.parallel 30)
+                 ;;                (.translate (clj->js [(/ width 2) (/ height 2)]))
+                 ;;                (.fitExtent (clj->js [[0.5 0.5]
+                 ;;                                      [(- width 0.5) (- height 0.5)]]))
+                 ;;                (.precision 0.1))
+                 projection (d3-geo/geoEqualEarth)
+                 ;; projection d3-geo/
+                 path (d3-geo/geoPath projection)
+                 g (-> svg (.append "g"))
+
+
                  ]
              ;; (spyx countries)
-             (spyx outline)
+             ;; (spyx outline)
+             ;; (spyx projection)
+             ;; (.log js/console path)
+             ;; (spyx svg)
+
+             (spyx (.-features countries))
+             ;; (.log js/console (path (.-features countries)))
+             (.log js/console path)
+
+             (-> g
+                 (.append "g")
+                 (.selectAll "path")
+                 (.data (.-features countries))
+                 (.join "path")
+                 (.call (fn [d] (.log js/console d)))
+                 (.attr "fill" "black")
+                 (.attr "d" path)
+                 )
              )
            ))
         )
