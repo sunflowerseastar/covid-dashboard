@@ -248,14 +248,19 @@
         format-value (.format js/d3 ".0s")
 
         data (->> world-bubble-map-data
-                  (map (fn [d] {(first d) (js/parseFloat (second d))}))
+                  ;; (map (fn [d] {(first d) (js/parseInt (second d))}))
+                  (reduce (fn [acc d] (assoc acc (first d) (second d))) {})
                   clj->js)
 
         svg (-> js/d3 (.select (str "#" svg-el-id)))
         width (-> (.node svg) (.-clientWidth))
 
         ]
-    ;; (spyx data)
+    ;; (.log js/console data)
+
+    ;; (spyx (->> world-bubble-map-data (reduce (fn [acc d] (assoc acc (first d) (second d))) {})))
+
+    (spyx (.values js/Object data))
 
     (-> (.json js/d3 "https://covid-dashboard.sunflowerseastar.com/data/countries-50m.json" #(vector (.-FIPS %) (.-Confirmed %)))
         (.then
@@ -271,16 +276,60 @@
 
                  g (-> svg (.append "g"))
 
+                 radius (.scaleSqrt js/d3 (.extent js/d3 (.values js/Object data))
+                                    (clj->js [1 30]))
+
                  ]
+
+             (spyx (.extent js/d3 (.values js/Object data)))
+             (spyx (radius 50) (radius 138846) (radius 1960897))
+
+             (spyx data)
+
+             (spyx (aget data "Belarus"))
+
+             ;; (spyx (.values js/Object data))
+             ;; (spyx (.extent js/d3 (.values js/Object data)))
 
              (-> g
                  (.append "g")
                  (.selectAll "path")
                  (.data (.-features countries))
                  (.join "path")
-                 (.call (fn [d] (.log js/console d)))
+                 ;; (.call (fn [d] (.log js/console d)))
                  (.attr "fill" "black")
                  (.attr "d" path))
+
+             (-> g
+                 (.append "path")
+                 (.datum (topo/mesh world
+                                    (-> world .-objects .-countries)
+                                    (fn [a b] (not= a b))))
+                 (.attr "fill" "none")
+                 (.attr "stroke" "white")
+                 (.attr "stroke-linejoin" "round")
+                 (.attr "d" path)
+                 )
+
+             (-> g
+                 (.append "g")
+                 (.attr "fill" "brown")
+                 (.attr "fill-opacity" 0.5)
+                 (.attr "stroke" "#fff")
+                 (.attr "stroke-width" 0.5)
+                 (.selectAll "circle")
+                 (.data (.-features countries))
+                 (.join "circle")
+                 (.attr "transform" (fn [d] (str "translate(" (.centroid path d) ")")))
+                 ;; (.attr "r" radius)
+                 (.attr "r" (fn [d] (do
+                                      ;; (spyx (-> d .-properties .-name))
+                                      (spyx (radius (aget data (-> d .-properties .-name))))
+                                      ;; (spyx (radius d))
+                                      (radius (aget data (-> d .-properties .-name)))
+                                      ;; (radius d)
+                                      )))
+                 )
 
              ))))))
 
