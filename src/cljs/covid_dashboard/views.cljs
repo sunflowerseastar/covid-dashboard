@@ -6,7 +6,7 @@
    [covid-dashboard.d3s :as d3s]
    [covid-dashboard.static :refer [gap-size]]
    [covid-dashboard.subs :as subs]
-   [re-com.core :refer [box h-box v-box]]
+   [re-com.core :refer [box gap h-box v-box]]
    [re-frame.core :as re-frame]
    [reagent.core :as reagent]))
 
@@ -140,20 +140,40 @@
                                                                              ["Global Confirmed" panel-6-1]
                                                                              ["Global Daily Cases" panel-6-2]]]]]])
 
+(def curr-map (reagent/atom 0))
+
 (defn panel-3-1 []
   (let [confirmed-by-country (re-frame/subscribe [::subs/confirmed-by-country])]
     (when @confirmed-by-country
       [:div.panel-3-1 [d3s/world-bubble-map-d3 @confirmed-by-country]])))
 
+(defn panel-3-2 []
+  [:div.panel-3-1 [d3s/bubble-map-covid-us-d3]])
+
+(defn map-switcher [sub-panels]
+  (reagent/with-let [sub-panel-count (count sub-panels)
+                     sps ["Cumulative Confirmed Cases" "US - Confirmed by Population"]]
+
+    [v-box :size "1" :children
+     [[box :size "1" :child ""]
+      [box :size "40px" :child
+       [h-box :size "1" :class "children-align-self-center z-index-1" :children
+        [[gap :size gap-size]
+         [box :child [:a {:on-click #(reset! curr-map (if (= (dec @curr-map) -1) (dec sub-panel-count) (dec @curr-map)))} "←"]]
+         [box :size "1" :child [:p.margin-0-auto (str (get sps @curr-map) " " (inc @curr-map) "/" sub-panel-count)]]
+         [box :child [:a {:on-click #(reset! curr-map (if (= (inc @curr-map) sub-panel-count) 0 (inc @curr-map)))} "→"]]
+         [gap :size gap-size]]]]]]))
+
 (defn home-page []
-  (reagent/create-class
-   {:display-name "home-page"
-    :reagent-render
-    (fn [this]
-      [v-box
-       :height "100%"
-       :children [[panel-3-1]
-                  [h-box :class "home-page" :gap gap-size :children
-                   [[box :size "2" :child [home-col-left]]
-                    [box :size "5" :class "home-col-center" :child "center SDF"]
-                    [box :size "3" :child [home-col-right]]]]]])}))
+  (let [maps [panel-3-1 panel-3-2]]
+    (reagent/create-class
+     {:display-name "home-page"
+      :reagent-render
+      (fn [this]
+        [v-box
+         :height "100%"
+         :children [[(get maps @curr-map)]
+                    [h-box :class "home-page" :gap gap-size :children
+                     [[box :size "2" :child [home-col-left]]
+                      [box :size "5" :class "home-col-center" :child [map-switcher maps]]
+                      [box :size "3" :child [home-col-right]]]]]])})))

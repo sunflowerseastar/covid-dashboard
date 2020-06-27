@@ -18,6 +18,7 @@
 
   [:.padding-1 {:box-sizing "border-box" :padding "8px 5px 8px 10px"}]
   [:.padding-2 {:box-sizing "border-box" :padding "8px"}]
+  [:.z-index-1 {:z-index 1}]
 
   [:.margin-0-auto {:margin "0 auto"}]
   [:.children-align-self-center [:div {:align-self "center"}]]
