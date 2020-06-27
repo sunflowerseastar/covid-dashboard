@@ -272,16 +272,17 @@
                  zoom-k->scaled-zoom-k (.scaleSqrt js/d3 scale-extent (clj->js [1 0.22]))
 
                  zoomed #(let [transform (-> js/d3 .-event .-transform)
+                               k (.-k transform)
                                circles (.selectAll g "#circles circle")]
                            (do (-> circles
                                    (.attr "r" (fn [d]
-                                                (let [scaled-radius (* (zoom-k->scaled-zoom-k (-> js/d3 .-event .-transform .-k))
+                                                (let [scaled-radius (* (zoom-k->scaled-zoom-k k)
                                                                        (radius (aget data (-> d .-properties .-name))))]
                                                   (if (js/isNaN scaled-radius) 0 scaled-radius)))))
                                (-> (.select g "#circles")
-                                   (.attr "stroke-width" (* (zoom-k->scaled-zoom-k (-> js/d3 .-event .-transform .-k)) 0.5)))
+                                   (.attr "stroke-width" (* (zoom-k->scaled-zoom-k k) 0.5)))
                                (-> g (.attr "transform" transform)
-                                   (.attr "stroke-width" (/ 1 (-> js/d3 .-event .-transform .-k))))))
+                                   (.attr "stroke-width" (/ 1 k)))))
                  my-zoom (-> (.zoom js/d3)
                              (.scaleExtent scale-extent)
                              (.on "zoom" zoomed))
@@ -336,9 +337,13 @@
                  (.attr "stroke-width" 0.5)
                  (.selectAll "circle")
                  (.data (.-features countries))
-                 (.join "circle")
-                 (.attr "transform" (fn [d] (str "translate(" (.centroid path d) ")")))
-                 (.attr "r" (fn [d] (radius (aget data (-> d .-properties .-name))))))
+                 (.join (fn [enter]
+                          (-> enter
+                              (.append "circle")
+                              (.attr "transform" (fn [d] (str "translate(" (.centroid path d) ")")))
+                              (.transition)
+                              (.duration 2000)
+                              (.attr "r" (fn [d] (radius (aget data (-> d .-properties .-name)))))))))
 
              (-> svg (.call my-zoom))
 
