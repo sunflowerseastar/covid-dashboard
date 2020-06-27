@@ -288,7 +288,13 @@
                              (.on "zoom" zoomed))
 
                  graticule-outline (-> (d3-geo/geoGraticule) (.outline))
-                 graticule (-> (d3-geo/geoGraticule10))]
+                 graticule (-> (d3-geo/geoGraticule10))
+
+                 t (-> svg
+                       (.transition)
+                       (.duration 5000)
+                       )
+                 ]
 
              (-> svg (.attr "viewBox" (clj->js [0 0 width height])))
 
@@ -336,14 +342,33 @@
                  (.attr "stroke" "#fff")
                  (.attr "stroke-width" 0.5)
                  (.selectAll "circle")
-                 (.data (.-features countries))
+                 ;; (.attr "r" 20)
+
+                 (.data (.-features countries) (fn [d] (spyx (.-id d)) (.-id d)))
                  (.join (fn [enter]
                           (-> enter
                               (.append "circle")
                               (.attr "transform" (fn [d] (str "translate(" (.centroid path d) ")")))
-                              (.transition)
-                              (.duration 2000)
-                              (.attr "r" (fn [d] (radius (aget data (-> d .-properties .-name)))))))))
+                              ;; (.call (fn [d] (-> d (.transition) (.duration 3000))))
+                              ;; (.transition t)
+                              ;; (.duration 2000)
+
+                              ;; (.attr "r" (fn [d] (radius (aget data (-> d .-properties .-name)))))
+                              (.attr "r" 20)
+                              )
+                          ))
+                 (.transition)
+                 (.duration 10000)
+                 (.attr "r" (fn [d] (radius (aget data (-> d .-properties .-name)))))
+
+                 #_(.call (fn [circles] (-> circles
+                                          ;; (.attr "r" 10)
+                                          (.transition)
+                                          (.duration 2000)
+                                          (.attr "r" (fn [d] (radius (aget data (-> d .-properties .-name)))))
+                                          )))
+                 )
+
 
              (-> svg (.call my-zoom))
 
