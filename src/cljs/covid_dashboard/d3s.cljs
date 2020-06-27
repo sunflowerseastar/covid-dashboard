@@ -264,45 +264,17 @@
                  g (-> svg (.append "g"))
                  radius (.scaleSqrt js/d3 (.extent js/d3 (.values js/Object data)) (clj->js [3 20]))
 
-                 my-scale (.scaleSqrt js/d3 (clj->js [1 8]) (clj->js [1 0.22]))
+                 scale-extent (clj->js [1 8])
+                 zoom-k->scaled-zoom-k (.scaleSqrt js/d3 scale-extent (clj->js [1 0.22]))
 
                  zoomed #(let [transform (-> js/d3 .-event .-transform)
                                x (.selectAll g "#circles circle")]
-                           (do
-                             ;; (.log js/console (-> js/d3 .-event))
-                             ;; (spyx (-> js/d3 .-event .-transform .-k))
-                             (-> x
-                                 #_(.call (fn [d] (do
-                                                  ;; (spyx d)
-                                                  (.log js/console (-> js/d3 .-event .-transform .-k))
-                                                  (.scaleBy (.zoom js/d3) d (-> js/d3 .-event .-transform .-k)
-                                                            (fn [d] (-> d (.attr "r"))))))
-                                  #_(-> (.zoom js/d3)
-                                            (.scaleBy (.-k transform))
-                                            )
-                                        ))
-                             #_(-> (.zoom js/d3 x)
-                                 (.scaleBy (fn [k] (spyx k)))
-                                 )
-                             ;; (.log js/console "k")
-                             ;; (.log js/console (-> (.zoomTransform js/d3 (.node svg)) .-k))
-                             ;; (.log js/console "myscale")
-                             ;; (.log js/console (my-scale (-> (.zoomTransform js/d3 (.node svg)) .-k)))
-                             ;; (spyx (-> (.zoomTransform js/d3 (-> js/d3 (.select (str "#" svg-el-id)))) .-k))
-
-                             ;; (-> x (.attr "r" (* (-> (.zoomTransform js/d3 (.node svg)) .-k))))
-                             (-> x (.attr "r" (fn [d] (* (my-scale (-> (.zoomTransform js/d3 (.node svg)) .-k))
-                                                         (radius (aget data (-> d .-properties .-name)))))))
-
-                             ;; (-> x (.attr "r" (fn [d] (* (/ 1 (-> (.zoomTransform js/d3 (.node svg)) .-k))
-                             ;;                             (radius (aget data (-> d .-properties .-name)))))))
-
-                             ;; (-> x (.attr "r" (fn [d] (* (-> (.zoomTransform js/d3 (.node svg)) .-k)
-                             ;;                            (radius (aget data (-> d .-properties .-name)))))))
-                             (-> g (.attr "transform" transform)
-                                 (.attr "stroke-width" (/ 1 (-> js/d3 .-event .-transform .-k))))))
+                           (do (-> x (.attr "r" (fn [d] (* (zoom-k->scaled-zoom-k (-> (.zoomTransform js/d3 (.node svg)) .-k))
+                                                           (radius (aget data (-> d .-properties .-name)))))))
+                               (-> g (.attr "transform" transform)
+                                   (.attr "stroke-width" (/ 1 (-> js/d3 .-event .-transform .-k))))))
                  my-zoom (-> (.zoom js/d3)
-                             (.scaleExtent (clj->js [1 8]))
+                             (.scaleExtent scale-extent)
                              (.on "zoom" zoomed))]
 
              (-> svg (.attr "viewBox" (clj->js [0 0 width height])))
@@ -327,8 +299,6 @@
                  (.attr "stroke-linejoin" "round")
                  (.attr "d" path))
 
-             (-> svg (.call my-zoom))
-
              ;; marks
              (-> g
                  (.append "g")
@@ -341,21 +311,9 @@
                  (.data (.-features countries))
                  (.join "circle")
                  (.attr "transform" (fn [d] (str "translate(" (.centroid path d) ")")))
-                 (.attr "r" (fn [d] (radius (aget data (-> d .-properties .-name)))))
+                 (.attr "r" (fn [d] (radius (aget data (-> d .-properties .-name))))))
 
-
-                 ;; (.call (fn [d] (.-zoom js/d3)))
-                 ;; (.call (-> (.-zoom js/d3) .on "zoom"
-                 ;;            (fn [d] (spyx d))))
-                 ;; (.call (-> (.-zoom js/d3) .transform))
-                 ;; (.call (do (-> (.zoom js/d3)
-                 ;;                (.on "zoom" (fn [d] (spyx d))))))
-
-                 (.call (fn [d] (.-zoom js/d3)))
-                 (.call (do (-> (.zoom js/d3)
-                                (.on "zoom" (fn [d] (spyx d))))))
-
-                 )
+             (-> svg (.call my-zoom))
 
              ))))))
 
