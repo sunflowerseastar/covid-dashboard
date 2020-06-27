@@ -288,13 +288,7 @@
                              (.on "zoom" zoomed))
 
                  graticule-outline (-> (d3-geo/geoGraticule) (.outline))
-                 graticule (-> (d3-geo/geoGraticule10))
-
-                 t (-> svg
-                       (.transition)
-                       (.duration 5000)
-                       )
-                 ]
+                 graticule (-> (d3-geo/geoGraticule10))]
 
              (-> svg (.attr "viewBox" (clj->js [0 0 width height])))
 
@@ -314,14 +308,12 @@
                  (.append "path")
                  (.datum graticule-outline)
                  (.attr "class" "graticule")
-                 ;; (.attr "stroke-width" 0.1)
                  (.attr "d" path))
 
              (-> g
                  (.append "path")
                  (.datum graticule)
                  (.attr "class" "graticule")
-                 ;; (.attr "stroke-width" 0.1)
                  (.attr "d" path))
 
              ;; country borders
@@ -342,33 +334,15 @@
                  (.attr "stroke" "#fff")
                  (.attr "stroke-width" 0.5)
                  (.selectAll "circle")
-                 ;; (.attr "r" 20)
-
-                 (.data (.-features countries) (fn [d] (spyx (.-id d)) (.-id d)))
+                 (.data (.-features countries) #(.-id %))
                  (.join (fn [enter]
                           (-> enter
                               (.append "circle")
                               (.attr "transform" (fn [d] (str "translate(" (.centroid path d) ")")))
-                              ;; (.call (fn [d] (-> d (.transition) (.duration 3000))))
-                              ;; (.transition t)
-                              ;; (.duration 2000)
-
-                              ;; (.attr "r" (fn [d] (radius (aget data (-> d .-properties .-name)))))
-                              (.attr "r" 0)
-                              )
-                          ))
+                              (.attr "r" 0))))
                  (.transition)
                  (.duration 2000)
-                 (.attr "r" (fn [d] (radius (aget data (-> d .-properties .-name)))))
-
-                 #_(.call (fn [circles] (-> circles
-                                          ;; (.attr "r" 10)
-                                          (.transition)
-                                          (.duration 2000)
-                                          (.attr "r" (fn [d] (radius (aget data (-> d .-properties .-name)))))
-                                          )))
-                 )
-
+                 (.attr "r" (fn [d] (radius (aget data (-> d .-properties .-name))))))
 
              (-> svg (.call my-zoom))
 
