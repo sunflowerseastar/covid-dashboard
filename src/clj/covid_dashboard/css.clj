@@ -22,6 +22,11 @@
   [:.margin-0-auto {:margin "0 auto"}]
   [:.children-align-self-center [:div {:align-self "center"}]]
 
+  [:.graticule {:fill "none"
+                :stroke "#eee"
+                :stroke-width ".5px"
+                :stroke-opacity 0.4}]
+
   [:.scroll-y-auto {:overflow-y "auto"}]
   [:.svg-container {
                     ;; :border "1px solid"
