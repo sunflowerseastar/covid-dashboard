@@ -143,7 +143,7 @@
 (defn panel-3-1 []
   (let [confirmed-by-country (re-frame/subscribe [::subs/confirmed-by-country])]
     (when @confirmed-by-country
-      [d3s/world-bubble-map-d3 @confirmed-by-country])))
+      [:div.panel-3-1 [d3s/world-bubble-map-d3 @confirmed-by-country]])))
 
 (defn home-page []
   (reagent/create-class
@@ -152,7 +152,8 @@
     (fn [this]
       [v-box
        :height "100%"
-       :children [[h-box :class "home-page" :gap gap-size :children
+       :children [[panel-3-1]
+                  [h-box :class "home-page" :gap gap-size :children
                    [[box :size "2" :child [home-col-left]]
-                    [box :size "5" :class "home-col-center" :child [panel-3-1]]
+                    [box :size "5" :class "home-col-center" :child "center SDF"]
                     [box :size "3" :child [home-col-right]]]]]])}))

@@ -2,11 +2,14 @@
   "d3.js visualizations and wrapper components"
   (:require
    [cljsjs.d3 :as d3]
+   [breaking-point.core :as bp]
+   [covid-dashboard.subs :as subs]
    [d3-geo-projection :as d3-geo-projection]
    [d3-geo :as d3-geo]
    [goog.string :as gstring]
    [goog.string.format]
    [reagent.core :as reagent]
+   [re-frame.core :as re-frame]
    [tupelo.core :refer [spyx]]
    [topojson-client :as topo]))
 
@@ -248,18 +251,16 @@
 (defn get-name [name]
   (or (get cross-name-map name) name))
 
-(defn world-bubble-map [svg-el-id height world-bubble-map-data]
+(defn world-bubble-map [svg-el-id width height world-bubble-map-data]
   (let [data (->> world-bubble-map-data
                   (reduce (fn [acc d] (assoc acc (get-name (first d)) (second d))) {})
                   clj->js)
-        svg (-> js/d3 (.select (str "#" svg-el-id)))
-        width (-> (.node svg) (.-clientWidth))]
+        svg (-> js/d3 (.select (str "#" svg-el-id)))]
     (-> (.json js/d3 "https://covid-dashboard.sunflowerseastar.com/data/countries-50m.json" #(vector (.-FIPS %) (.-Confirmed %)))
         (.then
          (fn [world]
            (let [countries (topo/feature world (-> world .-objects .-countries))
                  projection (-> (d3-geo/geoEqualEarth)
-                                ;; (.translate (clj->js [(/ width 2) (/ height 2)]))
                                 (.fitExtent (clj->js [[0.5 0.5] [(- width 0.5) (- height 0.5)]]), (clj->js {"type" "Sphere"}))
                                 (.precision 0.1))
                  path (d3-geo/geoPath projection)
@@ -326,8 +327,10 @@
              ))))))
 
 (defn world-bubble-map-d3 [line-chart-data]
-  (let [height 400 svg-el-id "world-bubble-map-root-svg"]
+  (let [width @(re-frame/subscribe [::bp/screen-width])
+        height @(re-frame/subscribe [::bp/screen-height])
+        svg-el-id "world-bubble-map-root-svg"]
     (reagent/create-class
      {:display-name "world-bubble-map-d3"
       :reagent-render (fn [this] [:svg {:id svg-el-id :class "svg-container"}])
-      :component-did-mount #(world-bubble-map svg-el-id height line-chart-data)})))
+      :component-did-mount #(world-bubble-map svg-el-id width height line-chart-data)})))

@@ -9,6 +9,8 @@
 
   [:.home-col-left :.home-col-right {:z-index 1}]
 
+  [:.panel-3-1 {:position "absolute" :left 0 :top 0 :bottom 0 :width "100%"}]
+
   [:.panel {:border "1px solid #e1e1e1"}]
   [:.panel-interior {:background "#fdfdfdcc"}]
 
