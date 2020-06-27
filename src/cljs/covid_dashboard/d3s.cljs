@@ -246,81 +246,31 @@
   (or (get cross-name-map name) name))
 
 (defn world-bubble-map [svg-el-id height world-bubble-map-data]
-  (let [
-        margin 30
-
-        format-value (.format js/d3 ".0s")
-
-        data (->> world-bubble-map-data
-                  ;; (map (fn [d] {(first d) (js/parseInt (second d))}))
+  (let [data (->> world-bubble-map-data
                   (reduce (fn [acc d] (assoc acc (get-name (first d)) (second d))) {})
                   clj->js)
-
         svg (-> js/d3 (.select (str "#" svg-el-id)))
-        width (-> (.node svg) (.-clientWidth))
-
-        ]
-    ;; (.log js/console data)
-
-    ;; (spyx (->> world-bubble-map-data (reduce (fn [acc d] (assoc acc (first d) (second d))) {})))
-
-
-    ;; (spyx data)
-
+        width (-> (.node svg) (.-clientWidth))]
     (-> (.json js/d3 "https://covid-dashboard.sunflowerseastar.com/data/countries-50m.json" #(vector (.-FIPS %) (.-Confirmed %)))
         (.then
          (fn [world]
-           (let [
-                 ;; svg (-> js/d3 (.select (str "#" svg-el-id)))
-                 ;; width (-> (.node svg) (.-clientWidth))
-                 ;; width 600
-                 ;; height 200
-
-                 countries (topo/feature world (-> world .-objects .-countries))
-
-                 ;; projection (d3-geo/geoEqualEarth)
+           (let [countries (topo/feature world (-> world .-objects .-countries))
                  projection (-> (d3-geo/geoEqualEarth)
                                 (.translate (clj->js [(/ width 2) (/ height 2)]))
                                 (.fitExtent (clj->js [[0.5 0.5] [(- width 0.5) (- height 0.5)]]), (clj->js {"type" "Sphere"}))
-                                (.precision 0.1)
-                                )
-
+                                (.precision 0.1))
                  path (d3-geo/geoPath projection)
                  outline (clj->js {"type" "Sphere"})
-
-
-
-
                  g (-> svg (.append "g"))
-
-                 radius (.scaleSqrt js/d3 (.extent js/d3 (.values js/Object data))
-                                    (clj->js [3 20]))
-
-                 ]
-
-             ;; (spyx world)
-             ;; (spyx countries)
-             ;; (spyx (.forEach (.-features countries) #(-> % .-properties .-name)))
-             (.forEach (.-features countries) #(.log js/console (-> % .-properties .-name)))
+                 radius (.scaleSqrt js/d3 (.extent js/d3 (.values js/Object data)) (clj->js [3 20]))]
 
              (-> svg (.attr "viewBox" (clj->js [0 0 width height])))
-
-             ;; (spyx (.extent js/d3 (.values js/Object data)))
-             ;; (spyx (radius 50) (radius 138846) (radius 1960897))
-
-             (spyx data)
-
-             ;; (spyx (aget data "Belarus"))
-
-             ;; (spyx (.values js/Object data))
-             ;; (spyx (.extent js/d3 (.values js/Object data)))
 
              (-> g
                  (.append "g")
                  (.selectAll "path")
                  (.data (.-features countries))
                  (.join "path")
-                 ;; (.call (fn [d] (.log js/console d)))
                  (.attr "fill" "black")
                  (.attr "d" path)
                  (.append "title")
@@ -328,14 +278,11 @@
 
              (-> g
                  (.append "path")
-                 (.datum (topo/mesh world
-                                    (-> world .-objects .-countries)
-                                    (fn [a b] (not= a b))))
+                 (.datum (topo/mesh world (-> world .-objects .-countries) (fn [a b] (not= a b))))
                  (.attr "fill" "none")
                  (.attr "stroke" "white")
                  (.attr "stroke-linejoin" "round")
-                 (.attr "d" path)
-                 )
+                 (.attr "d" path))
 
              (-> g
                  (.append "g")
@@ -347,17 +294,7 @@
                  (.data (.-features countries))
                  (.join "circle")
                  (.attr "transform" (fn [d] (str "translate(" (.centroid path d) ")")))
-                 ;; (.attr "r" radius)
-                 (.attr "r" (fn [d] (do
-                                      ;; (spyx (-> d .-properties .-name))
-                                      ;; (spyx (radius (aget data (-> d .-properties .-name))))
-                                      ;; (spyx (radius d))
-                                      (radius (aget data (-> d .-properties .-name)))
-                                      ;; (radius d)
-                                      )))
-                 )
-
-             ))))))
+                 (.attr "r" (fn [d] (radius (aget data (-> d .-properties .-name))))))))))))
 
 (defn world-bubble-map-d3 [line-chart-data]
   (let [height 400 svg-el-id "world-bubble-map-root-svg"]
