@@ -273,8 +273,10 @@
                  zoomed #(let [transform (-> js/d3 .-event .-transform)
                                circles (.selectAll g "#circles circle")]
                            (do (-> circles
-                                   (.attr "r" (fn [d] (* (zoom-k->scaled-zoom-k (-> js/d3 .-event .-transform .-k))
-                                                         (radius (aget data (-> d .-properties .-name)))))))
+                                   (.attr "r" (fn [d]
+                                                (let [scaled-radius (* (zoom-k->scaled-zoom-k (-> js/d3 .-event .-transform .-k))
+                                                                       (radius (aget data (-> d .-properties .-name))))]
+                                                  (if (js/isNaN scaled-radius) 0 scaled-radius)))))
                                (-> (.select g "#circles")
                                    (.attr "stroke-width" (* (zoom-k->scaled-zoom-k (-> js/d3 .-event .-transform .-k)) 0.5)))
                                (-> g (.attr "transform" transform)
