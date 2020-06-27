@@ -354,11 +354,11 @@
                               ;; (.duration 2000)
 
                               ;; (.attr "r" (fn [d] (radius (aget data (-> d .-properties .-name)))))
-                              (.attr "r" 20)
+                              (.attr "r" 0)
                               )
                           ))
                  (.transition)
-                 (.duration 10000)
+                 (.duration 2000)
                  (.attr "r" (fn [d] (radius (aget data (-> d .-properties .-name)))))
 
                  #_(.call (fn [circles] (-> circles
