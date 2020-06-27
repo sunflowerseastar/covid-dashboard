@@ -241,6 +241,10 @@
       :reagent-render (fn [this] [:svg {:id svg-el-id :class "svg-container" :viewBox [0 0 300 height]}])
       :component-did-mount #(line-chart-log svg-el-id height line-chart-data)})))
 
+(def cross-name-map {"US" "United States of America"})
+(defn get-name [name]
+  (or (get cross-name-map name) name))
+
 (defn world-bubble-map [svg-el-id height world-bubble-map-data]
   (let [
         margin 30
@@ -249,7 +253,7 @@
 
         data (->> world-bubble-map-data
                   ;; (map (fn [d] {(first d) (js/parseInt (second d))}))
-                  (reduce (fn [acc d] (assoc acc (first d) (second d))) {})
+                  (reduce (fn [acc d] (assoc acc (get-name (first d)) (second d))) {})
                   clj->js)
 
         svg (-> js/d3 (.select (str "#" svg-el-id)))
@@ -261,7 +265,7 @@
     ;; (spyx (->> world-bubble-map-data (reduce (fn [acc d] (assoc acc (first d) (second d))) {})))
 
 
-    (spyx (.values js/Object data))
+    ;; (spyx data)
 
     (-> (.json js/d3 "https://covid-dashboard.sunflowerseastar.com/data/countries-50m.json" #(vector (.-FIPS %) (.-Confirmed %)))
         (.then
@@ -290,16 +294,21 @@
                  g (-> svg (.append "g"))
 
                  radius (.scaleSqrt js/d3 (.extent js/d3 (.values js/Object data))
-                                    (clj->js [1 30]))
+                                    (clj->js [3 20]))
 
                  ]
+
+             ;; (spyx world)
+             ;; (spyx countries)
+             ;; (spyx (.forEach (.-features countries) #(-> % .-properties .-name)))
+             (.forEach (.-features countries) #(.log js/console (-> % .-properties .-name)))
 
              (-> svg (.attr "viewBox" (clj->js [0 0 width height])))
 
              ;; (spyx (.extent js/d3 (.values js/Object data)))
              ;; (spyx (radius 50) (radius 138846) (radius 1960897))
 
-             ;; (spyx data)
+             (spyx data)
 
              ;; (spyx (aget data "Belarus"))
 
@@ -313,7 +322,9 @@
                  (.join "path")
                  ;; (.call (fn [d] (.log js/console d)))
                  (.attr "fill" "black")
-                 (.attr "d" path))
+                 (.attr "d" path)
+                 (.append "title")
+                 (.text (fn [d] (aget data (-> d .-properties .-name)))))
 
              (-> g
                  (.append "path")
