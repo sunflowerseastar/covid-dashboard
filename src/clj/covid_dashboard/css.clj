@@ -7,10 +7,10 @@
   [:a {:cursor "pointer"}]
   [:td {:padding "3px 4px 2px 2px"}]
 
-  ;; [:.home-col-left {:background "yellow"}]
+  [:.home-col-left :.home-col-right {:z-index 1}]
 
   [:.panel {:border "1px solid #e1e1e1"}]
-  [:.panel-interior {:background "#fdfdfd"}]
+  [:.panel-interior {:background "#fdfdfdcc"}]
 
   [:.controls {:border "3px solid orange"}]
 
@@ -23,4 +23,6 @@
   [:.scroll-y-auto {:overflow-y "auto"}]
   [:.svg-container {
                     ;; :border "1px solid"
-                    :position "relative" :top "50%" :transform "translateY(-50%)" :width "100%"}])
+                    :position "relative" :top "50%" :transform "translateY(-50%)" :width "100%"
+                    :overflow "visible"
+                    }])
