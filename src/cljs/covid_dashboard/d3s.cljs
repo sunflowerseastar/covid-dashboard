@@ -241,6 +241,9 @@
       :reagent-render (fn [this] [:svg {:id svg-el-id :class "svg-container" :viewBox [0 0 300 height]}])
       :component-did-mount #(line-chart-log svg-el-id height line-chart-data)})))
 
+
+
+
 (def cross-name-map {"US" "United States of America"})
 (defn get-name [name]
   (or (get cross-name-map name) name))
@@ -264,13 +267,16 @@
                  g (-> svg (.append "g"))
                  radius (.scaleSqrt js/d3 (.extent js/d3 (.values js/Object data)) (clj->js [3 20]))
 
-                 scale-extent (clj->js [1 8])
+                 scale-extent (clj->js [1 9])
                  zoom-k->scaled-zoom-k (.scaleSqrt js/d3 scale-extent (clj->js [1 0.22]))
 
                  zoomed #(let [transform (-> js/d3 .-event .-transform)
-                               x (.selectAll g "#circles circle")]
-                           (do (-> x (.attr "r" (fn [d] (* (zoom-k->scaled-zoom-k (-> (.zoomTransform js/d3 (.node svg)) .-k))
-                                                           (radius (aget data (-> d .-properties .-name)))))))
+                               circles (.selectAll g "#circles circle")]
+                           (do (-> circles
+                                   (.attr "r" (fn [d] (* (zoom-k->scaled-zoom-k (-> js/d3 .-event .-transform .-k))
+                                                         (radius (aget data (-> d .-properties .-name)))))))
+                               (-> (.select g "#circles")
+                                   (.attr "stroke-width" (* (zoom-k->scaled-zoom-k (-> js/d3 .-event .-transform .-k)) 0.5)))
                                (-> g (.attr "transform" transform)
                                    (.attr "stroke-width" (/ 1 (-> js/d3 .-event .-transform .-k))))))
                  my-zoom (-> (.zoom js/d3)
