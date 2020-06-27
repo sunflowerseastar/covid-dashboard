@@ -266,27 +266,30 @@
 
              (-> svg (.attr "viewBox" (clj->js [0 0 width height])))
 
+             ;; land
              (-> g
                  (.append "g")
                  (.selectAll "path")
                  (.data (.-features countries))
                  (.join "path")
-                 (.attr "fill" "black")
+                 (.attr "fill", "#f3f3f3")
                  (.attr "d" path)
                  (.append "title")
                  (.text (fn [d] (aget data (-> d .-properties .-name)))))
 
+             ;; country borders
              (-> g
                  (.append "path")
                  (.datum (topo/mesh world (-> world .-objects .-countries) (fn [a b] (not= a b))))
                  (.attr "fill" "none")
-                 (.attr "stroke" "white")
+                 (.attr "stroke" "#fff")
                  (.attr "stroke-linejoin" "round")
                  (.attr "d" path))
 
+             ;; marks
              (-> g
                  (.append "g")
-                 (.attr "fill" "brown")
+                 (.attr "fill" "#ff8c94")
                  (.attr "fill-opacity" 0.5)
                  (.attr "stroke" "#fff")
                  (.attr "stroke-width" 0.5)
