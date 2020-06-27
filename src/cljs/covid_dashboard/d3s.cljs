@@ -260,7 +260,7 @@
         (.then
          (fn [world]
            (let [countries (topo/feature world (-> world .-objects .-countries))
-                 projection (-> (d3-geo/geoOrthographic)
+                 projection (-> (d3-geo/geoNaturalEarth1)
                                 (.fitExtent (clj->js [[0.5 0.5] [(- width 0.5) (- height 0.5)]]), (clj->js {"type" "Sphere"}))
                                 (.precision 0.1))
                  path (d3-geo/geoPath projection)
@@ -271,99 +271,25 @@
                  scale-extent (clj->js [1 9])
                  zoom-k->scaled-zoom-k (.scaleSqrt js/d3 scale-extent (clj->js [1 0.22]))
 
-                 dragged #(let [transform (-> js/d3 .-event .-transform)
-
-                                λ (-> (.scaleLinear js/d3)
-                                      (.domain (clj->js [0 width]))
-                                      (.range (clj->js [-180 180])))
-
-                                φ (-> (.scaleLinear js/d3)
-                                      (.domain (clj->js [0 height]))
-                                      (.range (clj->js [90 -90])))
-                                ]
-                            (do
-                              ;; (-> projection
-                              ;;     (.rotate (clj->js [ (λ (-> js/d3 .-event .-transform .-x)) (φ (-> js/d3 .-event .-transform .-y))])))
-
-                              ;; (-> svg (.selectAll "path.land")
-                              ;;     (.attr "d" path))
-                              ;; (-> svg (.selectAll "path.borders")
-                              ;;     (.attr "d" path))
-                              ;; (-> svg (.selectAll "circle.circles")
-                              ;;     (.attr "transform" (fn [d] (str "translate(" (.centroid path d) ")")))
-                              ;;     ;; (.attr "transform" transform)
-                              ;;     ;; (.attr "r" 50)
-                              ;;     )
-
-                              (-> g
-                                  (.attr "transform" (str "translate(" (.-x transform) "," (.-y transform) ") scale(" (.-k transform) + ")"));
-                                  )
-                              ))
-
                  zoomed #(let [transform (-> js/d3 .-event .-transform)
-                               circles (.selectAll g "#circles circle")
-
-                               λ (-> (.scaleLinear js/d3)
-                                     (.domain (clj->js [0 width]))
-                                     (.range (clj->js [-180 180])))
-
-                               φ (-> (.scaleLinear js/d3)
-                                     (.domain (clj->js [0 height]))
-                                     (.range (clj->js [90 -90])))
-                               ]
-                           (do
-                             ;; (-> circles
-                             ;;     (.attr "r" (fn [d]
-                             ;;                  (let [scaled-radius (* (zoom-k->scaled-zoom-k (-> js/d3 .-event .-transform .-k))
-                             ;;                                         (radius (aget data (-> d .-properties .-name))))]
-                             ;;                    (if (js/isNaN scaled-radius) 0 scaled-radius)))))
-                             ;; (-> (.select g "#circles")
-                             ;;     (.attr "stroke-width" (* (zoom-k->scaled-zoom-k (-> js/d3 .-event .-transform .-k)) 0.5)))
-                             ;; (-> projection (.scale ))
-                             ;; (spyx (.-k transform) (.-x transform))
-                             ;; (spyx (str "translate(" (.-x transform) "," (.-y transform) ") scale(" (.-k transform) ")"))
-
-                             (-> projection
-                                 (.scale (.-k transform))
-                                 (.rotate (clj->js [ (λ (-> js/d3 .-event .-transform .-x)) (φ (-> js/d3 .-event .-transform .-y))])))
-
-                             (-> g
-                                 (.attr "transform" transform)
-                                 ;; (.attr "transform" (str "translate(" (.-x transform) "," (.-y transform) ") scale(" (.-k transform) ")"));
-                                 (.attr "stroke-width" (/ 1 (-> js/d3 .-event .-transform .-k))))
-
-                             (-> svg (.selectAll "path.land")
-                                 (.attr "d" path))
-                             (-> svg (.selectAll "path.borders")
-                                 (.attr "d" path))
-                             (-> svg (.selectAll "circle.circles")
-                                 (.attr "stroke-width" (* (zoom-k->scaled-zoom-k (-> js/d3 .-event .-transform .-k)) 0.5))
-                                 (.attr "transform" (fn [d] (str "translate(" (.centroid path d) ")")))
-                                 ;; (.attr "transform" (.centroid path d))")
-                                 ;; (.attr "r" (fn [d]
-                                 ;;              (let [scaled-radius (* (zoom-k->scaled-zoom-k (-> js/d3 .-event .-transform .-k))
-                                 ;;                                     (radius (aget data (-> d .-properties .-name))))]
-                                 ;;                (if (js/isNaN scaled-radius) 0 scaled-radius))))
-                                 )
-                                 ;; (.attr "transform" transform)
-                                 ;; (.attr "r" 50)
-
-
-
-
-                             ))
+                               circles (.selectAll g "#circles circle")]
+                           (do (-> circles
+                                   (.attr "r" (fn [d]
+                                                (let [scaled-radius (* (zoom-k->scaled-zoom-k (-> js/d3 .-event .-transform .-k))
+                                                                       (radius (aget data (-> d .-properties .-name))))]
+                                                  (if (js/isNaN scaled-radius) 0 scaled-radius)))))
+                               (-> (.select g "#circles")
+                                   (.attr "stroke-width" (* (zoom-k->scaled-zoom-k (-> js/d3 .-event .-transform .-k)) 0.5)))
+                               (-> g (.attr "transform" transform)
+                                   (.attr "stroke-width" (/ 1 (-> js/d3 .-event .-transform .-k))))))
                  my-zoom (-> (.zoom js/d3)
                              (.scaleExtent scale-extent)
                              (.on "zoom" zoomed))
-                 my-drag (-> (.zoom js/d3)
-                             (.scaleExtent scale-extent)
-                             (.on "zoom" dragged))
 
                  graticule-outline (-> (d3-geo/geoGraticule) (.outline))
                  graticule (-> (d3-geo/geoGraticule10))]
 
              (-> svg (.attr "viewBox" (clj->js [0 0 width height])))
-             (spyx (d3-geo-projection/geoInterruptedBoggs))
 
              ;; land
              (-> g
@@ -371,32 +297,30 @@
                  (.selectAll "path")
                  (.data (.-features countries))
                  (.join "path")
-                 (.attr "class" "land")
                  (.attr "fill", "#f3f3f3")
                  (.attr "d" path)
                  (.append "title")
                  (.text (fn [d] (aget data (-> d .-properties .-name)))))
 
 
-             ;; (-> g
-             ;;     (.append "path")
-             ;;     (.datum graticule-outline)
-             ;;     (.attr "class" "graticule")
-             ;;     ;; (.attr "stroke-width" 0.1)
-             ;;     (.attr "d" path))
+             (-> g
+                 (.append "path")
+                 (.datum graticule-outline)
+                 (.attr "class" "graticule")
+                 ;; (.attr "stroke-width" 0.1)
+                 (.attr "d" path))
 
-             ;; (-> g
-             ;;     (.append "path")
-             ;;     (.datum graticule)
-             ;;     (.attr "class" "graticule")
-             ;;     ;; (.attr "stroke-width" 0.1)
-             ;;     (.attr "d" path))
+             (-> g
+                 (.append "path")
+                 (.datum graticule)
+                 (.attr "class" "graticule")
+                 ;; (.attr "stroke-width" 0.1)
+                 (.attr "d" path))
 
              ;; country borders
              (-> g
                  (.append "path")
                  (.datum (topo/mesh world (-> world .-objects .-countries) (fn [a b] (not= a b))))
-                 (.attr "class" "borders")
                  (.attr "fill" "none")
                  (.attr "stroke" "#fff")
                  (.attr "stroke-linejoin" "round")
@@ -413,12 +337,10 @@
                  (.selectAll "circle")
                  (.data (.-features countries))
                  (.join "circle")
-                 (.attr "class" "circles")
                  (.attr "transform" (fn [d] (str "translate(" (.centroid path d) ")")))
                  (.attr "r" (fn [d] (radius (aget data (-> d .-properties .-name))))))
 
              (-> svg (.call my-zoom))
-             ;; (-> svg (.call my-drag))
 
              ))))))
 
