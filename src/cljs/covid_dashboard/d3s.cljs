@@ -323,13 +323,14 @@
                              ;; (spyx (.-k transform) (.-x transform))
                              ;; (spyx (str "translate(" (.-x transform) "," (.-y transform) ") scale(" (.-k transform) ")"))
 
+                             (-> projection
+                                 (.scale (.-k transform))
+                                 (.rotate (clj->js [ (λ (-> js/d3 .-event .-transform .-x)) (φ (-> js/d3 .-event .-transform .-y))])))
+
                              (-> g
-                                 ;; (.attr "transform" transform)
+                                 (.attr "transform" transform)
                                  ;; (.attr "transform" (str "translate(" (.-x transform) "," (.-y transform) ") scale(" (.-k transform) ")"));
                                  (.attr "stroke-width" (/ 1 (-> js/d3 .-event .-transform .-k))))
-
-                             ;; (-> projection
-                             ;;     (.rotate (clj->js [ (λ (-> js/d3 .-event .-transform .-x)) (φ (-> js/d3 .-event .-transform .-y))])))
 
                              (-> svg (.selectAll "path.land")
                                  (.attr "d" path))
@@ -338,10 +339,12 @@
                              (-> svg (.selectAll "circle.circles")
                                  (.attr "stroke-width" (* (zoom-k->scaled-zoom-k (-> js/d3 .-event .-transform .-k)) 0.5))
                                  (.attr "transform" (fn [d] (str "translate(" (.centroid path d) ")")))
-                                 (.attr "r" (fn [d]
-                                              (let [scaled-radius (* (zoom-k->scaled-zoom-k (-> js/d3 .-event .-transform .-k))
-                                                                     (radius (aget data (-> d .-properties .-name))))]
-                                                (if (js/isNaN scaled-radius) 0 scaled-radius)))))
+                                 ;; (.attr "transform" (.centroid path d))")
+                                 ;; (.attr "r" (fn [d]
+                                 ;;              (let [scaled-radius (* (zoom-k->scaled-zoom-k (-> js/d3 .-event .-transform .-k))
+                                 ;;                                     (radius (aget data (-> d .-properties .-name))))]
+                                 ;;                (if (js/isNaN scaled-radius) 0 scaled-radius))))
+                                 )
                                  ;; (.attr "transform" transform)
                                  ;; (.attr "r" 50)
 
