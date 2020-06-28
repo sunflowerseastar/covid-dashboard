@@ -288,11 +288,11 @@
         (.then
          (fn [world]
            (let [countries (topo/feature world (-> world .-objects .-countries))
+                 outline (clj->js {"type" "Sphere"})
                  projection (-> (d3-geo/geoNaturalEarth1)
-                                (.fitExtent (clj->js [[0.5 0.5] [(- width 0.5) (- height 0.5)]]), (clj->js {"type" "Sphere"}))
+                                (.fitExtent (clj->js [[0.5 0.5] [(- width 0.5) (- height 0.5)]]) outline)
                                 (.precision 0.1))
                  path (d3-geo/geoPath projection)
-                 outline (clj->js {"type" "Sphere"})
                  g (-> svg (.append "g"))
                  radius (.scaleSqrt js/d3 (.extent js/d3 (.values js/Object data)) (clj->js [3 20]))
 
@@ -329,8 +329,9 @@
                  (.attr "fill", "#f3f3f3")
                  (.attr "d" path)
                  (.append "title")
-                 (.text (fn [d] (str (-> d .-properties .-name) " – "
-                                     (utility/nf (aget data (-> d .-properties .-name)))))))
+                 (.text #(str (-> % .-properties .-name)
+                              " – "
+                              (utility/nf (aget data (-> % .-properties .-name))))))
 
              (-> g
                  (.append "path")
