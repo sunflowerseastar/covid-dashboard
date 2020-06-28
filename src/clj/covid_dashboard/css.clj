@@ -7,7 +7,7 @@
   [:a {:cursor "pointer"}]
   [:td {:padding "3px 4px 2px 2px"}]
 
-  [:.home-col-left :.home-col-right {:z-index 1}]
+  [:.home-col-left :.home-col-right {:z-index 1 :display "none"}]
 
   [:.panel-3-1 {:position "absolute" :left 0 :top 0 :bottom 0 :width "100%"}]
 

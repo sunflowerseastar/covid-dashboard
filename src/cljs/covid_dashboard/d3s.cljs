@@ -15,11 +15,23 @@
 
 (def files-covid ["https://covid-dashboard.sunflowerseastar.com/data/06-14-2020.csv" "https://covid-dashboard.sunflowerseastar.com/data/counties-albers-10m.json"])
 
-(defn bubble-map-covid [svg-el-id]
+(defn bubble-map-covid [svg-el-id width height]
   (-> (.all js/Promise [(.csv js/d3 (first files-covid) #(vector (.-FIPS %) (.-Confirmed %))) (.json js/d3 (second files-covid))])
       (.then
        (fn [[population-data counties-albers-10m-data]]
-         (let [myGeoPath (d3-geo/geoPath)
+         (let [
+               ;; projection = d3.geoAlbersUsa().scale(1300).translate([487.5, 305])
+               projection (-> (d3-geo/geoAlbersUsa)
+                              (.scale 1300)
+                              (.translate (clj->js [487.5 305])))
+               ;; projection (d3-geo/geoAlbersUsa)
+               ;; projection (-> (d3-geo/geoAlbersUsa)
+               ;;                (.fitExtent (clj->js [[0.5 0.5] [(- width 0.5) (- height 0.5)]]), (clj->js {"type" "Sphere"}))
+               ;;                (.precision 0.1))
+
+               ;; myGeoPath (d3-geo/geoPath projection)
+               ;; myGeoPath (d3-geo/geoPath (d3-geo/geoAlbers))
+               myGeoPath (d3-geo/geoPath projection)
                population-data-map (js/Map.)
                filtered-population-data (->> population-data (filter #(->> % first empty? not)))
                _ (dorun (map #(.set population-data-map (->> % first (gstring/format "%05d")) (second %)) filtered-population-data))
@@ -27,6 +39,10 @@
 
                ;; TODO change hard-coded 1000000 to high-end of domain of populationDataMap values
                scale-radius #((.scaleSqrt js/d3 (clj->js [0 1000]) (clj->js [0 7])) (or % 0))]
+
+           (spyx width height)
+
+           (-> svg (.attr "viewBox" (clj->js [0 0 width height])))
 
            (-> svg
                (.append "path")
@@ -46,7 +62,7 @@
            ;; (def t (-> svg .transition (.duration 750)))
 
            ;; marks
-           (-> svg
+           #_(-> svg
                (.append "g")
                (.attr "fill" "#ff8c94")
                (.attr "fill-opacity" 0.5)
@@ -81,11 +97,15 @@
                ))))))
 
 (defn bubble-map-covid-us-d3 []
-  (let [svg-el-id "bubble-map-covid-us-d3-svg-root"]
+  (let [
+        width @(re-frame/subscribe [::bp/screen-width])
+        height @(re-frame/subscribe [::bp/screen-height])
+        svg-el-id "bubble-map-covid-us-d3-svg-root"]
     (reagent/create-class
      {:display-name "bubble-map-covid-us-d3-component"
-      :component-did-mount (fn [this] (bubble-map-covid svg-el-id))
-      :reagent-render (fn [this] [:svg {:id svg-el-id :class "svg-container" :viewBox [0 0 985 630]}])})))
+      :component-did-mount (fn [this] (bubble-map-covid svg-el-id width height))
+      :reagent-render (fn [this] [:svg {:id svg-el-id :class "svg-container"}])
+      })))
 
 
 
@@ -349,10 +369,12 @@
              ))))))
 
 (defn world-bubble-map-d3 [line-chart-data]
-  (let [width @(re-frame/subscribe [::bp/screen-width])
+  (let [
+        width @(re-frame/subscribe [::bp/screen-width])
         height @(re-frame/subscribe [::bp/screen-height])
         svg-el-id "world-bubble-map-root-svg"]
     (reagent/create-class
      {:display-name "world-bubble-map-d3"
+      :component-did-mount #(world-bubble-map svg-el-id width height line-chart-data)
       :reagent-render (fn [this] [:svg {:id svg-el-id :class "svg-container"}])
-      :component-did-mount #(world-bubble-map svg-el-id width height line-chart-data)})))
+      })))
