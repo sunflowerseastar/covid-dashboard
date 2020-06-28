@@ -18,29 +18,15 @@
 (defn bubble-map-covid [svg-el-id width height]
   (-> (.all js/Promise [(.csv js/d3 (first files-covid) #(vector (.-FIPS %) (.-Confirmed %))) (.json js/d3 (second files-covid))])
       (.then
-       (fn [[population-data counties-albers-10m-data]]
-         (let [
-               ;; projection = d3.geoAlbersUsa().scale(1300).translate([487.5, 305])
-               projection (-> (d3-geo/geoAlbersUsa)
-                              (.scale 1300)
-                              (.translate (clj->js [487.5 305])))
-               ;; projection (d3-geo/geoAlbersUsa)
-               ;; projection (-> (d3-geo/geoAlbersUsa)
-               ;;                (.fitExtent (clj->js [[0.5 0.5] [(- width 0.5) (- height 0.5)]]), (clj->js {"type" "Sphere"}))
-               ;;                (.precision 0.1))
-
-               ;; myGeoPath (d3-geo/geoPath projection)
-               ;; myGeoPath (d3-geo/geoPath (d3-geo/geoAlbers))
-               myGeoPath (d3-geo/geoPath projection)
-               population-data-map (js/Map.)
-               filtered-population-data (->> population-data (filter #(->> % first empty? not)))
-               _ (dorun (map #(.set population-data-map (->> % first (gstring/format "%05d")) (second %)) filtered-population-data))
+       (fn [[csse-daily-report counties-albers-10m-data]]
+         (let [myGeoPath (d3-geo/geoPath)
+               data-map (js/Map.)
+               filtered-csse-daily-report (->> csse-daily-report (filter #(->> % first empty? not)))
+               _ (dorun (map #(.set data-map (->> % first (gstring/format "%05d")) (second %)) filtered-csse-daily-report))
                svg (.. js/d3 (select (str "#" svg-el-id)))
 
-               ;; TODO change hard-coded 1000000 to high-end of domain of populationDataMap values
-               scale-radius #((.scaleSqrt js/d3 (clj->js [0 1000]) (clj->js [0 7])) (or % 0))]
-
-           (spyx width height)
+               data-map-values (->> (.values data-map) (map js/parseInt) clj->js)
+               scale-radius (.scaleSqrt js/d3 (clj->js (.extent js/d3 (.extent js/d3 data-map-values))) (clj->js [1 40]))]
 
            (-> svg (.attr "viewBox" (clj->js [0 0 width height])))
 
@@ -58,11 +44,8 @@
                (.attr "stroke-linejoin" "round")
                (.attr "d" myGeoPath))
 
-           ;; const t = svg.transition().duration(750);
-           ;; (def t (-> svg .transition (.duration 750)))
-
            ;; marks
-           #_(-> svg
+           (-> svg
                (.append "g")
                (.attr "fill" "#ff8c94")
                (.attr "fill-opacity" 0.5)
@@ -73,7 +56,7 @@
                (.data (->> (topo/feature counties-albers-10m-data (-> counties-albers-10m-data .-objects .-counties))
                            (.-features)
                            (js->clj)
-                           (map #(assoc % :value (.get population-data-map (get % "id"))))
+                           (map #(assoc % :value (.get data-map (get % "id"))))
                            (sort-by :value)
                            (clj->js)))
                (.join
@@ -81,18 +64,7 @@
                   (-> enter
                       (.append "circle")
                       (.attr "transform" #(str "translate(" (.centroid myGeoPath %) ")"))
-                      (.attr "r" #(scale-radius (.-value %)))))
-                (fn [update] update)
-                (fn [exit]
-                  (-> exit
-                      (.call (fn [circle]
-                               (-> circle
-                                   (.transition (-> svg .transition (.duration 750)))
-                                   .remove)
-                               )))
-                  (.remove exit)
-                  )
-                )
+                      (.attr "r" #(scale-radius (.-value %))))))
 
                ))))))
 
