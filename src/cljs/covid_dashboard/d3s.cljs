@@ -19,34 +19,57 @@
   (-> (.all js/Promise [(.csv js/d3 (first files-covid) #(vector (.-FIPS %) (.-Confirmed %))) (.json js/d3 (second files-covid))])
       (.then
        (fn [[csse-daily-report counties-albers-10m-data]]
-         (let [myGeoPath (d3-geo/geoPath)
+         (let [path (d3-geo/geoPath)
                data-map (js/Map.)
                filtered-csse-daily-report (->> csse-daily-report (filter #(->> % first empty? not)))
                _ (dorun (map #(.set data-map (->> % first (gstring/format "%05d")) (second %)) filtered-csse-daily-report))
+
                svg (.. js/d3 (select (str "#" svg-el-id)))
+               g (-> svg (.append "g"))
 
                data-map-values (->> (.values data-map) (map js/parseInt) clj->js)
-               scale-radius (.scaleSqrt js/d3 (clj->js (.extent js/d3 (.extent js/d3 data-map-values))) (clj->js [1 40]))]
+               scale-radius (.scaleSqrt js/d3 (clj->js (.extent js/d3 (.extent js/d3 data-map-values))) (clj->js [1 40]))
+
+               scale-extent (clj->js [1 9])
+               zoom-k->scaled-zoom-k (.scaleLinear js/d3 scale-extent (clj->js [1 0.3]))
+
+               zoomed #(let [transform (-> js/d3 .-event .-transform)
+                             k (.-k transform)
+                             circles (.selectAll g ".g-circles circle")]
+                         (do
+                           (-> circles
+                               (.attr "r" (fn [d]
+                                            (let [scaled-radius (* (zoom-k->scaled-zoom-k k)
+                                                                   (scale-radius (.-value d)))]
+                                              (if (js/isNaN scaled-radius) 0 scaled-radius)))))
+                           (-> (.select g ".g-circles")
+                               (.attr "stroke-width" (* (zoom-k->scaled-zoom-k k) 0.5)))
+                           (-> g (.attr "transform" transform)
+                               (.attr "stroke-width" (/ 1 k)))))
+               my-zoom (-> (.zoom js/d3)
+                           (.scaleExtent scale-extent)
+                           (.on "zoom" zoomed))]
 
            (-> svg (.attr "viewBox" (clj->js [0 0 width height])))
 
-           (-> svg
+           (-> g
                (.append "path")
                (.datum (topo/feature counties-albers-10m-data (-> counties-albers-10m-data .-objects .-nation)))
                (.attr "fill", "#f3f3f3")
-               (.attr "d" myGeoPath))
+               (.attr "d" path))
 
-           (-> svg
+           (-> g
                (.append "path")
                (.datum (topo/mesh counties-albers-10m-data (-> counties-albers-10m-data .-objects .-states) (fn [a b] (not= a b))))
                (.attr "fill" "none")
                (.attr "stroke" "#fff")
                (.attr "stroke-linejoin" "round")
-               (.attr "d" myGeoPath))
+               (.attr "d" path))
 
            ;; marks
-           (-> svg
+           (-> g
                (.append "g")
+               (.attr "class" "g-circles")
                (.attr "fill" "#ff8c94")
                (.attr "fill-opacity" 0.5)
                (.attr "stroke" "#fff")
@@ -63,10 +86,12 @@
                 (fn [enter]
                   (-> enter
                       (.append "circle")
-                      (.attr "transform" #(str "translate(" (.centroid myGeoPath %) ")"))
-                      (.attr "r" #(scale-radius (.-value %))))))
+                      (.attr "transform" #(str "translate(" (.centroid path %) ")"))
+                      (.attr "r" #(scale-radius (.-value %)))))))
 
-               ))))))
+           (-> svg (.call my-zoom))
+
+           )))))
 
 (defn bubble-map-covid-us-d3 []
   (let [
@@ -265,13 +290,13 @@
 
                  zoomed #(let [transform (-> js/d3 .-event .-transform)
                                k (.-k transform)
-                               circles (.selectAll g "#circles circle")]
+                               circles (.selectAll g ".g-circles circle")]
                            (do (-> circles
                                    (.attr "r" (fn [d]
                                                 (let [scaled-radius (* (zoom-k->scaled-zoom-k k)
                                                                        (radius (aget data (-> d .-properties .-name))))]
                                                   (if (js/isNaN scaled-radius) 0 scaled-radius)))))
-                               (-> (.select g "#circles")
+                               (-> (.select g ".g-circles")
                                    (.attr "stroke-width" (* (zoom-k->scaled-zoom-k k) 0.5)))
                                (-> g (.attr "transform" transform)
                                    (.attr "stroke-width" (/ 1 k)))))
@@ -320,7 +345,7 @@
              ;; marks
              (-> g
                  (.append "g")
-                 (.attr "id" "circles")
+                 (.attr "class" "g-circles")
                  (.attr "fill" "#ff8c94")
                  (.attr "fill-opacity" 0.5)
                  (.attr "stroke" "#fff")
