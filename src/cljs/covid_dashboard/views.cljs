@@ -6,25 +6,15 @@
    [covid-dashboard.d3s :as d3s]
    [covid-dashboard.static :refer [gap-size]]
    [covid-dashboard.subs :as subs]
-   [goog.i18n.NumberFormat.Format]
+   [covid-dashboard.utility :as utility]
    [re-com.core :refer [box gap h-box v-box]]
    [re-frame.core :as re-frame]
-   [reagent.core :as reagent])
-  (:import
-   (goog.i18n NumberFormat)
-   (goog.i18n.NumberFormat Format)))
+   [reagent.core :as reagent]))
 
 (defn panel-1 []
   (let [total-confirmed (re-frame/subscribe [::subs/total-confirmed])]
     (when @total-confirmed
       [:div.padding-1 [:h4 "Total Confirmed"] [:h3 @total-confirmed]])))
-
-(def nff
-  (NumberFormat. Format/DECIMAL))
-
-(defn- nf
-  [num]
-  (.format nff (str num)))
 
 (defn panel-2-0 []
   (let [confirmed-by-country (re-frame/subscribe [::subs/confirmed-by-country])]
@@ -34,7 +24,7 @@
         [box :size "1" :class "scroll-y-auto" :child
          [:table [:tbody (map (fn [[country value]]
                                 [:tr {:key (str country value)}
-                                 [:td.bold (nf value)] [:td country]])
+                                 [:td.bold (utility/nf value)] [:td country]])
                               @confirmed-by-country)]]]]])))
 
 (defn panel-2-1 []
@@ -44,7 +34,7 @@
        [[box :class "padding-1" :child [:h4 "Confirmed Cases by State/Province"]]
         [box :size "1" :class "scroll-y-auto" :child
          [:table [:tbody (map (fn [[value province country]]
-                                [:tr {:key (str province value)} [:td.bold (nf value)] [:td (str province ", " country)]])
+                                [:tr {:key (str province value)} [:td.bold (utility/nf value)] [:td (str province ", " country)]])
                               @confirmed-by-province)]]]]])))
 
 (defn panel-2-2 []
@@ -54,7 +44,7 @@
        [[box :class "padding-1" :child [:h4 "Confirmed Cases by U.S. County"]]
         [box :size "1" :class "scroll-y-auto" :child
          [:table [:tbody (map (fn [[value us-county country]]
-                                [:tr {:key (str us-county value)} [:td.bold (nf value)] [:td (str us-county ", " country)]])
+                                [:tr {:key (str us-county value)} [:td.bold (utility/nf value)] [:td (str us-county ", " country)]])
                               @confirmed-by-us-county)]]]]])))
 
 (defn panel-4-0 []
@@ -64,7 +54,7 @@
        [[box :class "padding-1" :child [:div [:h4 "Global Deaths"] [:h3 total-deaths]]]
         [box :size "1" :class "scroll-y-auto" :child
          [:table [:tbody (map (fn [[country value]]
-                                [:tr {:key (str country value)} [:td.bold (nf value)] [:td country]])
+                                [:tr {:key (str country value)} [:td.bold (utility/nf value)] [:td country]])
                               deaths-by-country)]]]]])))
 
 (defn panel-4-1 []
@@ -74,7 +64,7 @@
        [[box :class "padding-1" :child [:div [:h4 "Global Recovered"] [:h3 total-recovered]]]
         [box :size "1" :class "scroll-y-auto" :child
          [:table [:tbody (map (fn [[country value]]
-                                [:tr {:key (str country value)} [:td.bold (nf value)] [:td country]])
+                                [:tr {:key (str country value)} [:td.bold (utility/nf value)] [:td country]])
                               recovered-by-country)]]]]])))
 
 (defn panel-5-1 []
@@ -84,8 +74,8 @@
        [[box :class "padding-1" :child [:div [:h4 "US State Level"] [:h3 "Deaths, Recovered"]]]
         [box :size "1" :class "scroll-y-auto" :child
          [:table [:tbody (map (fn [[state deaths recovered]]
-                                [:tr {:key state} [:td.bold (nf deaths)]
-                                 [:td {:class (if recovered "bold" "light")} (if recovered (nf recovered) "n/a")] [:td state]])
+                                [:tr {:key state} [:td.bold (utility/nf deaths)]
+                                 [:td {:class (if recovered "bold" "light")} (if recovered (utility/nf recovered) "n/a")] [:td state]])
                               @us-states-deaths-recovered)]]]]])))
 
 (defn panel-5-2 []
@@ -95,7 +85,7 @@
        [[box :class "padding-1" :child [:div [:h4 "US People Tested"] [:h3 total-tested]]]
         [box :size "1" :class "scroll-y-auto" :child
          [:table [:tbody (map (fn [[state tested]]
-                                [:tr {:key state} [:td.bold (nf tested)] [:td state]])
+                                [:tr {:key state} [:td.bold (utility/nf tested)] [:td state]])
                               tested-by-state)]]]]])))
 
 (defn panel-5-3 []
@@ -105,7 +95,7 @@
        [[box :class "padding-1" :child [:div [:h4 "US State Level"] [:h3 "Hospitalizations"]]]
         [box :size "1" :class "scroll-y-auto" :child
          [:table [:tbody (map (fn [[state hospitalized]]
-                                [:tr {:key state} [:td.bold (nf hospitalized)] [:td state]])
+                                [:tr {:key state} [:td.bold (utility/nf hospitalized)] [:td state]])
                               @us-states-hospitalized)]]]]])))
 
 (defn panel-6-0 []

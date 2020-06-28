@@ -5,6 +5,7 @@
    [breaking-point.core :as bp]
    [covid-dashboard.static :refer [duration-map-in-1]]
    [covid-dashboard.subs :as subs]
+   [covid-dashboard.utility :as utility]
    [d3-geo-projection :as d3-geo-projection]
    [d3-geo :as d3-geo]
    [goog.string :as gstring]
@@ -96,6 +97,12 @@
                (.transition)
                (.duration duration-map-in-1)
                (.attr "r" #(scale-radius (.-value %))))
+
+           (-> g
+               (.selectAll ".g-circles circle")
+               (.on "click" (fn [d] (.log js/console d)))
+               (.append "title")
+               (.text #(str (-> % .-properties .-name) " – " (utility/nf (.-value %)))))
 
            (-> svg (.call my-zoom)))))))
 
@@ -322,7 +329,8 @@
                  (.attr "fill", "#f3f3f3")
                  (.attr "d" path)
                  (.append "title")
-                 (.text (fn [d] (aget data (-> d .-properties .-name)))))
+                 (.text (fn [d] (str (-> d .-properties .-name) " – "
+                                     (utility/nf (aget data (-> d .-properties .-name)))))))
 
              (-> g
                  (.append "path")
@@ -363,6 +371,12 @@
                  (.transition)
                  (.duration duration-map-in-1)
                  (.attr "r" (fn [d] (radius (aget data (-> d .-properties .-name))))))
+
+             (-> g
+                 (.selectAll ".g-circles circle")
+                 (.append "title")
+                 (.text (fn [d] (str (-> d .-properties .-name) " – "
+                                     (utility/nf (aget data (-> d .-properties .-name)))))))
 
              (-> svg (.call my-zoom))))))))
 
