@@ -19,7 +19,11 @@
   (-> (.all js/Promise [(.csv js/d3 (first files-covid) #(vector (.-FIPS %) (.-Confirmed %))) (.json js/d3 (second files-covid))])
       (.then
        (fn [[csse-daily-report counties-albers-10m-data]]
-         (let [path (d3-geo/geoPath)
+         (let [geojson (topo/feature counties-albers-10m-data (-> counties-albers-10m-data .-objects .-nation))
+               projection (-> (.geoIdentity js/d3)
+                              (.fitExtent (clj->js [[0 0] [(- width 50) (- height 50)]]) geojson))
+
+               path (-> (d3-geo/geoPath) (.projection projection))
                data-map (js/Map.)
                filtered-csse-daily-report (->> csse-daily-report (filter #(->> % first empty? not)))
                _ (dorun (map #(.set data-map (->> % first (gstring/format "%05d")) (second %)) filtered-csse-daily-report))
@@ -94,15 +98,13 @@
            )))))
 
 (defn bubble-map-covid-us-d3 []
-  (let [
-        width @(re-frame/subscribe [::bp/screen-width])
+  (let [width @(re-frame/subscribe [::bp/screen-width])
         height @(re-frame/subscribe [::bp/screen-height])
         svg-el-id "bubble-map-covid-us-d3-svg-root"]
     (reagent/create-class
      {:display-name "bubble-map-covid-us-d3-component"
       :component-did-mount (fn [this] (bubble-map-covid svg-el-id width height))
-      :reagent-render (fn [this] [:svg {:id svg-el-id :class "svg-container"}])
-      })))
+      :reagent-render (fn [this] [:svg {:id svg-el-id :class "svg-container"}])})))
 
 
 

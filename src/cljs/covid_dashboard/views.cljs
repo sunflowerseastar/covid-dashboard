@@ -165,7 +165,7 @@
          [gap :size gap-size]]]]]]))
 
 (defn home-page []
-  (let [maps [panel-3-2 panel-3-1]]
+  (let [maps [panel-3-1 panel-3-2]]
     (reagent/create-class
      {:display-name "home-page"
       :reagent-render
