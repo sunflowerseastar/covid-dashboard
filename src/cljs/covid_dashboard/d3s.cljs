@@ -91,7 +91,10 @@
                   (-> enter
                       (.append "circle")
                       (.attr "transform" #(str "translate(" (.centroid path %) ")"))
-                      (.attr "r" #(scale-radius (.-value %)))))))
+                      (.attr "r" 0))))
+               (.transition)
+               (.duration 2000)
+               (.attr "r" #(scale-radius (.-value %))))
 
            (-> svg (.call my-zoom))
 
