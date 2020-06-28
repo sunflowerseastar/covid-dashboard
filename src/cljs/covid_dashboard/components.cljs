@@ -11,7 +11,7 @@
              sub-panel-count (count sub-panels)]
     [v-box :size "1" :children
      [[box :size "1" :child [(-> (get sub-panels @curr) second)]]
-      [box :size "40px" :child
+      [box :size "36px" :child
        [h-box :size "1" :class "children-align-self-center" :children
         [[gap :size gap-size]
          [box :child [:a {:on-click #(reset! curr (if (= (dec @curr) -1) (dec sub-panel-count) (dec @curr)))} "←"]]

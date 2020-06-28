@@ -34,7 +34,7 @@
                data-map-values (->> (.values data-map) (map js/parseInt) clj->js)
                scale-radius (.scaleSqrt js/d3 (clj->js (.extent js/d3 (.extent js/d3 data-map-values))) (clj->js [1 40]))
 
-               scale-extent (clj->js [1 9])
+               scale-extent (clj->js [1 12])
                zoom-k->scaled-zoom-k (.scaleLinear js/d3 scale-extent (clj->js [1 0.3]))
 
                zoomed #(let [transform (-> js/d3 .-event .-transform)
