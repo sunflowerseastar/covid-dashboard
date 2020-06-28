@@ -2,31 +2,37 @@
   (:require [garden.def :refer [defstyles]]))
 
 (defstyles screen
-  [:.home-page {:height "100vh" :padding "10px" :box-sizing "border-box"}]
+  [:.home-page {:height "100vh" :padding "10px" :box-sizing "border-box" :-webkit-font-smoothing "antialiased"}]
 
-  [:h2 :h3 :h4 :p {:margin "0.5em 0 0.4em" :text-align "center"}]
-  [:h4 {:font-weight "normal"}]
-  [:p {
-       :font-size "0.9em"}]
+  [:h3 :h4 {:margin "0.5em 0 0.4em" :text-align "center"}]
+  [:h3 {:font-weight 600 :color "#333" :letter-spacing "0.03em"}]
+  [:h4 {:font-weight 400}]
+  [:p {:font-size "0.9em" :letter-spacing "0.03em"}]
   [:a {:cursor "pointer"}]
-  [:td {:padding "3px 4px 2px 2px"}]
+  [:td {:padding "4px 4px 3px 2px"}]
+
+  [:.button {:display "block"
+             :width "30px"
+             :height "36px"
+             :line-height "36px"
+             :text-align "center"
+             :transition "background 120ms"}]
+  [:.button:hover {:background "#f5f5f5"}]
+  [:.button:active {:background "#f2f2f2"}]
 
   [:.home-col-left :.home-col-right {:z-index 1}]
 
   [:.panel-3-1 {:position "absolute" :left 0 :top 0 :bottom 0 :width "100%"}]
 
-  [:.panel {
-            :background "#fdfdfdcc"
-            ;; :text-align "center"
-            ;; :border "1px solid #e1e1e1"
-            }]
-  [:.panel-interior {}]
+  [:.panel {:background "#fdfdfdd1"}]
 
   [:.controls {:border "3px solid orange"}]
 
   [:.padding-1 {:box-sizing "border-box" :padding "8px 5px 8px 10px"}]
   [:.padding-2 {:box-sizing "border-box" :padding "8px"}]
   [:.z-index-1 {:z-index 1}]
+  [:.bold {:font-weight 600}]
+  [:.light {:font-weight 300 :color "#555"}]
 
   [:.margin-0-auto {:margin "0 auto"}]
   [:.children-align-self-center [:div {:align-self "center"}]]

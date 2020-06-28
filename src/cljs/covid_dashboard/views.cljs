@@ -6,93 +6,106 @@
    [covid-dashboard.d3s :as d3s]
    [covid-dashboard.static :refer [gap-size]]
    [covid-dashboard.subs :as subs]
+   [goog.i18n.NumberFormat.Format]
    [re-com.core :refer [box gap h-box v-box]]
    [re-frame.core :as re-frame]
-   [reagent.core :as reagent]))
+   [reagent.core :as reagent])
+  (:import
+   (goog.i18n NumberFormat)
+   (goog.i18n.NumberFormat Format)))
 
 (defn panel-1 []
   (let [total-confirmed (re-frame/subscribe [::subs/total-confirmed])]
     (when @total-confirmed
-      [:div.panel-interior.padding-1 [:h4 "Total Confirmed"] [:h3 @total-confirmed]])))
+      [:div.padding-1 [:h4 "Total Confirmed"] [:h3 @total-confirmed]])))
+
+(def nff
+  (NumberFormat. Format/DECIMAL))
+
+(defn- nf
+  [num]
+  (.format nff (str num)))
 
 (defn panel-2-0 []
   (let [confirmed-by-country (re-frame/subscribe [::subs/confirmed-by-country])]
     (when @confirmed-by-country
-      [v-box :size "1" :class "panel-interior" :children
+      [v-box :size "1" :children
        [[box :class "padding-1" :child [:h4 "Confirmed Cases by Country/Region"]]
         [box :size "1" :class "scroll-y-auto" :child
          [:table [:tbody (map (fn [[country value]]
-                                [:tr {:key (str country value)} [:td value] [:td country]])
+                                [:tr {:key (str country value)}
+                                 [:td.bold (nf value)] [:td country]])
                               @confirmed-by-country)]]]]])))
 
 (defn panel-2-1 []
   (let [confirmed-by-province (re-frame/subscribe [::subs/confirmed-by-province])]
     (when @confirmed-by-province
-      [v-box :size "1" :class "panel-interior" :children
+      [v-box :size "1" :children
        [[box :class "padding-1" :child [:h4 "Confirmed Cases by State/Province"]]
         [box :size "1" :class "scroll-y-auto" :child
          [:table [:tbody (map (fn [[value province country]]
-                                [:tr {:key (str province value)} [:td value] [:td (str province ", " country)]])
+                                [:tr {:key (str province value)} [:td.bold (nf value)] [:td (str province ", " country)]])
                               @confirmed-by-province)]]]]])))
 
 (defn panel-2-2 []
   (let [confirmed-by-us-county (re-frame/subscribe [::subs/confirmed-by-us-county])]
     (when @confirmed-by-us-county
-      [v-box :size "1" :class "panel-interior" :children
+      [v-box :size "1" :children
        [[box :class "padding-1" :child [:h4 "Confirmed Cases by U.S. County"]]
         [box :size "1" :class "scroll-y-auto" :child
          [:table [:tbody (map (fn [[value us-county country]]
-                                [:tr {:key (str us-county value)} [:td value] [:td (str us-county ", " country)]])
+                                [:tr {:key (str us-county value)} [:td.bold (nf value)] [:td (str us-county ", " country)]])
                               @confirmed-by-us-county)]]]]])))
 
 (defn panel-4-0 []
   (let [global-deaths (re-frame/subscribe [::subs/global-deaths])]
     (when-let [{:keys [deaths-by-country total-deaths]} @global-deaths]
-      [v-box :size "1" :class "panel-interior" :children
+      [v-box :size "1" :children
        [[box :class "padding-1" :child [:div [:h4 "Global Deaths"] [:h3 total-deaths]]]
         [box :size "1" :class "scroll-y-auto" :child
          [:table [:tbody (map (fn [[country value]]
-                                [:tr {:key (str country value)} [:td value] [:td country]])
+                                [:tr {:key (str country value)} [:td.bold (nf value)] [:td country]])
                               deaths-by-country)]]]]])))
 
 (defn panel-4-1 []
   (let [global-recovered (re-frame/subscribe [::subs/global-recovered])]
     (when-let [{:keys [recovered-by-country total-recovered]} @global-recovered]
-      [v-box :size "1" :class "panel-interior" :children
+      [v-box :size "1" :children
        [[box :class "padding-1" :child [:div [:h4 "Global Recovered"] [:h3 total-recovered]]]
         [box :size "1" :class "scroll-y-auto" :child
          [:table [:tbody (map (fn [[country value]]
-                                [:tr {:key (str country value)} [:td value] [:td country]])
+                                [:tr {:key (str country value)} [:td.bold (nf value)] [:td country]])
                               recovered-by-country)]]]]])))
 
 (defn panel-5-1 []
   (let [us-states-deaths-recovered (re-frame/subscribe [::subs/us-states-deaths-recovered])]
     (when @us-states-deaths-recovered
-      [v-box :size "1" :class "panel-interior" :children
+      [v-box :size "1" :children
        [[box :class "padding-1" :child [:div [:h4 "US State Level"] [:h3 "Deaths, Recovered"]]]
         [box :size "1" :class "scroll-y-auto" :child
          [:table [:tbody (map (fn [[state deaths recovered]]
-                                [:tr {:key state} [:td deaths] [:td (or recovered "-")] [:td state]])
+                                [:tr {:key state} [:td.bold (nf deaths)]
+                                 [:td {:class (if recovered "bold" "light")} (if recovered (nf recovered) "n/a")] [:td state]])
                               @us-states-deaths-recovered)]]]]])))
 
 (defn panel-5-2 []
   (let [us-states-tested (re-frame/subscribe [::subs/us-states-tested])]
     (when-let [{:keys [tested-by-state total-tested]} @us-states-tested]
-      [v-box :size "1" :class "panel-interior" :children
+      [v-box :size "1" :children
        [[box :class "padding-1" :child [:div [:h4 "US People Tested"] [:h3 total-tested]]]
         [box :size "1" :class "scroll-y-auto" :child
          [:table [:tbody (map (fn [[state tested]]
-                                [:tr {:key state} [:td tested] [:td state]])
+                                [:tr {:key state} [:td.bold (nf tested)] [:td state]])
                               tested-by-state)]]]]])))
 
 (defn panel-5-3 []
   (let [us-states-hospitalized (re-frame/subscribe [::subs/us-states-hospitalized])]
     (when @us-states-hospitalized
-      [v-box :size "1" :class "panel-interior" :children
+      [v-box :size "1" :children
        [[box :class "padding-1" :child [:div [:h4 "US State Level"] [:h3 "Hospitalizations"]]]
         [box :size "1" :class "scroll-y-auto" :child
          [:table [:tbody (map (fn [[state hospitalized]]
-                                [:tr {:key state} [:td hospitalized] [:td state]])
+                                [:tr {:key state} [:td.bold (nf hospitalized)] [:td state]])
                               @us-states-hospitalized)]]]]])))
 
 (defn panel-6-0 []
@@ -157,12 +170,10 @@
     [v-box :size "1" :children
      [[box :size "1" :child ""]
       [box :size "36px" :child
-       [h-box :size "1" :class "children-align-self-center z-index-1" :children
-        [[gap :size gap-size]
-         [box :child [:a {:on-click #(reset! curr-map (if (= (dec @curr-map) -1) (dec sub-panel-count) (dec @curr-map)))} "←"]]
+       [h-box :size "1" :class "children-align-self-center z-index-1 panel" :children
+        [[box :child [:a.button {:on-click #(reset! curr-map (if (= (dec @curr-map) -1) (dec sub-panel-count) (dec @curr-map)))} "←"]]
          [box :size "1" :child [:p.margin-0-auto (str (get sps @curr-map) " " (inc @curr-map) "/" sub-panel-count)]]
-         [box :child [:a {:on-click #(reset! curr-map (if (= (inc @curr-map) sub-panel-count) 0 (inc @curr-map)))} "→"]]
-         [gap :size gap-size]]]]]]))
+         [box :child [:a.button {:on-click #(reset! curr-map (if (= (inc @curr-map) sub-panel-count) 0 (inc @curr-map)))} "→"]]]]]]]))
 
 (defn home-page []
   (let [maps [panel-3-1 panel-3-2]]

@@ -19,13 +19,13 @@
 }
 
 html, body {
-    font-family:    sans-serif;
     font-size:      12px;
     font-weight:    400;
-    color:          #888;
+    color:          #787878;
     height:         100%;
     margin:         0;
     padding:        0;
+    font-family: 'Lato', sans-serif;
 }
 
 /*----------------------------------------------------------------------------------------

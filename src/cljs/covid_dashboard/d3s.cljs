@@ -3,6 +3,7 @@
   (:require
    [cljsjs.d3 :as d3]
    [breaking-point.core :as bp]
+   [covid-dashboard.static :refer [duration-map-in-1]]
    [covid-dashboard.subs :as subs]
    [d3-geo-projection :as d3-geo-projection]
    [d3-geo :as d3-geo]
@@ -93,12 +94,10 @@
                       (.attr "transform" #(str "translate(" (.centroid path %) ")"))
                       (.attr "r" 0))))
                (.transition)
-               (.duration 2000)
+               (.duration duration-map-in-1)
                (.attr "r" #(scale-radius (.-value %))))
 
-           (-> svg (.call my-zoom))
-
-           )))))
+           (-> svg (.call my-zoom)))))))
 
 (defn bubble-map-covid-us-d3 []
   (let [width @(re-frame/subscribe [::bp/screen-width])
@@ -325,7 +324,6 @@
                  (.append "title")
                  (.text (fn [d] (aget data (-> d .-properties .-name)))))
 
-
              (-> g
                  (.append "path")
                  (.datum graticule-outline)
@@ -363,12 +361,10 @@
                               (.attr "transform" (fn [d] (str "translate(" (.centroid path d) ")")))
                               (.attr "r" 0))))
                  (.transition)
-                 (.duration 2000)
+                 (.duration duration-map-in-1)
                  (.attr "r" (fn [d] (radius (aget data (-> d .-properties .-name))))))
 
-             (-> svg (.call my-zoom))
-
-             ))))))
+             (-> svg (.call my-zoom))))))))
 
 (defn world-bubble-map-d3 [line-chart-data]
   (let [
@@ -378,5 +374,4 @@
     (reagent/create-class
      {:display-name "world-bubble-map-d3"
       :component-did-mount #(world-bubble-map svg-el-id width height line-chart-data)
-      :reagent-render (fn [this] [:svg {:id svg-el-id :class "svg-container"}])
-      })))
+      :reagent-render (fn [this] [:svg {:id svg-el-id :class "svg-container"}])})))
