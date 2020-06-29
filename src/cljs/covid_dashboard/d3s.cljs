@@ -95,6 +95,7 @@
                       (.attr "transform" #(str "translate(" (.centroid path %) ")"))
                       (.attr "r" 0))))
                (.transition)
+               (.delay 580)
                (.duration duration-map-in-1)
                (.attr "r" #(scale-radius (.-value %))))
 
@@ -126,8 +127,7 @@
 
 
 (defn line-chart [svg-el-id height line-chart-data]
-  (let [
-        margin 30
+  (let [margin 30
 
         format-value (.format js/d3 ".0s")
 
@@ -205,8 +205,7 @@
 
 
 (defn line-chart-log [svg-el-id height line-chart-data]
-  (let [
-        margin 30
+  (let [margin 30
 
         format-value (.format js/d3 ".0s")
 
@@ -324,10 +323,19 @@
              (-> g
                  (.append "g")
                  (.selectAll "path")
-                 (.data (.-features countries))
-                 (.join "path")
-                 (.attr "fill", "#f3f3f3")
+                 (.data (.-features countries) (fn [d] (-> d .-properties .-name)))
+                 (.join (fn [enter]
+                          (-> enter
+                              (.append "path")
+                              (.attr "class" "land")
+                              (.attr "fill", "#f3f3f300"))))
                  (.attr "d" path)
+                 (.transition)
+                 (.duration duration-map-in-1)
+                 (.attr "fill", "#f3f3f3ff")
+                 (.attr))
+
+             (-> g (.selectAll ".land")
                  (.append "title")
                  (.text #(str (-> % .-properties .-name)
                               " – "
@@ -370,6 +378,8 @@
                               (.attr "transform" (fn [d] (str "translate(" (.centroid path d) ")")))
                               (.attr "r" 0))))
                  (.transition)
+                 (.delay 600)
+                 (.transition)
                  (.duration duration-map-in-1)
                  (.attr "r" (fn [d] (radius (aget data (-> d .-properties .-name))))))
 
@@ -382,8 +392,7 @@
              (-> svg (.call my-zoom))))))))
 
 (defn world-bubble-map-d3 [line-chart-data]
-  (let [
-        width @(re-frame/subscribe [::bp/screen-width])
+  (let [width @(re-frame/subscribe [::bp/screen-width])
         height @(re-frame/subscribe [::bp/screen-height])
         svg-el-id "world-bubble-map-root-svg"]
     (reagent/create-class

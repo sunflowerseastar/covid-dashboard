@@ -26,6 +26,10 @@
 
   [:.panel {:background "#fdfdfdd1"}]
 
+  [:.sub-panel-container :.fade {:transition "opacity 2s ease-in-out"}
+   [:&.is-active {:opacity "1"}]
+   [:&.is-inactive {:opacity "0"}]]
+
   [:.controls {:border "3px solid orange"}]
 
   [:.padding-1 {:box-sizing "border-box" :padding "8px 5px 8px 10px"}]
