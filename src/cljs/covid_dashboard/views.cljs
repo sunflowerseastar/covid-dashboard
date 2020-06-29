@@ -14,7 +14,7 @@
 (defn panel-1 []
   (let [total-confirmed (re-frame/subscribe [::subs/total-confirmed])]
     (when @total-confirmed
-      [:div.padding-1 [:h4 "Total Confirmed"] [:h3 @total-confirmed]])))
+      [:div.padding-1 [:h4 "Total Confirmed"] [:h3 (utility/nf @total-confirmed)]])))
 
 (defn panel-2-0 []
   (let [confirmed-by-country (re-frame/subscribe [::subs/confirmed-by-country])]
@@ -51,7 +51,7 @@
   (let [global-deaths (re-frame/subscribe [::subs/global-deaths])]
     (when-let [{:keys [deaths-by-country total-deaths]} @global-deaths]
       [v-box :size "1" :children
-       [[box :class "padding-1" :child [:div [:h4 "Global Deaths"] [:h3 total-deaths]]]
+       [[box :class "padding-1" :child [:div [:h4 "Global Deaths"] [:h3 (utility/nf total-deaths)]]]
         [box :size "1" :class "scroll-y-auto" :child
          [:table [:tbody (map (fn [[country value]]
                                 [:tr {:key (str country value)} [:td.bold (utility/nf value)] [:td country]])
@@ -61,7 +61,7 @@
   (let [global-recovered (re-frame/subscribe [::subs/global-recovered])]
     (when-let [{:keys [recovered-by-country total-recovered]} @global-recovered]
       [v-box :size "1" :children
-       [[box :class "padding-1" :child [:div [:h4 "Global Recovered"] [:h3 total-recovered]]]
+       [[box :class "padding-1" :child [:div [:h4 "Global Recovered"] [:h3 (utility/nf total-recovered)]]]
         [box :size "1" :class "scroll-y-auto" :child
          [:table [:tbody (map (fn [[country value]]
                                 [:tr {:key (str country value)} [:td.bold (utility/nf value)] [:td country]])
@@ -82,7 +82,7 @@
   (let [us-states-tested (re-frame/subscribe [::subs/us-states-tested])]
     (when-let [{:keys [tested-by-state total-tested]} @us-states-tested]
       [v-box :size "1" :children
-       [[box :class "padding-1" :child [:div [:h4 "US People Tested"] [:h3 total-tested]]]
+       [[box :class "padding-1" :child [:div [:h4 "US People Tested"] [:h3 (utility/nf total-tested)]]]
         [box :size "1" :class "scroll-y-auto" :child
          [:table [:tbody (map (fn [[state tested]]
                                 [:tr {:key state} [:td.bold (utility/nf tested)] [:td state]])

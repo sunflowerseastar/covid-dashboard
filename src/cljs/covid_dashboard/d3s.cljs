@@ -294,7 +294,7 @@
                                 (.precision 0.1))
                  path (d3-geo/geoPath projection)
                  g (-> svg (.append "g"))
-                 radius (.scaleSqrt js/d3 (.extent js/d3 (.values js/Object data)) (clj->js [3 20]))
+                 radius (.scaleLinear js/d3 (.extent js/d3 (.values js/Object data)) (clj->js [3 50]))
 
                  scale-extent (clj->js [1 9])
                  zoom-k->scaled-zoom-k (.scaleSqrt js/d3 scale-extent (clj->js [1 0.22]))
