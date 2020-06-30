@@ -23,6 +23,11 @@
    (:confirmed-by-us-county db)))
 
 (re-frame/reg-sub
+ ::curr-map
+ (fn [db]
+   (:curr-map db)))
+
+(re-frame/reg-sub
  ::global-deaths
  (fn [db]
    (:global-deaths db)))
@@ -41,6 +46,11 @@
  ::is-loaded
  (fn [db]
    (:is-loaded db)))
+
+(re-frame/reg-sub
+ ::is-transitioning
+ (fn [db]
+   (:is-transitioning db)))
 
 (re-frame/reg-sub
  ::time-series-confirmed-global

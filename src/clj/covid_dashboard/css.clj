@@ -1,36 +1,27 @@
 (ns covid-dashboard.css
   (:require [garden.def :refer [defkeyframes defstyles]]))
 
+;; duplicated because clj/cljs
+(def duration-map-in-2 220)
+(def duration-fade-1 (* duration-map-in-2 6))
+(def duration-fade-2 (* duration-map-in-2 2))
+
 (defkeyframes virion-animation
-  [:from {:transform "scale(1.4) translateX(-13%)"}]
-  [:to {:transform "scale(1.4) translateX(-17%)"}])
+  [:from {:transform "scale(1.4) translateX(-11%)"}]
+  [:to {:transform "scale(1.4) translateX(-14%)"}])
 
 (defstyles screen
   [:#app {:overflow "hidden"}]
 
   [:.loader {:position "absolute" :top 0 :left 0 :right 0 :bottom 0 :pointer-events "none"}]
 
-  [:.virion-container {:position "absolute"
-                       :display "block"
-                       :width "23vw"
-                       :height "14vw"
-                       :padding "2.2vw"
-                       :left "50%"
-                       :top "50%"
-                       :transform "translateX(-50%) translateY(-50%)"
-                       :border "1px solid #ddd"}]
-  [:.virion-container-inner {:position "relative"
-                             :box-sizing "border-box"
-                             :width "100%"
-                             :height "100%"
-                             :padding "20px"
-                             :overflow "hidden"}]
+  [:.virion-container {:position "absolute" :display "block" :width "23vw" :height "14vw"
+                       :padding "2.2vw" :left "50%" :top "50%"
+                       :transform "translateX(-50%) translateY(-50%)" :border "1px solid #ddd"}]
+  [:.virion-container-inner {:position "relative" :box-sizing "border-box" :width "100%" :height "100%"
+                             :padding "20px" :overflow "hidden"}]
   virion-animation
-  [:.virion {:position "absolute"
-             :display "block"
-             :width "100%"
-             :left 0
-             :top 0
+  [:.virion {:position "absolute" :display "block" :width "100%" :left 0 :top 0
              :animation [[virion-animation "4s" "cubic-bezier(.38,.09,.47,.98)" "forwards"]]}]
 
   [:.home-page {:height "100vh" :padding "10px" :box-sizing "border-box" :-webkit-font-smoothing "antialiased"}]
@@ -42,12 +33,7 @@
   [:a {:cursor "pointer"}]
   [:td {:padding "4px 4px 3px 2px"}]
 
-  [:.button {:display "block"
-             :width "30px"
-             :height "36px"
-             :line-height "36px"
-             :text-align "center"
-             :transition "background 120ms"}]
+  [:.button {:display "block" :width "30px" :height "36px" :line-height "36px" :text-align "center" :transition "background 120ms"}]
   [:.button:hover {:background "#f5f5f5"}]
   [:.button:active {:background "#f2f2f2"}]
 
@@ -57,8 +43,8 @@
 
   [:.panel {:background "#fdfdfdd1"}]
 
-  [:.sub-panel-container :.fade {:transition "opacity 2s ease-in-out" :opacity 0}
-   [:&.is-active {:opacity "1"}]]
+  [:.fade {:transition (str "opacity " duration-fade-1 "ms ease-in-out") :opacity 0} [:&.is-active {:opacity "1"}]]
+  [:.fade-fast {:transition (str "opacity " duration-fade-2 "ms ease-in-out") :opacity 0} [:&.is-active {:opacity "1"}]]
 
   [:.padding-1 {:box-sizing "border-box" :padding "8px 5px 8px 10px"}]
   [:.padding-2 {:box-sizing "border-box" :padding "8px"}]
@@ -72,11 +58,8 @@
   [:.text-align-right {:text-align "right"}]
   [:.text-align-center {:text-align "center"}]
 
-  [:.graticule {:fill "none"
-                :stroke "#eee"
-                :stroke-width ".5px"
-                :stroke-opacity 0.4}]
+  [:.graticule {:fill "none" :stroke "#eee" :stroke-width ".5px" :stroke-opacity 0.4}]
 
   [:.scroll-y-auto {:overflow-y "auto"}]
-  [:.svg-container {:position "relative" :top "50%" :transform "translateY(-50%)" :width "100%"
-                    :overflow "visible"}])
+  [:.svg-container {:position "relative" :top "50%" :transform "translateY(-50%)" :width "100%" :overflow "visible"}]
+  [:.svg-pointer-events-none [:svg {:pointer-events "none"}]])
