@@ -2,6 +2,7 @@
   (:require [garden.def :refer [defstyles]]))
 
 (defstyles screen
+  [:#app {:overflow "hidden"}]
   [:.home-page {:height "100vh" :padding "10px" :box-sizing "border-box" :-webkit-font-smoothing "antialiased"}]
 
   [:h3 :h4 {:margin "0.5em 0 0.4em" :text-align "center"}]

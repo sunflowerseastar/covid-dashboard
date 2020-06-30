@@ -3,7 +3,7 @@
   (:require
    [cljsjs.d3 :as d3]
    [breaking-point.core :as bp]
-   [covid-dashboard.static :refer [duration-map-in-1]]
+   [covid-dashboard.static :refer [duration-map-in-1 duration-map-in-2]]
    [covid-dashboard.subs :as subs]
    [covid-dashboard.utility :as utility]
    [d3-geo-projection :as d3-geo-projection]
@@ -58,11 +58,16 @@
 
            (-> svg (.attr "viewBox" (clj->js [0 0 width height])))
 
+           ;; land
            (-> g
                (.append "path")
                (.datum (topo/feature counties-albers-10m-data (-> counties-albers-10m-data .-objects .-nation)))
-               (.attr "fill", "#f3f3f3")
-               (.attr "d" path))
+               (.join "path")
+               (.attr "fill", "#f3f3f300")
+               (.attr "d" path)
+               (.transition)
+               (.duration duration-map-in-1)
+               (.attr "fill", "#f3f3f3ff"))
 
            (-> g
                (.append "path")
@@ -95,7 +100,8 @@
                       (.attr "transform" #(str "translate(" (.centroid path %) ")"))
                       (.attr "r" 0))))
                (.transition)
-               (.delay 580)
+               (.delay duration-map-in-2)
+               (.transition)
                (.duration duration-map-in-1)
                (.attr "r" #(scale-radius (.-value %))))
 
@@ -332,9 +338,9 @@
                  (.attr "d" path)
                  (.transition)
                  (.duration duration-map-in-1)
-                 (.attr "fill", "#f3f3f3ff")
-                 (.attr))
+                 (.attr "fill", "#f3f3f3ff"))
 
+             ;; land title
              (-> g (.selectAll ".land")
                  (.append "title")
                  (.text #(str (-> % .-properties .-name)
@@ -378,7 +384,7 @@
                               (.attr "transform" (fn [d] (str "translate(" (.centroid path d) ")")))
                               (.attr "r" 0))))
                  (.transition)
-                 (.delay 600)
+                 (.delay duration-map-in-2)
                  (.transition)
                  (.duration duration-map-in-1)
                  (.attr "r" (fn [d] (radius (aget data (-> d .-properties .-name))))))
