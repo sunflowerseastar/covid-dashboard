@@ -33,6 +33,16 @@
    (:global-recovered db)))
 
 (re-frame/reg-sub
+ ::is-fetching
+ (fn [db]
+   (:is-fetching db)))
+
+(re-frame/reg-sub
+ ::is-loaded
+ (fn [db]
+   (:is-loaded db)))
+
+(re-frame/reg-sub
  ::time-series-confirmed-global
  (fn [db]
    (:time-series-confirmed-global db)))

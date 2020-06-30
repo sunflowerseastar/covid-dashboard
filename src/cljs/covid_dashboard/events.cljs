@@ -32,6 +32,8 @@
           :confirmed-by-us-county confirmed-by-us-county
           :global-deaths global-deaths
           :global-recovered global-recovered
+          :is-fetching false
+          :is-loaded true
           :time-series-confirmed-global time-series-confirmed-global
           :total-confirmed total-confirmed
           :us-states-deaths-recovered us-states-deaths-recovered

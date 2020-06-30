@@ -1,8 +1,38 @@
 (ns covid-dashboard.css
-  (:require [garden.def :refer [defstyles]]))
+  (:require [garden.def :refer [defkeyframes defstyles]]))
+
+(defkeyframes virion-animation
+  [:from {:transform "scale(1.4) translateX(-13%)"}]
+  [:to {:transform "scale(1.4) translateX(-17%)"}])
 
 (defstyles screen
   [:#app {:overflow "hidden"}]
+
+  [:.loader {:position "absolute" :top 0 :left 0 :right 0 :bottom 0 :pointer-events "none"}]
+
+  [:.virion-container {:position "absolute"
+                       :display "block"
+                       :width "23vw"
+                       :height "14vw"
+                       :padding "2.2vw"
+                       :left "50%"
+                       :top "50%"
+                       :transform "translateX(-50%) translateY(-50%)"
+                       :border "1px solid #ddd"}]
+  [:.virion-container-inner {:position "relative"
+                             :box-sizing "border-box"
+                             :width "100%"
+                             :height "100%"
+                             :padding "20px"
+                             :overflow "hidden"}]
+  virion-animation
+  [:.virion {:position "absolute"
+             :display "block"
+             :width "100%"
+             :left 0
+             :top 0
+             :animation [[virion-animation "4s" "cubic-bezier(.38,.09,.47,.98)" "forwards"]]}]
+
   [:.home-page {:height "100vh" :padding "10px" :box-sizing "border-box" :-webkit-font-smoothing "antialiased"}]
 
   [:h3 :h4 {:margin "0.5em 0 0.4em" :text-align "center"}]
@@ -27,11 +57,8 @@
 
   [:.panel {:background "#fdfdfdd1"}]
 
-  [:.sub-panel-container :.fade {:transition "opacity 2s ease-in-out"}
-   [:&.is-active {:opacity "1"}]
-   [:&.is-inactive {:opacity "0"}]]
-
-  [:.controls {:border "3px solid orange"}]
+  [:.sub-panel-container :.fade {:transition "opacity 2s ease-in-out" :opacity 0}
+   [:&.is-active {:opacity "1"}]]
 
   [:.padding-1 {:box-sizing "border-box" :padding "8px 5px 8px 10px"}]
   [:.padding-2 {:box-sizing "border-box" :padding "8px"}]
@@ -51,8 +78,5 @@
                 :stroke-opacity 0.4}]
 
   [:.scroll-y-auto {:overflow-y "auto"}]
-  [:.svg-container {
-                    ;; :border "1px solid"
-                    :position "relative" :top "50%" :transform "translateY(-50%)" :width "100%"
-                    :overflow "visible"
-                    }])
+  [:.svg-container {:position "relative" :top "50%" :transform "translateY(-50%)" :width "100%"
+                    :overflow "visible"}])

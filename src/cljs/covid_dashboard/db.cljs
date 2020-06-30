@@ -7,6 +7,7 @@
    :global-deaths nil
    :global-recovered nil
    :is-fetching false
+   :is-loaded false
    :time-series-confirmed-global nil
    :total-confirmed nil
    :us-states-deaths-recovered nil

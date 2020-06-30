@@ -156,7 +156,6 @@
 (defn map-switcher [sub-panels]
   (reagent/with-let [sub-panel-count (count sub-panels)
                      sps ["Cumulative Confirmed Cases" "US - Confirmed by Population"]]
-
     [v-box :size "1" :children
      [[box :size "1" :child ""]
       [box :size "36px" :child
@@ -165,16 +164,27 @@
          [box :size "1" :child [:p.margin-0-auto (str (get sps @curr-map) " " (inc @curr-map) "/" sub-panel-count)]]
          [box :child [:a.button {:on-click #(reset! curr-map (if (= (inc @curr-map) sub-panel-count) 0 (inc @curr-map)))} "→"]]]]]]]))
 
+(defn loader []
+  (let [is-fetching (re-frame/subscribe [::subs/is-fetching])]
+    [:div.loader.fade {:class (when @is-fetching "is-active")}
+     [:div.virion-container
+      [:div.virion-container-inner
+       [:img.virion {:src "images/virion-sat-fade_500.jpg"}]]]]))
+
 (defn home-page []
-  (let [maps [panel-3-1 panel-3-2]]
+  (let [maps [panel-3-1 panel-3-2]
+        is-loaded (re-frame/subscribe [::subs/is-loaded])]
     (reagent/create-class
      {:display-name "home-page"
       :reagent-render
       (fn [this]
-        [v-box
-         :height "100%"
-         :children [[(get maps @curr-map)]
-                    [h-box :class "home-page" :gap gap-size :children
-                     [[box :size "2" :child [home-col-left]]
-                      [box :size "5" :class "home-col-center" :child [map-switcher maps]]
-                      [box :size "3" :child [home-col-right]]]]]])})))
+        [:<>
+         [loader]
+         [v-box
+          :height "100%"
+          :class (str "fade " (when @is-loaded "is-active"))
+          :children [[(get maps @curr-map)]
+                     [h-box :class "home-page" :gap gap-size :children
+                      [[box :size "2" :child [home-col-left]]
+                       [box :size "5" :class "home-col-center" :child [map-switcher maps]]
+                       [box :size "3" :child [home-col-right]]]]]]])})))
