@@ -1,15 +1,12 @@
 (ns covid-dashboard.views
-  (:require
-   [cljsjs.d3 :as d3]
-   [oz.core :as oz]
-   [covid-dashboard.components :refer [sub-panel-container]]
-   [covid-dashboard.d3s :as d3s]
-   [covid-dashboard.static :refer [gap-size duration-2]]
-   [covid-dashboard.subs :as subs]
-   [covid-dashboard.utility :as utility]
-   [re-com.core :refer [box gap h-box v-box]]
-   [re-frame.core :as re-frame]
-   [reagent.core :as reagent]))
+  (:require [covid-dashboard.components :refer [sub-panel-container]]
+            [covid-dashboard.d3s :as d3s]
+            [covid-dashboard.static :refer [gap-size duration-2]]
+            [covid-dashboard.subs :as subs]
+            [covid-dashboard.utility :as utility]
+            [re-com.core :refer [box gap h-box v-box]]
+            [re-frame.core :as re-frame]
+            [reagent.core :as reagent]))
 
 (defn panel-1 []
   (let [total-confirmed (re-frame/subscribe [::subs/total-confirmed])]
@@ -151,7 +148,7 @@
 (defn panel-3-1 []
   (let [confirmed-by-country (re-frame/subscribe [::subs/confirmed-by-country])]
     (when @confirmed-by-country
-      [:div.panel-3-1.fade.is-active [d3s/world-bubble-map-d3 @confirmed-by-country]])))
+      [:div.panel-3-1 [d3s/world-bubble-map-d3 @confirmed-by-country]])))
 
 (defn panel-3-2 []
   [:div.panel-3-1 [d3s/bubble-map-covid-us-d3]])
@@ -174,7 +171,7 @@
 
 (defn loader []
   (let [is-fetching (re-frame/subscribe [::subs/is-fetching])]
-    [:div.loader.fade {:class (when @is-fetching "is-active")}
+    [:div.loader.fade-duration-3 {:class (when @is-fetching "is-active")}
      [:div.virion-container
       [:div.virion-container-inner
        [:img.virion {:src "images/virion-sat-fade_500.jpg"}]]]]))
@@ -183,7 +180,8 @@
   (let [curr-map (re-frame/subscribe [::subs/curr-map])
         is-loaded (re-frame/subscribe [::subs/is-loaded])
         is-transitioning (re-frame/subscribe [::subs/is-transitioning])
-        map-sub-panels [panel-3-1 panel-3-2]]
+        map-sub-panels [panel-3-1 panel-3-2]
+        ]
     (reagent/create-class
      {:display-name "home-page"
       :reagent-render
@@ -192,8 +190,8 @@
          [loader]
          [v-box
           :height "100%"
-          :class (str "fade " (when @is-loaded "is-active"))
-          :children [[:div.fade-fast {:class (if @is-transitioning "is-inactive" "is-active")}
+          :class (str "fade-duration-3 " (when @is-loaded "is-active"))
+          :children [[:div.fade-duration-2 {:class (if @is-transitioning "is-inactive" "is-active")}
                       [(get map-sub-panels (mod @curr-map (count map-sub-panels)))]]
                      [h-box :class "home-page" :gap gap-size :children
                       [[box :size "2" :child [home-col-left]]

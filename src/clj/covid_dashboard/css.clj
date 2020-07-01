@@ -3,9 +3,9 @@
 
 ;; keep this in sync with static.cljs
 ;; TODO dry
-(def duration-1 220)
-(def duration-2 (* duration-1 2))
-(def duration-3 (* duration-1 6))
+(def duration-1 210)
+(def duration-2 (* duration-1 1.8))
+(def duration-3 (* duration-1 7))
 
 (defkeyframes virion-animation
   [:from {:transform "scale(1.4) translateX(-11%)"}]
@@ -44,8 +44,8 @@
 
   [:.panel {:background "#fdfdfdd1"}]
 
-  [:.fade {:transition (str "opacity " duration-3 "ms ease-in-out") :opacity 0} [:&.is-active {:opacity "1"}]]
-  [:.fade-fast {:transition (str "opacity " duration-2 "ms ease-in-out") :opacity 0} [:&.is-active {:opacity "1"}]]
+  [:.fade-duration-3 {:transition (str "opacity " duration-3 "ms ease-in-out") :opacity 0} [:&.is-active {:opacity "1"}]]
+  [:.fade-duration-2 {:transition (str "opacity " duration-2 "ms ease-in-out") :opacity 0} [:&.is-active {:opacity "1"}]]
 
   [:.padding-1 {:box-sizing "border-box" :padding "8px 5px 8px 10px"}]
   [:.padding-2 {:box-sizing "border-box" :padding "8px"}]

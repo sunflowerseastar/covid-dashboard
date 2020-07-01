@@ -1,18 +1,18 @@
 (ns covid-dashboard.d3s
   "d3.js visualizations and wrapper components"
   (:require
-   [cljsjs.d3 :as d3]
+   cljsjs.d3
    [breaking-point.core :as bp]
-   [covid-dashboard.static :refer [duration-3 duration-1]]
+   [covid-dashboard.static :refer [duration-1 duration-2 duration-3]]
    [covid-dashboard.subs :as subs]
    [covid-dashboard.utility :as utility]
+   d3-array
    [d3-geo-projection :as d3-geo-projection]
    [d3-geo :as d3-geo]
    [goog.string :as gstring]
    [goog.string.format]
    [reagent.core :as reagent]
    [re-frame.core :as re-frame]
-   [tupelo.core :refer [spyx]]
    [topojson-client :as topo]))
 
 (def files-covid ["https://covid-dashboard.sunflowerseastar.com/data/06-14-2020.csv" "https://covid-dashboard.sunflowerseastar.com/data/counties-albers-10m.json"])
@@ -66,7 +66,7 @@
                (.attr "fill", "#f3f3f300")
                (.attr "d" path)
                (.transition)
-               (.duration duration-3)
+               (.duration duration-2)
                (.attr "fill", "#f3f3f3ff"))
 
            (-> g
@@ -337,7 +337,7 @@
                               (.attr "fill", "#f3f3f300"))))
                  (.attr "d" path)
                  (.transition)
-                 (.duration duration-3)
+                 (.duration duration-2)
                  (.attr "fill", "#f3f3f3ff"))
 
              ;; land title

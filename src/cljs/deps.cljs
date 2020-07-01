@@ -1,4 +1,5 @@
 {:npm-deps {"d3" "5.12.0"
+            "d3-array" "2.4.0"
             "d3-geo" "1.12.1"
             "d3-geo-projection" "2.9.0"
             "topojson-client" "3.1.0"}

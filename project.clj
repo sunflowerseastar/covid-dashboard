@@ -1,7 +1,9 @@
 (defproject covid-dashboard "0.1.0-SNAPSHOT"
+  :jvm-opts ["-Dnashorn.args=--language=es6"]
   :dependencies [[breaking-point "0.1.2"]
                  [clj-commons/secretary "1.2.4"]
-                 [cljsjs/d3 "5.12.0-0"]
+                 [cljsjs/d3 "5.12.0-0"
+                  :exclusions [cljsjs/react cljsjs/react-dom cljsjs/react-dom-server cljsjs/create-react-class]]
                  [day8.re-frame/http-fx "v0.2.0"]
                  [day8.re-frame/tracing "0.5.5"]
                  [garden "1.3.10"]
@@ -14,11 +16,7 @@
                  [re-com "2.8.0"]
                  [re-frame "0.12.0"]
                  [reagent "0.10.0"]
-                 [thheller/shadow-cljs "2.9.3"]
-                 [metasoarous/oz "1.6.0-alpha6"
-                  :exclusions [cljsjs/vega cljsjs/vega-lite cljsjs/vega-embed cljsjs/vega-tooltip
-                               cljsjs/react cljsjs/react-dom cljsjs/react-dom-server cljsjs/create-react-class]]
-                 [tupelo "0.9.201"]]
+                 [thheller/shadow-cljs "2.9.3"]]
 
   :plugins [[lein-garden "0.3.0"]
             [lein-shadow "0.2.0"]
@@ -52,7 +50,10 @@
                                :modules {:app {:init-fn covid-dashboard.core/init
                                                :preloads [devtools.preload
                                                           day8.re-frame-10x.preload]}}
-                               :dev {:compiler-options {:closure-defines {re-frame.trace.trace-enabled? true
+                               :dev {:compiler-options {:externs ["externs/externs.js"]
+                                                        :language-in :es6
+                                                        :rewrite-polyfills true
+                                                        :closure-defines {re-frame.trace.trace-enabled? true
                                                                           day8.re-frame.tracing.trace-enabled? true}}}
                                :release {:compiler-options {:optimizations :simple}
                                          :build-options
