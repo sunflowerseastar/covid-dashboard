@@ -1,10 +1,11 @@
 (ns covid-dashboard.css
   (:require [garden.def :refer [defkeyframes defstyles]]))
 
-;; duplicated because clj/cljs
-(def duration-map-in-2 220)
-(def duration-fade-1 (* duration-map-in-2 6))
-(def duration-fade-2 (* duration-map-in-2 2))
+;; keep this in sync with static.cljs
+;; TODO dry
+(def duration-1 220)
+(def duration-2 (* duration-1 2))
+(def duration-3 (* duration-1 6))
 
 (defkeyframes virion-animation
   [:from {:transform "scale(1.4) translateX(-11%)"}]
@@ -43,8 +44,8 @@
 
   [:.panel {:background "#fdfdfdd1"}]
 
-  [:.fade {:transition (str "opacity " duration-fade-1 "ms ease-in-out") :opacity 0} [:&.is-active {:opacity "1"}]]
-  [:.fade-fast {:transition (str "opacity " duration-fade-2 "ms ease-in-out") :opacity 0} [:&.is-active {:opacity "1"}]]
+  [:.fade {:transition (str "opacity " duration-3 "ms ease-in-out") :opacity 0} [:&.is-active {:opacity "1"}]]
+  [:.fade-fast {:transition (str "opacity " duration-2 "ms ease-in-out") :opacity 0} [:&.is-active {:opacity "1"}]]
 
   [:.padding-1 {:box-sizing "border-box" :padding "8px 5px 8px 10px"}]
   [:.padding-2 {:box-sizing "border-box" :padding "8px"}]

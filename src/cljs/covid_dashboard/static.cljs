@@ -1,7 +1,8 @@
 (ns covid-dashboard.static)
 
+;; keep this in sync with css.clj
+;; TODO dry
 (def gap-size "10px")
-(def duration-map-in-2 220)
-(def duration-map-in-1 (* duration-map-in-2 6))
-(def duration-fade-1 (* duration-map-in-2 6))
-(def duration-fade-2 (* duration-map-in-2 2))
+(def duration-1 220)
+(def duration-2 (* duration-1 2))
+(def duration-3 (* duration-1 6))

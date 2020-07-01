@@ -3,7 +3,7 @@
   (:require
    [cljsjs.d3 :as d3]
    [breaking-point.core :as bp]
-   [covid-dashboard.static :refer [duration-map-in-1 duration-map-in-2]]
+   [covid-dashboard.static :refer [duration-3 duration-1]]
    [covid-dashboard.subs :as subs]
    [covid-dashboard.utility :as utility]
    [d3-geo-projection :as d3-geo-projection]
@@ -66,7 +66,7 @@
                (.attr "fill", "#f3f3f300")
                (.attr "d" path)
                (.transition)
-               (.duration duration-map-in-1)
+               (.duration duration-3)
                (.attr "fill", "#f3f3f3ff"))
 
            (-> g
@@ -100,9 +100,9 @@
                       (.attr "transform" #(str "translate(" (.centroid path %) ")"))
                       (.attr "r" 0))))
                (.transition)
-               (.delay duration-map-in-2)
+               (.delay duration-1)
                (.transition)
-               (.duration duration-map-in-1)
+               (.duration duration-3)
                (.attr "r" #(scale-radius (.-value %))))
 
            (-> g
@@ -337,7 +337,7 @@
                               (.attr "fill", "#f3f3f300"))))
                  (.attr "d" path)
                  (.transition)
-                 (.duration duration-map-in-1)
+                 (.duration duration-3)
                  (.attr "fill", "#f3f3f3ff"))
 
              ;; land title
@@ -384,9 +384,9 @@
                               (.attr "transform" (fn [d] (str "translate(" (.centroid path d) ")")))
                               (.attr "r" 0))))
                  (.transition)
-                 (.delay duration-map-in-2)
+                 (.delay duration-1)
                  (.transition)
-                 (.duration duration-map-in-1)
+                 (.duration duration-3)
                  (.attr "r" (fn [d] (radius (aget data (-> d .-properties .-name))))))
 
              (-> g

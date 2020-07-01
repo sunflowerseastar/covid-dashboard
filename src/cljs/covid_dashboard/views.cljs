@@ -4,7 +4,7 @@
    [oz.core :as oz]
    [covid-dashboard.components :refer [sub-panel-container]]
    [covid-dashboard.d3s :as d3s]
-   [covid-dashboard.static :refer [gap-size duration-fade-2]]
+   [covid-dashboard.static :refer [gap-size duration-2]]
    [covid-dashboard.subs :as subs]
    [covid-dashboard.utility :as utility]
    [re-com.core :refer [box gap h-box v-box]]
@@ -162,8 +162,8 @@
                      is-transitioning (re-frame/subscribe [::subs/is-transitioning])
                      sps ["Cumulative Confirmed Cases" "US - Confirmed by Population"]
                      update-map #(do (re-frame/dispatch [:assoc-is-transitioning true])
-                                     (js/setTimeout (fn [] (re-frame/dispatch [:update-curr-map %])) duration-fade-2)
-                                     (js/setTimeout (fn [] (re-frame/dispatch [:assoc-is-transitioning false])) (* duration-fade-2 1.5)))]
+                                     (js/setTimeout (fn [] (re-frame/dispatch [:update-curr-map %])) duration-2)
+                                     (js/setTimeout (fn [] (re-frame/dispatch [:assoc-is-transitioning false])) (* duration-2 1.5)))]
     [v-box :size "1" :children
      [[box :size "1" :child ""]
       [box :size "36px" :child
