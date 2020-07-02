@@ -1,5 +1,6 @@
 (ns covid-dashboard.css
-  (:require [garden.def :refer [defkeyframes defstyles]]))
+  (:require [garden.def :refer [defkeyframes defstyles]]
+            [garden.stylesheet :refer [at-media]]))
 
 ;; keep this in sync with static.cljs
 ;; TODO dry
@@ -17,10 +18,13 @@
   [:.loader {:position "absolute" :top 0 :left 0 :right 0 :bottom 0 :pointer-events "none"}]
 
   [:.virion-container {:position "absolute" :display "block" :width "23vw" :height "14vw"
-                       :padding "2.2vw" :left "50%" :top "50%"
-                       :transform "translateX(-50%) translateY(-50%)" :border "1px solid #ddd"}]
-  [:.virion-container-inner {:position "relative" :box-sizing "border-box" :width "100%" :height "100%"
-                             :padding "20px" :overflow "hidden"}]
+                       :padding "14px" :left "50%" :top "50%"
+                       :transform "translateX(-50%) translateY(-50%)" :border "1px solid #ddd"}
+   (at-media {:min-width "768px"} [:& {:padding "20px"}])
+   (at-media {:min-width "960px"} [:& {:padding "30px"}])
+   (at-media {:min-width "1200px"} [:& {:padding "40px"}])
+   (at-media {:min-width "1600px"} [:& {:padding "48px"}])]
+  [:.virion-container-inner {:position "relative" :box-sizing "border-box" :width "100%" :height "100%" :overflow "hidden"}]
   virion-animation
   [:.virion {:position "absolute" :display "block" :width "100%" :left 0 :top 0
              :animation [[virion-animation "4s" "cubic-bezier(.38,.09,.47,.98)" "forwards"]]}]
