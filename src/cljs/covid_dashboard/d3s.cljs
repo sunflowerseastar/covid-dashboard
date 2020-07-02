@@ -1,6 +1,7 @@
 (ns covid-dashboard.d3s
   "d3.js visualizations and wrapper components"
   (:require
+   [applied-science.js-interop :as j]
    cljsjs.d3
    [breaking-point.core :as bp]
    [covid-dashboard.static :refer [duration-1 duration-2 duration-3]]
@@ -17,112 +18,221 @@
 
 (def files-covid ["https://covid-dashboard.sunflowerseastar.com/data/06-14-2020.csv" "https://covid-dashboard.sunflowerseastar.com/data/counties-albers-10m.json"])
 
-(defn bubble-map-covid [svg-el-id width height]
+(defn bubble-map-covid [svg-el-id width height confirmed-by-county-data data-map-example]
   (-> (.all js/Promise [(.csv js/d3 (first files-covid) #(vector (.-FIPS %) (.-Confirmed %))) (.json js/d3 (second files-covid))])
       (.then
        (fn [[csse-daily-report counties-albers-10m-data]]
-         (let [counties-geometry (aget counties-albers-10m-data "objects" "counties")
-               states-geometry (aget counties-albers-10m-data "objects" "states")
-               nation-geometry (aget counties-albers-10m-data "objects" "nation")
-               geojson (topo/feature counties-albers-10m-data nation-geometry)
-               projection (-> (.geoIdentity js/d3)
-                              (.fitExtent (clj->js [[0 0] [(- width 50) (- height 50)]]) geojson))
+         (let []
+           (.log js/console "hi")
+           (let [counties-topology (aget counties-albers-10m-data "objects" "counties")
+                 states-topology (aget counties-albers-10m-data "objects" "states")
+                 nation-topology (aget counties-albers-10m-data "objects" "nation")
+                 geojson (topo/feature counties-albers-10m-data nation-topology)
+                 projection (-> (.geoIdentity js/d3)
+                                (.fitExtent (clj->js [[0 0] [(- width 50) (- height 50)]]) geojson))
 
-               path (-> (d3-geo/geoPath) (.projection projection))
-               data-map (js/Map.)
-               filtered-csse-daily-report (->> csse-daily-report (filter #(->> % first empty? not)))
-               _ (dorun (map #(.set data-map (->> % first (gstring/format "%05d")) (second %)) filtered-csse-daily-report))
+                 path (-> (d3-geo/geoPath) (.projection projection))
+                 data-map (js/Map.)
+                 filtered-csse-daily-report (->> csse-daily-report (filter #(->> % first empty? not)))
 
-               svg (.. js/d3 (select (str "#" svg-el-id)))
-               g (-> svg (.append "g"))
 
-               data-map-values (->> (.values data-map) (map js/parseInt) clj->js)
-               scale-radius (.scaleSqrt js/d3 (clj->js (.extent js/d3 (.extent js/d3 data-map-values))) (clj->js [1 40]))
+                 data-map-new (->> csse-daily-report
+                         (filter #(and (->> % first empty? not) (->> % second empty? not)))
+                         (reduce #(assoc %1 (->> %2 first (gstring/format "%05d")) (second %2)) {}))
 
-               scale-extent (clj->js [1 12])
-               zoom-k->scaled-zoom-k (.scaleLinear js/d3 scale-extent (clj->js [1 0.3]))
+                 _ (dorun (map #(.set data-map (->> % first (gstring/format "%05d")) (second %)) filtered-csse-daily-report))
 
-               zoomed #(let [transform (-> js/d3 .-event .-transform)
-                             k (.-k transform)
-                             circles (.selectAll g ".g-circles circle")]
-                         (do
-                           (-> circles
-                               (.attr "r" (fn [d]
-                                            (let [scaled-radius (* (zoom-k->scaled-zoom-k k)
-                                                                   (scale-radius (.-value d)))]
-                                              (if (js/isNaN scaled-radius) 0 scaled-radius)))))
-                           (-> (.select g ".g-circles")
-                               (.attr "stroke-width" (* (zoom-k->scaled-zoom-k k) 0.5)))
-                           (-> g (.attr "transform" transform)
-                               (.attr "stroke-width" (/ 1 k)))))
-               my-zoom (-> (.zoom js/d3)
-                           (.scaleExtent scale-extent)
-                           (.on "zoom" zoomed))]
+                 svg (.. js/d3 (select (str "#" svg-el-id)))
+                 g (-> svg (.append "g"))
 
-           (-> svg (.attr "viewBox" (clj->js [0 0 width height])))
+                 ;; data-map-values (->> (.values data-map) (map js/parseInt) clj->js)
+                 data-map-values (->> (vals data-map-new) (map js/parseInt) clj->js)
+                 scale-radius (.scaleSqrt js/d3 (clj->js (.extent js/d3 (.extent js/d3 data-map-values))) (clj->js [1 40]))
 
-           ;; land
-           (-> g
-               (.append "path")
-               (.datum (topo/feature counties-albers-10m-data nation-geometry))
-               (.join "path")
-               (.attr "fill", "#f3f3f300")
-               (.attr "d" path)
-               (.transition)
-               (.duration duration-2)
-               (.attr "fill", "#f3f3f3ff"))
+                 scale-extent (clj->js [1 12])
+                 zoom-k->scaled-zoom-k (.scaleLinear js/d3 scale-extent (clj->js [1 0.3]))
 
-           (-> g
-               (.append "path")
-               (.datum (topo/mesh counties-albers-10m-data states-geometry (fn [a b] (not= a b))))
-               (.attr "fill" "none")
-               (.attr "stroke" "#fff")
-               (.attr "stroke-linejoin" "round")
-               (.attr "d" path))
+                 zoomed #(let [transform (-> js/d3 .-event .-transform)
+                               k (.-k transform)
+                               circles (.selectAll g ".g-circles circle")]
+                           (do
+                             (-> circles
+                                 (.attr "r" (fn [d]
+                                              ;; (.log js/console (.-value d))
+                                              ;; (.log js/console (aget d "value"))
+                                              ;; 8
+                                              (let [scaled-radius (* (zoom-k->scaled-zoom-k k)
+                                                                     (scale-radius (.-value d)))]
+                                                (if (js/isNaN scaled-radius) 0 scaled-radius))
+                                              )))
+                             (-> (.select g ".g-circles")
+                                 (.attr "stroke-width" (* (zoom-k->scaled-zoom-k k) 0.5)))
+                             (-> g (.attr "transform" transform)
+                                 (.attr "stroke-width" (/ 1 k)))))
+                 my-zoom (-> (.zoom js/d3)
+                             (.scaleExtent scale-extent)
+                             (.on "zoom" zoomed))
 
-           ;; marks
-           (-> g
-               (.append "g")
-               (.attr "class" "g-circles")
-               (.attr "fill" "#ff8c94")
-               (.attr "fill-opacity" 0.5)
-               (.attr "stroke" "#fff")
-               (.attr "stroke-width" 0.5)
+                 counties-geojson (->> (topo/feature counties-albers-10m-data counties-topology) (.-features))
 
-               (.selectAll "circle")
-               (.data (->> (topo/feature counties-albers-10m-data counties-geometry)
-                           (.-features)
-                           (js->clj)
-                           (map #(assoc % :value (.get data-map (get % "id"))))
-                           (sort-by :value)
-                           (clj->js)))
-               (.join
-                (fn [enter]
-                  (-> enter
-                      (.append "circle")
-                      (.attr "transform" #(str "translate(" (.centroid path %) ")"))
-                      (.attr "r" 0))))
-               (.transition)
-               (.delay duration-1)
-               (.transition)
-               (.duration duration-3)
-               (.attr "r" #(scale-radius (.-value %))))
+                 ;; counties-geojson-plus-confirmed-values-old (-> counties-geojson
+                 ;;                                            (.map #(j/assoc! % :value (.get data-map (.-id %)))))
 
-           (-> g
-               (.selectAll ".g-circles circle")
-               (.on "click" (fn [d] (.log js/console d)))
-               (.append "title")
-               (.text #(str (-> % .-properties .-name) " – " (utility/nf (.-value %)))))
+                 counties-geojson-plus-confirmed-values (-> counties-geojson
+                        (.map #(j/assoc! % :value (get data-map-new (.-id %))))
+                        (.filter #(j/get % :value))
+                        )
+                 ]
 
-           (-> svg (.call my-zoom)))))))
+             (.log js/console confirmed-by-county-data)
 
-(defn bubble-map-covid-us-d3 []
+             (.log js/console "data-map-new attempt:")
+             (.log js/console csse-daily-report)
+             (.log js/console (->> csse-daily-report
+                                   (filter #(and (->> % first empty? not) (->> % second empty? not)))))
+             (.log js/console (->> csse-daily-report
+                                   (filter #(and (->> % first empty? not) (->> % second empty? not)))
+                                   (reduce #(assoc %1 (->> %2 first (gstring/format "%05d")) (second %2)) {})))
+
+             (.log js/console "2:")
+             (.log js/console (->> csse-daily-report
+                                   (filter #(and (->> % first empty? not) (->> % second empty? not)))
+                                   clj->js))
+             (.log js/console (->> csse-daily-report
+                                   (filter #(and (->> % first empty? not) (->> % second empty? not)))
+                                   (reduce #(assoc %1 (->> %2 first (gstring/format "%05d")) (second %2)) {})
+                                   clj->js))
+
+             (.log js/console "3:")
+             (.log js/console csse-daily-report)
+             (.log js/console (->> csse-daily-report
+                                   clj->js
+                                   (filter #(and (->> % first empty? not) (->> % second empty? not)))
+                                   ))
+             (.log js/console (->> csse-daily-report
+                                   (filter #(and (->> % first empty? not) (->> % second empty? not)))
+                                   clj->js
+                                   ))
+
+             (.log js/console "4:")
+             ;; this is going down the path of making data-map-new a JS object
+             ;; we want this as clojure map {:00504 500} (which is {:<FIPS> <confirmed integer>})
+             (.log js/console csse-daily-report)
+             (.log js/console (-> csse-daily-report
+                                   (.filter #(and (->> % first empty? not) (->> % second empty? not)))
+                                   ))
+             ;; (.log js/console (->> csse-daily-report
+             ;;       clj->js
+             ;;       (filter #(and (->> % first empty? not) (->> % second empty? not)))
+             ;;       (reduce #(assoc %1 (->> %2 first (gstring/format "%05d")) (second %2)) {})
+             ;;       clj->js
+             ;;       ))
+
+             ;; reminder that data-map-example works
+             (.log js/console "data-map lookup attempt:")
+             ;; works
+             (.log js/console data-map-example)
+             (.log js/console (get data-map-example "51001"))
+
+             ;; does now work - seems like data-map-new should be the same as data-map-example - what's different?
+             (.log js/console data-map-new)
+             (.log js/console (get data-map-new "51001"))
+
+             (.log js/console "counties-geojson-plus-confirmed-values attempt:")
+             (.log js/console counties-geojson) ;; worked
+             ;; map did work, assoc'ing corresponding data-map-new look to "value" did not work
+             (.log js/console (-> counties-geojson
+                                  (.map #(j/assoc! % :value (get data-map-new (.-id %))))
+                                  ))
+             ;; did not work
+             ;; (.log js/console (-> counties-geojson
+             ;;            (.map #(j/assoc! % :value (get data-map-new (.-id %))))
+             ;;            (.filter #(j/get % :value))))
+
+             ;; (.log js/console c4)
+             ;; (.log js/console data-map)
+             ;; (.log js/console filtered-csse-daily-report)
+
+             ;; (.log js/console (.get data-map 22105))
+             ;; (.log js/console (.get data-map "22105"))
+
+
+             (-> svg (.attr "viewBox" (clj->js [0 0 width height])))
+
+             ;; land
+             (-> g
+                 (.append "path")
+                 (.datum (topo/feature counties-albers-10m-data nation-topology))
+                 (.join "path")
+                 (.attr "fill", "#f3f3f300")
+                 (.attr "d" path)
+                 (.transition)
+                 (.duration duration-2)
+                 (.attr "fill", "#f3f3f3ff"))
+
+             (-> g
+                 (.append "path")
+                 (.datum (topo/mesh counties-albers-10m-data states-topology (fn [a b] (not= a b))))
+                 (.attr "fill" "none")
+                 (.attr "stroke" "#fff")
+                 (.attr "stroke-linejoin" "round")
+                 (.attr "d" path))
+
+             ;; marks
+             (-> g
+                 (.append "g")
+                 (.attr "class" "g-circles")
+                 (.attr "fill" "#ff8c94")
+                 (.attr "fill-opacity" 0.5)
+                 (.attr "stroke" "#fff")
+                 (.attr "stroke-width" 0.5)
+
+                 (.selectAll "circle")
+                 (.data counties-geojson-plus-confirmed-values)
+                 (.join
+                  (fn [enter]
+                    (-> enter
+                        (.append "circle")
+                        (.attr "transform" #(str "translate(" (.centroid path %) ")"))
+                        (.attr "r" 0))))
+                 (.transition)
+                 (.delay duration-1)
+                 (.transition)
+                 (.duration duration-3)
+                 (.attr "r"
+                        (fn [d]
+                          ;; 3
+                          ;; (.log js/console (if (.-value d) (-> (.-value d) js/parseInt scale-radius) 272727))
+                          ;; (if (.-value d) (.log js/console (-> (.-value d) js/parseInt scale-radius)))
+                          ;; (if (.-value d) (-> (.-value d) js/parseInt scale-radius) 3)
+                          (scale-radius (.-value d))
+                          )
+                        ))
+
+             (-> g
+                 (.selectAll ".g-circles circle")
+                 (.on "click" (fn [d] (.log js/console d)))
+                 (.append "title")
+                 (.text #(str (-> % .-properties .-name) " – " (utility/nf (.-value %)))))
+
+             (-> svg (.call my-zoom))))))))
+
+(defn bubble-map-covid-us-d3 [confirmed-by-county-data]
   (let [width @(re-frame/subscribe [::bp/screen-width])
         height @(re-frame/subscribe [::bp/screen-height])
-        svg-el-id "bubble-map-covid-us-d3-svg-root"]
+        svg-el-id "bubble-map-covid-us-d3-svg-root"
+        ;; data-map-example [{:FIPS "45001" :Confirmed "67"}
+        ;;              {:FIPS "22001" :Confirmed "583"}
+        ;;              {:FIPS "51001" :Confirmed "993"}
+        ;;              {:FIPS "16001" :Confirmed "892"}]
+        data-map-example {"45001" "67"
+                      "22001" "583"
+                      "51001" "993"
+                      "16001" "892"}
+        ]
     (reagent/create-class
      {:display-name "bubble-map-covid-us-d3-component"
-      :component-did-mount (fn [this] (bubble-map-covid svg-el-id width height))
+      :component-did-mount (fn [this] (bubble-map-covid svg-el-id width height confirmed-by-county-data data-map-example))
       :reagent-render (fn [this] [:svg {:id svg-el-id :class "svg-container"}])})))
 
 

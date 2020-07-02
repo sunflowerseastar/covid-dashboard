@@ -7,6 +7,7 @@
                  [day8.re-frame/http-fx "v0.2.0"]
                  [day8.re-frame/tracing "0.5.5"]
                  [garden "1.3.10"]
+                 [applied-science/js-interop "0.2.7"]
                  [ns-tracker "0.4.0"]
                  [org.clojure/clojure "1.10.1"]
                  [org.clojure/clojurescript "1.10.764"
