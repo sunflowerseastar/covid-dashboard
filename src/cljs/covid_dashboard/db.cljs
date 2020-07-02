@@ -4,6 +4,7 @@
   {:confirmed-by-province nil
    :confirmed-by-country nil
    :confirmed-by-us-county nil
+   :confirmed-by-us-county-fips nil
    :curr-map 0
    :global-deaths nil
    :global-recovered nil

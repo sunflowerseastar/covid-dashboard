@@ -151,9 +151,9 @@
       [:div.panel-3-1 [d3s/world-bubble-map-d3 @confirmed-by-country]])))
 
 (defn panel-3-2 []
-  (let [confirmed-by-us-county (re-frame/subscribe [::subs/confirmed-by-us-county])]
-    (when @confirmed-by-us-county
-  [:div.panel-3-1 [d3s/bubble-map-covid-us-d3 @confirmed-by-us-county]])))
+  (let [confirmed-by-us-county-fips (re-frame/subscribe [::subs/confirmed-by-us-county-fips])]
+    (when @confirmed-by-us-county-fips
+  [:div.panel-3-1 [d3s/bubble-map-covid-us-d3 @confirmed-by-us-county-fips]])))
 
 (defn map-switcher [sub-panels]
   (reagent/with-let [sub-panel-count (count sub-panels)

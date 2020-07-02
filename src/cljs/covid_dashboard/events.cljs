@@ -20,6 +20,7 @@
  (fn [db [_ {:keys [confirmed-by-province
                     confirmed-by-country
                     confirmed-by-us-county
+                    confirmed-by-us-county-fips
                     global-deaths
                     global-recovered
                     time-series-confirmed-global
@@ -30,6 +31,7 @@
    (assoc db :confirmed-by-province confirmed-by-province
           :confirmed-by-country confirmed-by-country
           :confirmed-by-us-county confirmed-by-us-county
+          :confirmed-by-us-county-fips confirmed-by-us-county-fips
           :global-deaths global-deaths
           :global-recovered global-recovered
           :is-fetching false

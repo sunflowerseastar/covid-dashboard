@@ -18,7 +18,7 @@
 
 (def files-covid ["https://covid-dashboard.sunflowerseastar.com/data/06-14-2020.csv" "https://covid-dashboard.sunflowerseastar.com/data/counties-albers-10m.json"])
 
-(defn bubble-map-covid [svg-el-id width height confirmed-by-county-data data-map-example]
+(defn bubble-map-covid [svg-el-id width height confirmed-by-us-county-fips data-map-example]
   (-> (.all js/Promise [(.csv js/d3 (first files-covid) #(vector (.-FIPS %) (.-Confirmed %))) (.json js/d3 (second files-covid))])
       (.then
        (fn [[csse-daily-report counties-albers-10m-data]]
@@ -84,7 +84,7 @@
                         )
                  ]
 
-             (.log js/console confirmed-by-county-data)
+             (.log js/console confirmed-by-us-county-fips)
 
              (.log js/console "data-map-new attempt:")
              (.log js/console csse-daily-report)
@@ -217,7 +217,7 @@
 
              (-> svg (.call my-zoom))))))))
 
-(defn bubble-map-covid-us-d3 [confirmed-by-county-data]
+(defn bubble-map-covid-us-d3 [confirmed-by-us-county-fips]
   (let [width @(re-frame/subscribe [::bp/screen-width])
         height @(re-frame/subscribe [::bp/screen-height])
         svg-el-id "bubble-map-covid-us-d3-svg-root"
@@ -232,7 +232,7 @@
         ]
     (reagent/create-class
      {:display-name "bubble-map-covid-us-d3-component"
-      :component-did-mount (fn [this] (bubble-map-covid svg-el-id width height confirmed-by-county-data data-map-example))
+      :component-did-mount (fn [this] (bubble-map-covid svg-el-id width height confirmed-by-us-county-fips data-map-example))
       :reagent-render (fn [this] [:svg {:id svg-el-id :class "svg-container"}])})))
 
 

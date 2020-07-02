@@ -23,6 +23,11 @@
    (:confirmed-by-us-county db)))
 
 (re-frame/reg-sub
+ ::confirmed-by-us-county-fips
+ (fn [db]
+   (:confirmed-by-us-county-fips db)))
+
+(re-frame/reg-sub
  ::curr-map
  (fn [db]
    (:curr-map db)))
