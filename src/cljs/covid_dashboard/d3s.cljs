@@ -16,10 +16,8 @@
    [re-frame.core :as re-frame]
    [topojson-client :as topo]))
 
-(def files-covid ["https://covid-dashboard.sunflowerseastar.com/data/06-14-2020.csv" "https://covid-dashboard.sunflowerseastar.com/data/counties-albers-10m.json"])
-
 (defn bubble-map-covid [svg-el-id width height confirmed-by-us-county-fips]
-  (-> (.json js/d3 "https://covid-dashboard.sunflowerseastar.com/data/counties-albers-10m.json")
+  (-> (.json js/d3 "data/counties-albers-10m.json")
       (.then
        (fn [counties-albers-10m-data]
          (let [counties-topology (aget counties-albers-10m-data "objects" "counties")
@@ -288,7 +286,7 @@
                   (reduce (fn [acc d] (assoc acc (get-name (first d)) (second d))) {})
                   clj->js)
         svg (-> js/d3 (.select (str "#" svg-el-id)))]
-    (-> (.json js/d3 "https://covid-dashboard.sunflowerseastar.com/data/countries-50m.json" #(vector (.-FIPS %) (.-Confirmed %)))
+    (-> (.json js/d3 "data/countries-50m.json" #(vector (.-FIPS %) (.-Confirmed %)))
         (.then
          (fn [world]
            (let [countries-geometry-collection (aget world "objects" "countries")
