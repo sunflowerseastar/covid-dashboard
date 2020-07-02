@@ -37,8 +37,8 @@
 
 
                  data-map-new (->> csse-daily-report
-                         (filter #(and (->> % first empty? not) (->> % second empty? not)))
-                         (reduce #(assoc %1 (->> %2 first (gstring/format "%05d")) (second %2)) {}))
+                                   (filter #(and (->> % first empty? not) (->> % second empty? not)))
+                                   (reduce #(assoc %1 (->> %2 first (gstring/format "%05d")) (second %2)) {}))
 
                  _ (dorun (map #(.set data-map (->> % first (gstring/format "%05d")) (second %)) filtered-csse-daily-report))
 
@@ -47,7 +47,8 @@
 
                  ;; data-map-values (->> (.values data-map) (map js/parseInt) clj->js)
                  data-map-values (->> (vals data-map-new) (map js/parseInt) clj->js)
-                 scale-radius (.scaleSqrt js/d3 (clj->js (.extent js/d3 (.extent js/d3 data-map-values))) (clj->js [1 40]))
+                 scale-radius-old (.scaleSqrt js/d3 (clj->js (.extent js/d3 data-map-values)) (clj->js [1 40]))
+                 scale-radius (.scaleSqrt js/d3 (clj->js (.extent js/d3 (vals confirmed-by-us-county-fips))) (clj->js [1 40]))
 
                  scale-extent (clj->js [1 12])
                  zoom-k->scaled-zoom-k (.scaleLinear js/d3 scale-extent (clj->js [1 0.3]))
@@ -74,87 +75,30 @@
                              (.on "zoom" zoomed))
 
                  counties-geojson (->> (topo/feature counties-albers-10m-data counties-topology) (.-features))
-
-                 ;; counties-geojson-plus-confirmed-values-old (-> counties-geojson
-                 ;;                                            (.map #(j/assoc! % :value (.get data-map (.-id %)))))
-
-                 counties-geojson-plus-confirmed-values (-> counties-geojson
-                        (.map #(j/assoc! % :value (get data-map-new (.-id %))))
-                        (.filter #(j/get % :value))
-                        )
+                 counties-geojson-plus-confirmed-values-2 (-> counties-geojson
+                                                              (.map #(j/assoc! % :value (get confirmed-by-us-county-fips (keyword (.-id %)))))
+                                                              (.filter #(j/get % :value))
+                                                              )
                  ]
 
-             (.log js/console confirmed-by-us-county-fips)
 
-             (.log js/console "data-map-new attempt:")
-             (.log js/console csse-daily-report)
-             (.log js/console (->> csse-daily-report
-                                   (filter #(and (->> % first empty? not) (->> % second empty? not)))))
-             (.log js/console (->> csse-daily-report
-                                   (filter #(and (->> % first empty? not) (->> % second empty? not)))
-                                   (reduce #(assoc %1 (->> %2 first (gstring/format "%05d")) (second %2)) {})))
+             ;; make this work
+             ;; returns NaN
+             (.log js/console (scale-radius-old 500))
+             (.log js/console "HERE")
+             (.log js/console (scale-radius 500))
 
-             (.log js/console "2:")
-             (.log js/console (->> csse-daily-report
-                                   (filter #(and (->> % first empty? not) (->> % second empty? not)))
-                                   clj->js))
-             (.log js/console (->> csse-daily-report
-                                   (filter #(and (->> % first empty? not) (->> % second empty? not)))
-                                   (reduce #(assoc %1 (->> %2 first (gstring/format "%05d")) (second %2)) {})
-                                   clj->js))
-
-             (.log js/console "3:")
-             (.log js/console csse-daily-report)
-             (.log js/console (->> csse-daily-report
-                                   clj->js
-                                   (filter #(and (->> % first empty? not) (->> % second empty? not)))
-                                   ))
-             (.log js/console (->> csse-daily-report
-                                   (filter #(and (->> % first empty? not) (->> % second empty? not)))
-                                   clj->js
-                                   ))
-
-             (.log js/console "4:")
-             ;; this is going down the path of making data-map-new a JS object
-             ;; we want this as clojure map {:00504 500} (which is {:<FIPS> <confirmed integer>})
-             (.log js/console csse-daily-report)
-             (.log js/console (-> csse-daily-report
-                                   (.filter #(and (->> % first empty? not) (->> % second empty? not)))
-                                   ))
-             ;; (.log js/console (->> csse-daily-report
-             ;;       clj->js
-             ;;       (filter #(and (->> % first empty? not) (->> % second empty? not)))
-             ;;       (reduce #(assoc %1 (->> %2 first (gstring/format "%05d")) (second %2)) {})
-             ;;       clj->js
-             ;;       ))
-
-             ;; reminder that data-map-example works
-             (.log js/console "data-map lookup attempt:")
-             ;; works
-             (.log js/console data-map-example)
-             (.log js/console (get data-map-example "51001"))
-
-             ;; does now work - seems like data-map-new should be the same as data-map-example - what's different?
+             ;; figure out data-map-values
              (.log js/console data-map-new)
-             (.log js/console (get data-map-new "51001"))
+             (.log js/console confirmed-by-us-county-fips)
+             ;; (.log js/console (vals data-map-new))
+             ;; (.log js/console (->> (vals data-map-new) (map js/parseInt)))
+             ;; (.log js/console (->> (vals data-map-new) (map js/parseInt) clj->js))
 
-             (.log js/console "counties-geojson-plus-confirmed-values attempt:")
-             (.log js/console counties-geojson) ;; worked
-             ;; map did work, assoc'ing corresponding data-map-new look to "value" did not work
-             (.log js/console (-> counties-geojson
-                                  (.map #(j/assoc! % :value (get data-map-new (.-id %))))
-                                  ))
-             ;; did not work
-             ;; (.log js/console (-> counties-geojson
-             ;;            (.map #(j/assoc! % :value (get data-map-new (.-id %))))
-             ;;            (.filter #(j/get % :value))))
+             ;; (.log js/console (->> (vals data-map-new) (map js/parseInt) vec))
 
-             ;; (.log js/console c4)
-             ;; (.log js/console data-map)
-             ;; (.log js/console filtered-csse-daily-report)
-
-             ;; (.log js/console (.get data-map 22105))
-             ;; (.log js/console (.get data-map "22105"))
+             ;; (.log js/console (.scaleSqrt js/d3 (clj->js (.extent js/d3 data-map-values)) (clj->js [1 40])))
+             ;; (.log js/console (.scaleSqrt js/d3 (clj->js (.extent js/d3 (->> (vals data-map-new) (map js/parseInt) vec))) (clj->js [1 40])))
 
 
              (-> svg (.attr "viewBox" (clj->js [0 0 width height])))
@@ -188,7 +132,7 @@
                  (.attr "stroke-width" 0.5)
 
                  (.selectAll "circle")
-                 (.data counties-geojson-plus-confirmed-values)
+                 (.data counties-geojson-plus-confirmed-values-2)
                  (.join
                   (fn [enter]
                     (-> enter
@@ -202,6 +146,8 @@
                  (.attr "r"
                         (fn [d]
                           ;; 3
+                          ;; (.log js/console (.-value d))
+                          ;; (.log js/console (if (.-value d) (-> (.-value d) js/parseInt scale-radius) 3))
                           ;; (.log js/console (if (.-value d) (-> (.-value d) js/parseInt scale-radius) 272727))
                           ;; (if (.-value d) (.log js/console (-> (.-value d) js/parseInt scale-radius)))
                           ;; (if (.-value d) (-> (.-value d) js/parseInt scale-radius) 3)
@@ -226,9 +172,9 @@
         ;;              {:FIPS "51001" :Confirmed "993"}
         ;;              {:FIPS "16001" :Confirmed "892"}]
         data-map-example {"45001" "67"
-                      "22001" "583"
-                      "51001" "993"
-                      "16001" "892"}
+                          "22001" "583"
+                          "51001" "993"
+                          "16001" "892"}
         ]
     (reagent/create-class
      {:display-name "bubble-map-covid-us-d3-component"
