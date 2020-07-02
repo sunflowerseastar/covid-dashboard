@@ -21,7 +21,10 @@
   (-> (.all js/Promise [(.csv js/d3 (first files-covid) #(vector (.-FIPS %) (.-Confirmed %))) (.json js/d3 (second files-covid))])
       (.then
        (fn [[csse-daily-report counties-albers-10m-data]]
-         (let [geojson (topo/feature counties-albers-10m-data (-> counties-albers-10m-data .-objects .-nation))
+         (let [counties-geometry (aget counties-albers-10m-data "objects" "counties")
+               states-geometry (aget counties-albers-10m-data "objects" "states")
+               nation-geometry (aget counties-albers-10m-data "objects" "nation")
+               geojson (topo/feature counties-albers-10m-data nation-geometry)
                projection (-> (.geoIdentity js/d3)
                               (.fitExtent (clj->js [[0 0] [(- width 50) (- height 50)]]) geojson))
 
@@ -61,7 +64,7 @@
            ;; land
            (-> g
                (.append "path")
-               (.datum (topo/feature counties-albers-10m-data (-> counties-albers-10m-data .-objects .-nation)))
+               (.datum (topo/feature counties-albers-10m-data nation-geometry))
                (.join "path")
                (.attr "fill", "#f3f3f300")
                (.attr "d" path)
@@ -71,7 +74,7 @@
 
            (-> g
                (.append "path")
-               (.datum (topo/mesh counties-albers-10m-data (-> counties-albers-10m-data .-objects .-states) (fn [a b] (not= a b))))
+               (.datum (topo/mesh counties-albers-10m-data states-geometry (fn [a b] (not= a b))))
                (.attr "fill" "none")
                (.attr "stroke" "#fff")
                (.attr "stroke-linejoin" "round")
@@ -87,7 +90,7 @@
                (.attr "stroke-width" 0.5)
 
                (.selectAll "circle")
-               (.data (->> (topo/feature counties-albers-10m-data (-> counties-albers-10m-data .-objects .-counties))
+               (.data (->> (topo/feature counties-albers-10m-data counties-geometry)
                            (.-features)
                            (js->clj)
                            (map #(assoc % :value (.get data-map (get % "id"))))
