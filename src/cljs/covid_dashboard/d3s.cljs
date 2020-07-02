@@ -292,7 +292,8 @@
     (-> (.json js/d3 "https://covid-dashboard.sunflowerseastar.com/data/countries-50m.json" #(vector (.-FIPS %) (.-Confirmed %)))
         (.then
          (fn [world]
-           (let [countries (topo/feature world (-> world .-objects .-countries))
+           (let [countries-geometry-collection (aget world "objects" "countries")
+                 countries (topo/feature world countries-geometry-collection)
                  outline (clj->js {"type" "Sphere"})
                  projection (-> (d3-geo/geoNaturalEarth1)
                                 (.fitExtent (clj->js [[0.5 0.5] [(- width 0.5) (- height 0.5)]]) outline)
@@ -362,7 +363,7 @@
              ;; country borders
              (-> g
                  (.append "path")
-                 (.datum (topo/mesh world (-> world .-objects .-countries) (fn [a b] (not= a b))))
+                 (.datum (topo/mesh world countries-geometry-collection (fn [a b] (not= a b))))
                  (.attr "fill" "none")
                  (.attr "stroke" "#fff")
                  (.attr "stroke-linejoin" "round")
