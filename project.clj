@@ -56,7 +56,7 @@
                                                         :rewrite-polyfills true
                                                         :closure-defines {re-frame.trace.trace-enabled? true
                                                                           day8.re-frame.tracing.trace-enabled? true}}}
-                               :release {:compiler-options {:optimizations :simple}
+                               :release {:compiler-options {:optimizations :advanced}
                                          :build-options
                                          {:ns-aliases
                                           {day8.re-frame.tracing day8.re-frame.tracing-stubs}}}
