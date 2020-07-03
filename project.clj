@@ -17,6 +17,7 @@
                  [re-com "2.8.0"]
                  [re-frame "0.12.0"]
                  [reagent "0.10.0"]
+                 [tupelo "0.9.214"]
                  [thheller/shadow-cljs "2.9.3"]]
 
   :plugins [[lein-garden "0.3.0"]
@@ -51,11 +52,11 @@
                                :modules {:app {:init-fn covid-dashboard.core/init
                                                :preloads [devtools.preload
                                                           day8.re-frame-10x.preload]}}
-                               :dev {:compiler-options {:externs ["externs/externs.js"]
+                               :dev {:compiler-options {:closure-defines {re-frame.trace.trace-enabled? true day8.re-frame.tracing.trace-enabled? true}
+                                                        :externs ["externs/externs.js"]
                                                         :language-in :es6
                                                         :rewrite-polyfills true
-                                                        :closure-defines {re-frame.trace.trace-enabled? true
-                                                                          day8.re-frame.tracing.trace-enabled? true}}}
+                                                        :warnings {:fn-arity false :undeclared-var false}}}
                                :release {:compiler-options {:optimizations :advanced}
                                          :build-options
                                          {:ns-aliases

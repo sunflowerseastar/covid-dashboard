@@ -14,7 +14,8 @@
    [goog.string.format]
    [reagent.core :as reagent]
    [re-frame.core :as re-frame]
-   [topojson-client :as topo]))
+   [topojson-client :as topo]
+   [tupelo.core :refer [spyx]]))
 
 (defn bubble-map-covid [svg-el-id width height confirmed-by-us-county-fips]
   (-> (.json js/d3 "data/counties-albers-10m.json")
