@@ -13,10 +13,9 @@
   [:to {:transform "scale(1.4) translateX(-14%)"}])
 
 (defstyles screen
-  [:#app {:overflow "hidden"}]
+  [:#app {:overflow "hidden" :height "100%"}]
 
   [:.loader {:position "absolute" :top 0 :left 0 :right 0 :bottom 0 :pointer-events "none"}]
-
   [:.virion-container {:position "absolute" :display "block" :width "23vw" :height "14vw"
                        :padding "14px" :left "50%" :top "50%"
                        :transform "translateX(-50%) translateY(-50%)" :border "1px solid #ddd"}

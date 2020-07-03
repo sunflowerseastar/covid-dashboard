@@ -1,5 +1,6 @@
 (ns covid-dashboard.views
   (:require [covid-dashboard.components :refer [sub-panel-container]]
+            [breaking-point.core :as bp]
             [covid-dashboard.d3s :as d3s]
             [covid-dashboard.static :refer [gap-size duration-2]]
             [covid-dashboard.subs :as subs]
@@ -153,7 +154,7 @@
 (defn panel-3-2 []
   (let [confirmed-by-us-county-fips (re-frame/subscribe [::subs/confirmed-by-us-county-fips])]
     (when @confirmed-by-us-county-fips
-  [:div.panel-3-1 [d3s/bubble-map-covid-us-d3 @confirmed-by-us-county-fips]])))
+      [:div.panel-3-1 [d3s/bubble-map-covid-us-d3 @confirmed-by-us-county-fips]])))
 
 (defn map-switcher [sub-panels]
   (reagent/with-let [sub-panel-count (count sub-panels)
@@ -183,19 +184,39 @@
         is-loaded (re-frame/subscribe [::subs/is-loaded])
         is-transitioning (re-frame/subscribe [::subs/is-transitioning])
         map-sub-panels [panel-3-1 panel-3-2]
-        ]
+        screen (re-frame/subscribe [::bp/screen])]
     (reagent/create-class
      {:display-name "home-page"
       :reagent-render
       (fn [this]
         [:<>
          [loader]
-         [v-box
-          :height "100%"
-          :class (str "fade-duration-3 " (when @is-loaded "is-active"))
-          :children [[:div.fade-duration-2 {:class (if @is-transitioning "is-inactive" "is-active")}
-                      [(get map-sub-panels (mod @curr-map (count map-sub-panels)))]]
-                     [h-box :class "home-page" :gap gap-size :children
-                      [[box :size "2" :child [home-col-left]]
-                       [box :size "5" :class "home-col-center" :child [map-switcher map-sub-panels]]
-                       [box :size "3" :child [home-col-right]]]]]]])})))
+         (if (= @screen :mobile)
+           [v-box
+            :height "100%"
+            :class (str "fade-duration-3 " (when @is-loaded "is-active"))
+            :children [[box :size "1" :class "panel" :child
+                        [sub-panel-container
+                         [["Total Confirmed" panel-1]
+                          ["Confirmed Country" panel-2-0]
+                          ["Confirmed State" panel-2-1]
+                          ["Confirmed County" panel-2-2]
+                          ["Confirmed Country" panel-3-1]
+                          ["Confirmed County" panel-3-2]
+                          ["Global Deaths" panel-4-0]
+                          ["Global Recovered" panel-4-1]
+                          ["US Deaths/Recovered" panel-5-1]
+                          ["US Tested" panel-5-2]
+                          ["US Hospitalized" panel-5-3]
+                          ["Global Confirmed" panel-6-0]
+                          ["Global Confirmed" panel-6-1]
+                          ["Global Daily Cases" panel-6-2]]]]]]
+           [v-box
+            :height "100%"
+            :class (str "fade-duration-3 " (when @is-loaded "is-active"))
+            :children [[:div.fade-duration-2 {:class (if @is-transitioning "is-inactive" "is-active")}
+                        [(get map-sub-panels (mod @curr-map (count map-sub-panels)))]]
+                       [h-box :class "home-page" :gap gap-size :children
+                        [[box :size "2" :child [home-col-left]]
+                         [box :size "5" :class "home-col-center" :child [map-switcher map-sub-panels]]
+                         [box :size "3" :child [home-col-right]]]]]])])})))
