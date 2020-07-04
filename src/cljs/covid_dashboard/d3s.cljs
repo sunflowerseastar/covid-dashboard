@@ -105,7 +105,10 @@
 
            (-> g
                (.selectAll ".g-circles circle")
-               (.on "click" (fn [d] (.log js/console d)))
+               (.on "click" (fn [d] (let [county (j/get-in d [:properties :name])
+                                          value (j/get d :value)]
+                                      (do (re-frame/dispatch [:set-active-county county])
+                                          (re-frame/dispatch [:set-active-value value])))))
                (.append "title")
                (.text #(str (-> % .-properties .-name) " – " (utility/nf (.-value %)))))
 
@@ -390,6 +393,10 @@
 
              (-> g
                  (.selectAll ".g-circles circle")
+                 (.on "click" (fn [d] (let [country (j/get-in d [:properties :name])
+                                            value (j/get data country)]
+                                        (do (re-frame/dispatch [:set-active-country country])
+                                            (re-frame/dispatch [:set-active-value value])))))
                  (.append "title")
                  (.text (fn [d] (str (-> d .-properties .-name) " – "
                                      (utility/nf (aget data (-> d .-properties .-name)))))))

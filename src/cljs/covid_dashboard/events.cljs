@@ -16,6 +16,22 @@
  (fn-traced [db [_ active-page]] (assoc db :active-page active-page)))
 
 (re-frame/reg-event-db
+ :set-active-country
+ (fn-traced [db [_ active-country]] (assoc db :active-country active-country)))
+
+(re-frame/reg-event-db
+ :set-active-county
+ (fn-traced [db [_ active-county]] (assoc db :active-county active-county)))
+
+(re-frame/reg-event-db
+ :set-active-value
+ (fn-traced [db [_ active-value]] (assoc db :active-value active-value)))
+
+(re-frame/reg-event-db
+ :clear-actives
+ (fn [db [_ active-value]] (assoc db :active-county nil :active-country nil :active-value nil)))
+
+(re-frame/reg-event-db
  ::assoc-api-all
  (fn [db [_ {:keys [confirmed-by-province
                     confirmed-by-country

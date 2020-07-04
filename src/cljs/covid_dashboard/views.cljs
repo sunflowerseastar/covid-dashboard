@@ -8,6 +8,7 @@
             [covid-dashboard.utility :as utility]
             [re-com.core :refer [box gap h-box v-box]]
             [re-frame.core :as re-frame]
+            [tupelo.core :refer [spyx]]
             [reagent.core :as reagent]))
 
 (defn line-chart-global-confirmed-linear []
@@ -93,11 +94,22 @@
                                      (js/setTimeout (fn [] (re-frame/dispatch [:assoc-is-transitioning false])) (* duration-2 1.5)))]
     [v-box :size "1" :children
      [[box :size "1" :child ""]
+      [box :child (let [county (re-frame/subscribe [:active-county])
+                        country (re-frame/subscribe [:active-country])
+                        value (re-frame/subscribe [:active-value])]
+                    (if (or @county @country)
+                      [:div.panel.z-index-1.padding-1
+                       (when @county [:p [:span.bold "County: "] @county])
+                       (when @country [:p [:span.bold "Country: "] @country])
+                       [:p [:span.bold "Value: "] @value]] ""))]
       [box :size control-bar-height-desktop :child
        [h-box :size "1" :class "children-align-self-center z-index-1 panel" :children
-        [[box :child [:a.button {:on-click #(when (not @is-transitioning) (update-map dec))} "←"]]
+        [[box :child [:a.button {:on-click #(when (not @is-transitioning) (do
+                                                                            (update-map dec)))} "←"]]
          [box :size "1" :child [:p.margin-0-auto (str (get sps (mod @curr-map sub-panel-count)) " " (inc @curr-map) "/" sub-panel-count)]]
-         [box :child [:a.button {:on-click #(when (not @is-transitioning) (update-map inc))} "→"]]]]]]]))
+         [box :child [:a.button {:on-click #(when (not @is-transitioning) (do
+                                                                            (re-frame/dispatch [:clear-actives])
+                                                                            (update-map inc)))} "→"]]]]]]]))
 
 (defn loader []
   (let [is-fetching (re-frame/subscribe [::subs/is-fetching])]

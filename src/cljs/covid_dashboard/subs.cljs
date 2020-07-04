@@ -1,11 +1,27 @@
 (ns covid-dashboard.subs
   (:require
+   [covid-dashboard.utility :as utility]
    [re-frame.core :as re-frame]))
+
+(re-frame/reg-sub
+ :active-country
+ (fn [db _]
+   (:active-country db)))
+
+(re-frame/reg-sub
+ :active-county
+ (fn [db _]
+   (:active-county db)))
 
 (re-frame/reg-sub
  ::active-page
  (fn [db _]
    (:active-page db)))
+
+(re-frame/reg-sub
+ :active-value
+ (fn [db _]
+   (-> (:active-value db) utility/nf)))
 
 (re-frame/reg-sub
  ::confirmed-by-province
