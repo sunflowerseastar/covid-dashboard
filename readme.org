@@ -1,0 +1,98 @@
+* covid-dashboard
+
+Inspired by the excellent [[https://coronavirus.jhu.edu/map.html][COVID-19 Dashboard by the Center for Systems Science and Engineering (CSSE) at Johns Hopkins University]].
+
+** Quick Start
+
+#+begin_src sh
+# local work
+lein dev          # localhost:8280, hot-reload
+lein garden auto  # styles + watcher
+
+# release
+lein prod         # output build -> resources/public/js/compiled/
+#+end_src
+
+** Dependencies
+
+[[https://github.com/Day8/re-frame-template][Re-frame]] framework (which sits on [[https://github.com/reagent-project/reagent][Reagent]]) with [[https://github.com/noprompt/garden][garden]], [[https://github.com/Day8/re-com][re-com]], [[https://github.com/gadfly361/breaking-point][breaking-point]], [[https://github.com/clj-commons/secretary][secretary]], plus other niceties via [[https://github.com/Day8/re-frame-template][re-frame-template]]. [[https://github.com/d3/d3][D3]] visualizations.
+
+** Views, Panels, Sub-panels
+
+#+begin_quote
+The app is constrained to 100% viewport height for all views.
+#+end_quote
+
+Each view (mobile, tablet, desktop) has one or more panels. Each panel contains one or more sub-panels, and can switch through them using the left-button/right-button "switcher." A sub-panel is a representation of data: table, line chart, or map.
+
+*** Mobile
+
+#+begin_src
++---+
+|   |
+| x |
+|   |
++---+
+#+end_src
+
+The mobile view has one panel, with a switcher at the bottom.
+
+*** Tablet
+
+#+begin_src
++---+-----+---+
+| 1 |     | 4 |
++---+     +---+
+|   |  3  | 5 |
+| 2 |     +---+
+|   |     | 6 |
++---+-----+---+
+#+end_src
+
+Each of the 6 panels has its own panel-switcher. Panel 3 is "special" in that the main display panel (that contains maps) spans the full width of the screen (behind the left 1/2 column and the right 4/5/6 column), while the switcher part fits in its expected place in the dom as the middle column.
+
+*** Desktop
+
+#+begin_src
++---+---------+---+---+
+| 1 |         |   |   |
++---+         | 4 | 5 |
+|   |    3    |   |   |
+| 2 |         +---+---+
+|   |         |   6   |
++---+---------+-------+
+#+end_src
+
+The main difference between tablet view and desktop view is that 4 & 5 are vertical instead of horizontal.
+
+** Data
+
+The backend slices and serves the data the way that each sub-panel wants it. One big endpoint delivers it together, originating from the ~init~ fetch event:
+
+#+begin_src clojure
+(defn init []
+  (routes/app-routes)
+  (re-frame/dispatch [:call-api-all]) ;; <-- here
+  (re-frame/dispatch-sync [::events/initialize-db])
+  ;; ...
+#+end_src
+
+The API call (via [[https://github.com/Day8/re-frame-http-fx][re-frame-http-fx]]) responses are divvied out in the re-frame event ~::assoc-api-all~:
+
+ #+begin_src clojure
+(assoc db :confirmed-by-province confirmed-by-province
+       :confirmed-by-country confirmed-by-country
+       :confirmed-by-us-county confirmed-by-us-county
+       ;; ...
+ #+end_src
+
+...and then declared via [[https://github.com/weavejester/hiccup][hiccup]] in the view. Example:
+
+#+begin_src clojure
+[:table [:tbody
+         (map (fn [[value us-county country]]
+                [:tr {:key (str us-county value)}
+                 [:td.bold value]
+                 [:td (str us-county ", " country)]])
+              @confirmed-by-us-county)]]
+#+end_src
