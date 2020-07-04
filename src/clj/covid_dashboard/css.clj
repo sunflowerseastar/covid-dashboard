@@ -8,6 +8,9 @@
 (def duration-2 (* duration-1 1.8))
 (def duration-3 (* duration-1 7))
 
+(def control-bar-height "58px")
+(def control-bar-height-desktop "36px")
+
 (defkeyframes virion-animation
   [:from {:transform "scale(1.4) translateX(-11%)"}]
   [:to {:transform "scale(1.4) translateX(-14%)"}])
@@ -32,12 +35,36 @@
 
   [:h3 :h4 {:margin "0.5em 0 0.4em" :text-align "center"}]
   [:h3 {:font-weight 600 :color "#333" :letter-spacing "0.03em"}]
-  [:h4 {:font-weight 400}]
+  [:h4 {:font-size "15px" :font-weight 400 :letter-spacing "0.03em"}]
+  [:.desktop [:h4 {:font-size "11px"}]]
   [:p {:font-size "0.9em" :letter-spacing "0.03em"}]
   [:a {:cursor "pointer"}]
   [:td {:padding "4px 4px 3px 2px"}]
+  [:.desktop [:td {:padding "4px 4px 3px 2px"}]]
 
-  [:.button {:display "block" :width "30px" :height "36px" :line-height "36px" :text-align "center" :transition "background 120ms"}]
+
+  [:.control-bar-height-box {:height control-bar-height
+                             :border "1px solid blue"
+                             :flex (str "1 1 " control-bar-height)}]
+  [:.button {:display "block"
+             :width "88px"
+             :height control-bar-height
+             :font-size "21px"
+             :color "#ccc"
+             :text-shadow "1px 1px 0 #fff"
+             :line-height control-bar-height
+             :text-align "center"
+             :background "#f4f4f4"
+             :transition "background 120ms"
+             ;; :border "1px solid #555"
+             }]
+  [:.desktop [:.button {:width "30px"
+                        :height control-bar-height-desktop
+                        :line-height control-bar-height-desktop
+                        :font-size "12px"
+                        :color "#aaa"
+                        :background "#f8f8f8"
+                        }]]
   [:.button:hover {:background "#f5f5f5"}]
   [:.button:active {:background "#f2f2f2"}]
 
@@ -62,6 +89,7 @@
   [:.text-align-left {:text-align "left"}]
   [:.text-align-right {:text-align "right"}]
   [:.text-align-center {:text-align "center"}]
+  [:.justify-content-center {:justify-content "center"}]
 
   [:.graticule {:fill "none" :stroke "#eee" :stroke-width ".5px" :stroke-opacity 0.4}]
 

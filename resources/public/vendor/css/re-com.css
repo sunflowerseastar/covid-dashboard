@@ -35,12 +35,12 @@ html, body {
 ----------------------------------------------------------------------------------------*/
 
 ::-webkit-scrollbar {
-  width: 10px;
+  width: 5px;
   border-radius: 5px;
   background-color: rgba(0,0,0,0.05);
   }
 ::-webkit-scrollbar:horizontal {
-  height:10px;
+  height: 5px;
   }
 ::-webkit-scrollbar:hover {
   background-color:rgba(0,0,0,0.20);

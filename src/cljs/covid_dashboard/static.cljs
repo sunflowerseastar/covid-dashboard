@@ -6,3 +6,6 @@
 (def duration-1 220)
 (def duration-2 (* duration-1 2))
 (def duration-3 (* duration-1 6))
+
+(def control-bar-height "58px")
+(def control-bar-height-desktop "36px")
