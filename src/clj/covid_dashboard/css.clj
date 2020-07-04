@@ -28,17 +28,19 @@
   [:.tablet [:table {:padding "0em"}]]
   [:.small-monitor [:table {:padding "0.4em"}]]
   [:.large-monitor [:table {:padding "0.6em"}]]
-  [:td {:padding "4px 4px 3px 2px"}]
-  [:.desktop [:td {:padding "4px 4px 3px 2px"}]]
+  [:td {:padding "4px 6px 3px 3px"
+        :font-size "15px"}]
+  [:.desktop [:td {:padding "4px 4px 3px 2px" :font-size "12px"}]]
 
-  [:.loader {:position "absolute" :top 0 :left 0 :right 0 :bottom 0 :pointer-events "none"}]
-  [:.virion-container {:position "absolute" :display "block" :width "23vw" :height "14vw"
+  [:.loader {:position "absolute" :top 0 :left 0 :right 0 :bottom 0}]
+  [:.virion-container {:position "absolute" :display "block" :width "44vw" :height "28vw"
                        :padding "14px" :left "50%" :top "50%"
                        :transform "translateX(-50%) translateY(-50%)" :border "1px solid #ddd"}
-   (at-media {:min-width "768px"} [:& {:padding "20px"}])
-   (at-media {:min-width "960px"} [:& {:padding "30px"}])
-   (at-media {:min-width "1200px"} [:& {:padding "40px"}])
-   (at-media {:min-width "1600px"} [:& {:padding "48px"}])]
+   (at-media {:min-width "580px"} [:& {:padding "16px" :width "36vw" :height "22vw"}])
+   (at-media {:min-width "768px"} [:& {:padding "18px" :width "21vw" :height "12.5vw"}])
+   (at-media {:min-width "960px"} [:& {:padding "22px"}])
+   (at-media {:min-width "1200px"} [:& {:padding "26px"}])
+   (at-media {:min-width "1600px"} [:& {:padding "34px"}])]
   [:.virion-container-inner {:position "relative" :box-sizing "border-box" :width "100%" :height "100%" :overflow "hidden"}]
   virion-animation
   [:.virion {:position "absolute" :display "block" :width "100%" :left 0 :top 0
@@ -50,7 +52,7 @@
                              :border "1px solid blue"
                              :flex (str "1 1 " control-bar-height)}]
   [:.button {:display "block"
-             :width "88px"
+             :width "80px"
              :height control-bar-height
              :font-size "21px"
              :color "#ccc"
