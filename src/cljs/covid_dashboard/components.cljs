@@ -7,7 +7,9 @@
    [re-frame.core :as re-frame]
    [reagent.core :refer [atom with-let]]))
 
-(defn sub-panel-container [sub-panels]
+(defn sub-panel-container
+  "Takes a vector of title-component pairs, returns a v-box 'switcher' panel"
+  [sub-panels]
   (with-let [curr (atom 0) sub-panel-count (count sub-panels)]
     [v-box :size "1" :children
      [[box :size "1" :class "justify-content-center" :child [(-> (get sub-panels @curr) second)]]

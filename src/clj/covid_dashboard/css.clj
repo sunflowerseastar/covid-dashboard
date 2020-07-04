@@ -32,7 +32,7 @@
         :font-size "15px"}]
   [:.desktop [:td {:padding "4px 4px 3px 2px" :font-size "12px"}]]
 
-  [:.loader {:position "absolute" :top 0 :left 0 :right 0 :bottom 0}]
+  [:.loader {:position "absolute" :top 0 :left 0 :right 0 :bottom 0 :pointer-events "none"}]
   [:.virion-container {:position "absolute" :display "block" :width "44vw" :height "28vw"
                        :padding "14px" :left "50%" :top "50%"
                        :transform "translateX(-50%) translateY(-50%)" :border "1px solid #ddd"}
@@ -98,6 +98,6 @@
 
   [:.graticule {:fill "none" :stroke "#eee" :stroke-width ".5px" :stroke-opacity 0.4}]
 
-  [:.scroll-y-auto {:overflow-y "auto"}]
+  [:.scroll-y-auto {:overflow-y "auto" :-webkit-overflow-scrolling "touch"}]
   [:.svg-container {:position "relative" :top "50%" :transform "translateY(-50%)" :width "100%" :overflow "visible"}]
   [:.svg-pointer-events-none [:svg {:pointer-events "none"}]])
