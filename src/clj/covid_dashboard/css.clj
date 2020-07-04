@@ -18,6 +18,19 @@
 (defstyles screen
   [:#app {:overflow "hidden" :height "100%"}]
 
+  [:h3 :h4 {:margin "0.5em 0 0.4em" :text-align "center"}]
+  [:h3 {:font-weight 600 :color "#333" :letter-spacing "0.03em"}]
+  [:h4 {:font-size "15px" :font-weight 400 :letter-spacing "0.03em"}]
+  [:.desktop [:h4 {:font-size "11px"}]]
+  [:p {:font-size "0.9em" :letter-spacing "0.03em"}]
+  [:a {:cursor "pointer"}]
+  [:table {:padding "0 1em"}]
+  [:.tablet [:table {:padding "0em"}]]
+  [:.small-monitor [:table {:padding "0.4em"}]]
+  [:.large-monitor [:table {:padding "0.6em"}]]
+  [:td {:padding "4px 4px 3px 2px"}]
+  [:.desktop [:td {:padding "4px 4px 3px 2px"}]]
+
   [:.loader {:position "absolute" :top 0 :left 0 :right 0 :bottom 0 :pointer-events "none"}]
   [:.virion-container {:position "absolute" :display "block" :width "23vw" :height "14vw"
                        :padding "14px" :left "50%" :top "50%"
@@ -32,16 +45,6 @@
              :animation [[virion-animation "4s" "cubic-bezier(.38,.09,.47,.98)" "forwards"]]}]
 
   [:.home-page {:height "100vh" :padding "10px" :box-sizing "border-box" :-webkit-font-smoothing "antialiased"}]
-
-  [:h3 :h4 {:margin "0.5em 0 0.4em" :text-align "center"}]
-  [:h3 {:font-weight 600 :color "#333" :letter-spacing "0.03em"}]
-  [:h4 {:font-size "15px" :font-weight 400 :letter-spacing "0.03em"}]
-  [:.desktop [:h4 {:font-size "11px"}]]
-  [:p {:font-size "0.9em" :letter-spacing "0.03em"}]
-  [:a {:cursor "pointer"}]
-  [:td {:padding "4px 4px 3px 2px"}]
-  [:.desktop [:td {:padding "4px 4px 3px 2px"}]]
-
 
   [:.control-bar-height-box {:height control-bar-height
                              :border "1px solid blue"

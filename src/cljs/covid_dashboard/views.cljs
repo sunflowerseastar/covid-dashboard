@@ -226,7 +226,7 @@
                           ["Global Daily Cases" panel-6-2]]]]]]
            [v-box
             :height "100%"
-            :class (str "desktop fade-duration-3 " (when @is-loaded "is-active"))
+            :class (str (name @(re-frame/subscribe [::bp/screen])) " desktop fade-duration-3 " (when @is-loaded "is-active"))
             :children [[:div.fade-duration-2 {:class (if @is-transitioning "is-inactive" "is-active")}
                         [(get map-sub-panels (mod @curr-map (count map-sub-panels)))]]
                        [h-box :class "home-page" :gap gap-size :children
