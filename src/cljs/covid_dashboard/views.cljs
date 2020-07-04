@@ -9,12 +9,12 @@
             [re-frame.core :as re-frame]
             [reagent.core :as reagent]))
 
-(defn panel-1 []
+(defn table-totals []
   (let [total-confirmed (re-frame/subscribe [::subs/total-confirmed])]
     (when @total-confirmed
       [:div.padding-1 [:h4 "Total Confirmed"] [:h3 (utility/nf @total-confirmed)]])))
 
-(defn panel-2-0 []
+(defn table-confirmed-country []
   (let [confirmed-by-country (re-frame/subscribe [::subs/confirmed-by-country])]
     (when @confirmed-by-country
       [v-box :size "1" :children
@@ -25,7 +25,7 @@
                                  [:td.bold (utility/nf value)] [:td country]])
                               @confirmed-by-country)]]]]])))
 
-(defn panel-2-1 []
+(defn table-confirmed-state []
   (let [confirmed-by-province (re-frame/subscribe [::subs/confirmed-by-province])]
     (when @confirmed-by-province
       [v-box :size "1" :children
@@ -35,7 +35,7 @@
                                 [:tr {:key (str province value)} [:td.bold (utility/nf value)] [:td (str province ", " country)]])
                               @confirmed-by-province)]]]]])))
 
-(defn panel-2-2 []
+(defn table-confirmed-county []
   (let [confirmed-by-us-county (re-frame/subscribe [::subs/confirmed-by-us-county])]
     (when @confirmed-by-us-county
       [v-box :size "1" :children
@@ -45,7 +45,7 @@
                                 [:tr {:key (str us-county value)} [:td.bold (utility/nf value)] [:td (str us-county ", " country)]])
                               @confirmed-by-us-county)]]]]])))
 
-(defn panel-4-0 []
+(defn table-global-deaths []
   (let [global-deaths (re-frame/subscribe [::subs/global-deaths])]
     (when-let [{:keys [deaths-by-country total-deaths]} @global-deaths]
       [v-box :size "1" :children
@@ -55,7 +55,7 @@
                                 [:tr {:key (str country value)} [:td.bold (utility/nf value)] [:td country]])
                               deaths-by-country)]]]]])))
 
-(defn panel-4-1 []
+(defn table-global-recovered []
   (let [global-recovered (re-frame/subscribe [::subs/global-recovered])]
     (when-let [{:keys [recovered-by-country total-recovered]} @global-recovered]
       [v-box :size "1" :children
@@ -65,7 +65,7 @@
                                 [:tr {:key (str country value)} [:td.bold (utility/nf value)] [:td country]])
                               recovered-by-country)]]]]])))
 
-(defn panel-5-1 []
+(defn table-us-deaths-recovered []
   (let [us-states-deaths-recovered (re-frame/subscribe [::subs/us-states-deaths-recovered])]
     (when @us-states-deaths-recovered
       [v-box :size "1" :children
@@ -76,7 +76,7 @@
                                  [:td {:class (if recovered "bold" "light")} (if recovered (utility/nf recovered) "n/a")] [:td state]])
                               @us-states-deaths-recovered)]]]]])))
 
-(defn panel-5-2 []
+(defn table-us-tested []
   (let [us-states-tested (re-frame/subscribe [::subs/us-states-tested])]
     (when-let [{:keys [tested-by-state total-tested]} @us-states-tested]
       [v-box :size "1" :children
@@ -86,7 +86,7 @@
                                 [:tr {:key state} [:td.bold (utility/nf tested)] [:td state]])
                               tested-by-state)]]]]])))
 
-(defn panel-5-3 []
+(defn table-us-hospitalized []
   (let [us-states-hospitalized (re-frame/subscribe [::subs/us-states-hospitalized])]
     (when @us-states-hospitalized
       [v-box :size "1" :children
@@ -96,17 +96,17 @@
                                 [:tr {:key state} [:td.bold (utility/nf hospitalized)] [:td state]])
                               @us-states-hospitalized)]]]]])))
 
-(defn panel-6-0 []
+(defn line-chart-global-confirmed-linear []
   (let [time-series-confirmed-global (re-frame/subscribe [::subs/time-series-confirmed-global])]
     (when @time-series-confirmed-global
       [:div.panel-interior.padding-2 [d3s/line-chart-d3 @time-series-confirmed-global]])))
 
-(defn panel-6-1 []
+(defn line-chart-global-confirmed-log []
   (let [time-series-confirmed-global (re-frame/subscribe [::subs/time-series-confirmed-global])]
     (when @time-series-confirmed-global
       [:div.panel-interior.padding-2 [d3s/line-chart-log-d3 @time-series-confirmed-global]])))
 
-(defn panel-6-2 []
+(defn line-chart-global-daily-cases []
   (let [time-series-confirmed-global (re-frame/subscribe [::subs/time-series-confirmed-global])]
     (when @time-series-confirmed-global
       (let [daily-cases-data (->> @time-series-confirmed-global
@@ -119,11 +119,11 @@
    :class "home-col-left"
    :gap gap-size
    :size "auto"
-   :children [[box :class "panel" :child [panel-1]]
+   :children [[box :class "panel" :child [table-totals]]
               [box :size "1" :class "panel" :child
-               [sub-panel-container [["Confirmed Country" panel-2-0]
-                                     ["Confirmed State" panel-2-1]
-                                     ["Confirmed County" panel-2-2]]]]]])
+               [sub-panel-container [["Confirmed Country" table-confirmed-country]
+                                     ["Confirmed State" table-confirmed-state]
+                                     ["Confirmed County" table-confirmed-county]]]]]])
 
 (defn home-col-right []
   [v-box
@@ -135,39 +135,39 @@
                 ;; ...tablet - above and below
                 [:<>
                  [box :size "1" :class "panel" :child
-                  [sub-panel-container [["Global Deaths" panel-4-0]
-                                        ["Global Recovered" panel-4-1]]]]
+                  [sub-panel-container [["Global Deaths" table-global-deaths]
+                                        ["Global Recovered" table-global-recovered]]]]
                  [box :size "1" :class "panel" :child
-                  [sub-panel-container [["US Deaths/Recovered" panel-5-1]
-                                        ["US Tested" panel-5-2]
-                                        ["US Hospitalized" panel-5-3]]]]]
+                  [sub-panel-container [["US Deaths/Recovered" table-us-deaths-recovered]
+                                        ["US Tested" table-us-tested]
+                                        ["US Hospitalized" table-us-hospitalized]]]]]
                 ;; ...desktop - side by side
                 [box :size "1" :child
                  [h-box :size "1" :gap gap-size :children
                   [[box :size "4" :class "panel" :child
-                    [sub-panel-container [["Global Deaths" panel-4-0]
-                                          ["Global Recovered" panel-4-1]]]]
+                    [sub-panel-container [["Global Deaths" table-global-deaths]
+                                          ["Global Recovered" table-global-recovered]]]]
                    [box :size "5" :class "panel" :child
-                    [sub-panel-container [["US Deaths/Recovered" panel-5-1]
-                                          ["US Tested" panel-5-2]
-                                          ["US Hospitalized" panel-5-3]]]]]]])
+                    [sub-panel-container [["US Deaths/Recovered" table-us-deaths-recovered]
+                                          ["US Tested" table-us-tested]
+                                          ["US Hospitalized" table-us-hospitalized]]]]]]])
               ;; panel 6, same either way
               [box :class "panel svg-pointer-events-none" :size "255px" :child
-               [sub-panel-container [["Global Confirmed" panel-6-0]
-                                     ["Global Confirmed" panel-6-1]
-                                     ["Global Daily Cases" panel-6-2]]]]]])
+               [sub-panel-container [["Global Confirmed" line-chart-global-confirmed-linear]
+                                     ["Global Confirmed" line-chart-global-confirmed-log]
+                                     ["Global Daily Cases" line-chart-global-daily-cases]]]]]])
 
 (def curr-map-old (reagent/atom 0))
 
-(defn panel-3-1 []
+(defn map-world-confirmed-by-country []
   (let [confirmed-by-country (re-frame/subscribe [::subs/confirmed-by-country])]
     (when @confirmed-by-country
-      [:div.panel-3-1 [d3s/world-bubble-map-d3 @confirmed-by-country]])))
+      [:div.u-absolute-all [d3s/world-bubble-map-d3 @confirmed-by-country]])))
 
-(defn panel-3-2 []
+(defn map-us-confirmed-by-county []
   (let [confirmed-by-us-county-fips (re-frame/subscribe [::subs/confirmed-by-us-county-fips])]
     (when @confirmed-by-us-county-fips
-      [:div.panel-3-1 [d3s/bubble-map-covid-us-d3 @confirmed-by-us-county-fips]])))
+      [:div.u-absolute-all [d3s/bubble-map-covid-us-d3 @confirmed-by-us-county-fips]])))
 
 (defn map-switcher [sub-panels]
   (reagent/with-let [sub-panel-count (count sub-panels)
@@ -196,7 +196,7 @@
   (let [curr-map (re-frame/subscribe [::subs/curr-map])
         is-loaded (re-frame/subscribe [::subs/is-loaded])
         is-transitioning (re-frame/subscribe [::subs/is-transitioning])
-        map-sub-panels [panel-3-1 panel-3-2]
+        map-sub-panels [map-world-confirmed-by-country map-us-confirmed-by-county]
         screen (re-frame/subscribe [::bp/screen])]
     (reagent/create-class
      {:display-name "home-page"
@@ -210,20 +210,20 @@
             :class (str "fade-duration-3 " (when @is-loaded "is-active"))
             :children [[box :size "1" :class "panel" :child
                         [sub-panel-container
-                         [["Total Confirmed" panel-1]
-                          ["Confirmed Country" panel-2-0]
-                          ["Confirmed State" panel-2-1]
-                          ["Confirmed County" panel-2-2]
-                          ["Confirmed Country" panel-3-1]
-                          ["Confirmed County" panel-3-2]
-                          ["Global Deaths" panel-4-0]
-                          ["Global Recovered" panel-4-1]
-                          ["US Deaths/Recovered" panel-5-1]
-                          ["US Tested" panel-5-2]
-                          ["US Hospitalized" panel-5-3]
-                          ["Global Confirmed" panel-6-0]
-                          ["Global Confirmed" panel-6-1]
-                          ["Global Daily Cases" panel-6-2]]]]]]
+                         [["Total Confirmed" table-totals]
+                          ["Confirmed Country" table-confirmed-country]
+                          ["Confirmed State" table-confirmed-state]
+                          ["Confirmed County" table-confirmed-county]
+                          ["Confirmed Country" map-world-confirmed-by-country]
+                          ["Confirmed County" map-us-confirmed-by-county]
+                          ["Global Deaths" table-global-deaths]
+                          ["Global Recovered" table-global-recovered]
+                          ["US Deaths/Recovered" table-us-deaths-recovered]
+                          ["US Tested" table-us-tested]
+                          ["US Hospitalized" table-us-hospitalized]
+                          ["Global Confirmed" line-chart-global-confirmed-linear]
+                          ["Global Confirmed" line-chart-global-confirmed-log]
+                          ["Global Daily Cases" line-chart-global-daily-cases]]]]]]
            [v-box
             :height "100%"
             :class (str (when (not (nil? @screen)) (name @screen)) " desktop fade-duration-3 " (when @is-loaded "is-active"))

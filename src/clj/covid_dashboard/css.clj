@@ -75,7 +75,6 @@
 
   [:.home-col-left :.home-col-right {:z-index 1}]
 
-  [:.panel-3-1 {:position "absolute" :left 0 :top 0 :bottom 0 :width "100%"}]
   [:#line-chart-root-svg {:height "200px"}]
 
   [:.panel {:background "#fdfdfdd1"}]
@@ -89,6 +88,7 @@
   [:.bold {:font-weight 600}]
   [:.light {:font-weight 300 :color "#555"}]
 
+  [:.u-absolute-all {:position "absolute" :left 0 :right 0 :top 0 :bottom 0}]
   [:.margin-0-auto {:margin "0 auto"}]
   [:.children-align-self-center [:div {:align-self "center"}]]
   [:.text-align-left {:text-align "left"}]
