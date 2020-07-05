@@ -1,5 +1,6 @@
 (ns covid-dashboard.views
   (:require [covid-dashboard.components :refer [sub-panel-container sub-panel-container-mobile]]
+            [covid-dashboard.line-charts :as line-charts]
             [covid-dashboard.tables :as tables]
             [breaking-point.core :as bp]
             [covid-dashboard.d3s :as d3s]
@@ -9,24 +10,6 @@
             [re-com.core :refer [box gap h-box v-box]]
             [re-frame.core :as re-frame]
             [reagent.core :as reagent]))
-
-(defn line-chart-global-confirmed-linear []
-  (let [time-series-confirmed-global (re-frame/subscribe [::subs/time-series-confirmed-global])]
-    (when @time-series-confirmed-global
-      [:div.panel-interior.padding-2 [d3s/line-chart-d3 @time-series-confirmed-global]])))
-
-(defn line-chart-global-confirmed-log []
-  (let [time-series-confirmed-global (re-frame/subscribe [::subs/time-series-confirmed-global])]
-    (when @time-series-confirmed-global
-      [:div.panel-interior.padding-2 [d3s/line-chart-log-d3 @time-series-confirmed-global]])))
-
-(defn line-chart-global-daily-cases []
-  (let [time-series-confirmed-global (re-frame/subscribe [::subs/time-series-confirmed-global])]
-    (when @time-series-confirmed-global
-      (let [daily-cases-data (->> @time-series-confirmed-global
-                                  (partition 2 1)
-                                  (map (fn [[[_ yesterday] [date today]]] (vector date (- today yesterday)))))]
-        [:div.panel-interior.padding-2 [d3s/line-chart-d3 daily-cases-data]]))))
 
 (defn home-col-left []
   [v-box
@@ -67,9 +50,9 @@
                                           ["US Hospitalized" tables/table-us-hospitalized]]]]]]])
               ;; panel 6, same either way
               [box :class "panel svg-pointer-events-none" :size "255px" :child
-               [sub-panel-container [["Global Confirmed" line-chart-global-confirmed-linear]
-                                     ["Global Confirmed" line-chart-global-confirmed-log]
-                                     ["Global Daily Cases" line-chart-global-daily-cases]]]]]])
+               [sub-panel-container [["Global Confirmed" line-charts/line-chart-global-confirmed-linear]
+                                     ["Global Confirmed" line-charts/line-chart-global-confirmed-log]
+                                     ["Global Daily Cases" line-charts/line-chart-global-daily-cases]]]]]])
 
 (def curr-map-old (reagent/atom 0))
 
@@ -145,9 +128,9 @@
                           ["US Deaths/Recovered" tables/table-us-deaths-recovered]
                           ["US Tested" tables/table-us-tested]
                           ["US Hospitalized" tables/table-us-hospitalized]
-                          ["Global Confirmed" line-chart-global-confirmed-linear]
-                          ["Global Confirmed" line-chart-global-confirmed-log]
-                          ["Global Daily Cases" line-chart-global-daily-cases]]]]]]
+                          ["Global Confirmed" line-charts/line-chart-global-confirmed-linear]
+                          ["Global Confirmed" line-charts/line-chart-global-confirmed-log]
+                          ["Global Daily Cases" line-charts/line-chart-global-daily-cases]]]]]]
            [v-box
             :height "100%"
             :class (str (when (not (nil? @screen)) (name @screen)) " desktop fade-duration-3 " (when @is-loaded "is-active"))
