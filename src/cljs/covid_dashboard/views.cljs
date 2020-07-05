@@ -1,5 +1,5 @@
 (ns covid-dashboard.views
-  (:require [covid-dashboard.components :refer [sub-panel-container]]
+  (:require [covid-dashboard.components :refer [sub-panel-container sub-panel-container-mobile]]
             [covid-dashboard.tables :as tables]
             [breaking-point.core :as bp]
             [covid-dashboard.d3s :as d3s]
@@ -8,7 +8,6 @@
             [covid-dashboard.utility :as utility]
             [re-com.core :refer [box gap h-box v-box]]
             [re-frame.core :as re-frame]
-            [tupelo.core :refer [spyx]]
             [reagent.core :as reagent]))
 
 (defn line-chart-global-confirmed-linear []
@@ -104,12 +103,11 @@
                        [:p [:span.bold "Value: "] @value]] ""))]
       [box :size control-bar-height-desktop :child
        [h-box :size "1" :class "children-align-self-center z-index-1 panel" :children
-        [[box :child [:a.button {:on-click #(when (not @is-transitioning) (do
-                                                                            (update-map dec)))} "←"]]
+        [[box :child [:a.button {:on-click #(when (not @is-transitioning) (do (re-frame/dispatch [:clear-actives])
+                                                                              (update-map dec)))} "←"]]
          [box :size "1" :child [:p.margin-0-auto (str (get sps (mod @curr-map sub-panel-count)) " " (inc @curr-map) "/" sub-panel-count)]]
-         [box :child [:a.button {:on-click #(when (not @is-transitioning) (do
-                                                                            (re-frame/dispatch [:clear-actives])
-                                                                            (update-map inc)))} "→"]]]]]]]))
+         [box :child [:a.button {:on-click #(when (not @is-transitioning) (do (re-frame/dispatch [:clear-actives])
+                                                                              (update-map inc)))} "→"]]]]]]]))
 
 (defn loader []
   (let [is-fetching (re-frame/subscribe [::subs/is-fetching])]
@@ -135,7 +133,7 @@
             :height "100%"
             :class (str "fade-duration-3 " (when @is-loaded "is-active"))
             :children [[box :size "1" :class "panel" :child
-                        [sub-panel-container
+                        [sub-panel-container-mobile
                          [["Total Confirmed" tables/table-totals]
                           ["Confirmed County" map-us-confirmed-by-county]
                           ["Confirmed Country" map-world-confirmed-by-country]
