@@ -1,4 +1,4 @@
-(ns covid-dashboard.d3s
+(ns covid-dashboard.maps
   "d3.js visualizations and wrapper components"
   (:require
    [applied-science.js-interop :as j]

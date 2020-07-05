@@ -3,7 +3,7 @@
             [covid-dashboard.line-charts :as line-charts]
             [covid-dashboard.tables :as tables]
             [breaking-point.core :as bp]
-            [covid-dashboard.d3s :as d3s]
+            [covid-dashboard.maps :as maps]
             [covid-dashboard.static :refer [control-bar-height-desktop gap-size duration-2]]
             [covid-dashboard.subs :as subs]
             [covid-dashboard.utility :as utility]
@@ -59,12 +59,12 @@
 (defn map-world-confirmed-by-country []
   (let [confirmed-by-country (re-frame/subscribe [::subs/confirmed-by-country])]
     (when @confirmed-by-country
-      [:div.u-absolute-all [d3s/world-bubble-map-d3 @confirmed-by-country]])))
+      [:div.u-absolute-all [maps/world-bubble-map-d3 @confirmed-by-country]])))
 
 (defn map-us-confirmed-by-county []
   (let [confirmed-by-us-county-fips (re-frame/subscribe [::subs/confirmed-by-us-county-fips])]
     (when @confirmed-by-us-county-fips
-      [:div.u-absolute-all [d3s/bubble-map-covid-us-d3 @confirmed-by-us-county-fips]])))
+      [:div.u-absolute-all [maps/bubble-map-covid-us-d3 @confirmed-by-us-county-fips]])))
 
 (defn map-switcher [sub-panels]
   (reagent/with-let [sub-panel-count (count sub-panels)
