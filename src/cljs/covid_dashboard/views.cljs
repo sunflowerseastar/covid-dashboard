@@ -70,6 +70,7 @@
         is-loaded (subscribe [::subs/is-loaded])
         is-switching (subscribe [::subs/is-switching])
         map-sub-panels [["US - Confirmed by Population" maps/map-us-confirmed-by-county]
+                        ["US - Confirmed by Population" maps/map-us-chloropleth-confirmed-by-county]
                         ["Cumulative Confirmed Cases" maps/map-world-confirmed-by-country]]
         screen (subscribe [::bp/screen])
         is-left-panel-open (atom true)
@@ -101,6 +102,7 @@
                           [display-and-info-panel-and-local-switcher
                            [["Total Confirmed" tables/table-totals]
                             ["Confirmed County" maps/map-us-confirmed-by-county]
+                            ["Confirmed County" maps/map-us-chloropleth-confirmed-by-county]
                             ["Confirmed Country" maps/map-world-confirmed-by-country]
                             ["Confirmed Country" tables/table-confirmed-country]
                             ["Confirmed State" tables/table-confirmed-state]
