@@ -1,6 +1,6 @@
 (ns covid-dashboard.views
   (:require [applied-science.js-interop :as j]
-            [covid-dashboard.components :refer [map-switcher sub-panel-container sub-panel-container-mobile]]
+            [covid-dashboard.components :refer [info-panel-and-global-switcher display-and-local-switcher display-and-info-panel-and-local-switcher]]
             [covid-dashboard.line-charts :as line-charts]
             [covid-dashboard.tables :as tables]
             [breaking-point.core :as bp]
@@ -20,7 +20,7 @@
    :size "auto"
    :children [[box :class "panel" :child [tables/table-totals]]
               [box :size "1" :class "panel" :child
-               [sub-panel-container [["Confirmed Country" tables/table-confirmed-country]
+               [display-and-local-switcher [["Confirmed Country" tables/table-confirmed-country]
                                      ["Confirmed State" tables/table-confirmed-state]
                                      ["Confirmed County" tables/table-confirmed-county]]]]]])
 
@@ -34,25 +34,25 @@
                 ;; ...tablet - above and below
                 [:<>
                  [box :size "1" :class "panel" :child
-                  [sub-panel-container [["Global Deaths" tables/table-global-deaths]
+                  [display-and-local-switcher [["Global Deaths" tables/table-global-deaths]
                                         ["Global Recovered" tables/table-global-recovered]]]]
                  [box :size "1" :class "panel" :child
-                  [sub-panel-container [["US Deaths/Recovered" tables/table-us-deaths-recovered]
+                  [display-and-local-switcher [["US Deaths/Recovered" tables/table-us-deaths-recovered]
                                         ["US Tested" tables/table-us-tested]
                                         ["US Hospitalized" tables/table-us-hospitalized]]]]]
                 ;; ...desktop - side by side
                 [box :size "1" :child
                  [h-box :size "1" :gap gap-size :children
                   [[box :size "4" :class "panel" :child
-                    [sub-panel-container [["Global Deaths" tables/table-global-deaths]
+                    [display-and-local-switcher [["Global Deaths" tables/table-global-deaths]
                                           ["Global Recovered" tables/table-global-recovered]]]]
                    [box :size "5" :class "panel" :child
-                    [sub-panel-container [["US Deaths/Recovered" tables/table-us-deaths-recovered]
+                    [display-and-local-switcher [["US Deaths/Recovered" tables/table-us-deaths-recovered]
                                           ["US Tested" tables/table-us-tested]
                                           ["US Hospitalized" tables/table-us-hospitalized]]]]]]])
               ;; panel 6, same either way
               [box :class "panel svg-pointer-events-none" :size "255px" :child
-               [sub-panel-container [["Global Confirmed" line-charts/line-chart-global-confirmed-linear]
+               [display-and-local-switcher [["Global Confirmed" line-charts/line-chart-global-confirmed-linear]
                                      ["Global Confirmed" line-charts/line-chart-global-confirmed-log]
                                      ["Global Daily Cases" line-charts/line-chart-global-daily-cases]]]]]])
 
@@ -96,7 +96,7 @@
               :height "100%"
               :class (str "fade-duration-3 " (when @is-loaded "is-active"))
               :children [[box :size "1" :class "panel" :child
-                          [sub-panel-container-mobile
+                          [display-and-info-panel-and-local-switcher
                            [["Total Confirmed" tables/table-totals]
                             ["Confirmed County" maps/map-us-confirmed-by-county]
                             ["Confirmed Country" maps/map-world-confirmed-by-country]
@@ -119,5 +119,5 @@
                           [(->> (mod @curr-map (count map-sub-panels)) (get map-sub-panels) second)]]
                          [h-box :class "home-page" :gap gap-size :children
                           [[box :size (if (= @screen :tablet) (if @is-left-panel-open "2" "0") (if @is-left-panel-open "220px" "0")) :child [home-col-left]]
-                           [box :size (if (= @screen :tablet) "4" "auto") :class "home-col-center" :child [map-switcher map-sub-panels]]
+                           [box :size (if (= @screen :tablet) "4" "auto") :class "home-col-center" :child [info-panel-and-global-switcher map-sub-panels]]
                            [box :size (if (= @screen :tablet) (if @is-right-panel-open "2" "0") (if @is-right-panel-open "410px" "0")) :child [home-col-right]]]]]])])}))))

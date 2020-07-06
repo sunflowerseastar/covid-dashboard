@@ -7,7 +7,7 @@
    [re-frame.core :as re-frame]
    [reagent.core :refer [atom with-let]]))
 
-(defn sub-panel-container-mobile
+(defn display-and-info-panel-and-local-switcher
   "Takes a vector of title-component pairs, returns a v-box with a display on top and a switcher on bottom.
   The display fades when switching."
   [sub-panels]
@@ -26,7 +26,7 @@
                                 [:span.light (str " — " (inc (mod @curr sub-panel-count)) "/" sub-panel-count)]]]
          [box :child [:a.button {:on-click #(when (not @is-transitioning) (update-map inc))} "→"]]]]]]]))
 
-(defn sub-panel-container
+(defn display-and-local-switcher
   "Takes a vector of title-component pairs, returns a v-box with a display on top and a switcher on bottom.
   Switching state is local."
   [sub-panels]
@@ -41,7 +41,7 @@
          [box :size "1" :child [:p.margin-0-auto (-> (get sub-panels @curr) first) [:span.light (str " — " (inc @curr) "/" sub-panel-count)]]]
          [box :child [:a.button {:on-click #(reset! curr (if (= (inc @curr) sub-panel-count) 0 (inc @curr)))} "→"]]]]]]]))
 
-(defn map-switcher
+(defn info-panel-and-global-switcher
   "Takes a vector of title-component vector pairs, returns a v-box with a spacer on top, an info panel
   that shows & hides, and a switcher. Switching state is global."
   [sub-panels]
