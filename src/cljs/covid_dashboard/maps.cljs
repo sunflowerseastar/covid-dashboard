@@ -112,6 +112,21 @@
                (.append "title")
                (.text #(str (-> % .-properties .-name) " – " (utility/nf (.-value %)))))
 
+           (-> g
+               (.selectAll ".g-circles circle")
+               (.on "mouseover" (fn [d] (this-as this (-> (.select js/d3 this)
+                                                          (.attr "fill-opacity" 0.5)
+                                                          (.transition)
+                                                          (.duration 100)
+                                                          (.ease #(.easeLinear js/d3 %))
+                                                          (.attr "fill-opacity" 0.8)))))
+               (.on "mouseout" (fn [d] (this-as this (-> (.select js/d3 this)
+                                                         (.attr "fill-opacity" 0.8)
+                                                         (.transition)
+                                                         (.duration 100)
+                                                         (.ease #(.easeLinear js/d3 %))
+                                                         (.attr "fill-opacity" 0.5))))))
+
            (-> svg (.call my-zoom)))))))
 
 (defn us-bubble-map [confirmed-by-us-county-fips]

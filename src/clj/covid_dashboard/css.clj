@@ -4,7 +4,7 @@
 
 ;; keep this in sync with static.cljs
 ;; TODO dry
-(def duration-0 "60ms")
+(def duration-0 "100ms")
 (def duration-1 210)
 (def duration-2 (* duration-1 1.8))
 (def duration-3 (* duration-1 7))
