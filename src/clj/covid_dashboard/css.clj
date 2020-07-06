@@ -4,6 +4,7 @@
 
 ;; keep this in sync with static.cljs
 ;; TODO dry
+(def duration-0 "60ms")
 (def duration-1 210)
 (def duration-2 (* duration-1 1.8))
 (def duration-3 (* duration-1 7))
@@ -17,6 +18,7 @@
 
 (defstyles screen
   [:#app {:overflow "hidden" :height "100%"}]
+  [:.rc-box {:overflow "hidden" :transition (str "all " duration-0 " ease-in-out")}]
 
   [:h3 :h4 {:margin "0.5em 0 0.4em" :text-align "center"}]
   [:h3 {:font-weight 600 :color "#333" :letter-spacing "0.03em"}]
@@ -99,5 +101,5 @@
   [:.graticule {:fill "none" :stroke "#eee" :stroke-width ".5px" :stroke-opacity 0.4}]
 
   [:.scroll-y-auto {:overflow-y "auto" :-webkit-overflow-scrolling "touch"}]
-  [:.svg-container {:position "relative" :top "50%" :transform "translateY(-50%)" :width "100%" :overflow "visible"}]
+  [:.svg-container {:position "relative" :top "50%" :transform "translateY(-50%)" :width "100%" :height "100%" :overflow "visible"}]
   [:.svg-pointer-events-none [:svg {:pointer-events "none"}]])
