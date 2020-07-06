@@ -80,11 +80,11 @@
                  :on-failure [::failure-http-result]}}))
 
 (re-frame/reg-event-db
- :assoc-is-transitioning
+ :assoc-is-switching
  (fn [db [_ bool]]
-   (assoc db :is-transitioning bool)))
+   (assoc db :is-switching bool)))
 
 (re-frame/reg-event-db
  :update-curr-map
- (fn [{:keys [is-transitioning] :as db} [_ f]]
+ (fn [{:keys [is-switching] :as db} [_ f]]
    (update db :curr-map f)))

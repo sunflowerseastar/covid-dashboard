@@ -11,20 +11,20 @@
   "Takes a vector of title-component pairs, returns a v-box with a display on top and a switcher on bottom.
   The display fades when switching."
   [sub-panels]
-  (with-let [curr (atom 0) is-transitioning (atom false) sub-panel-count (count sub-panels)
-             update-map #(do (reset! is-transitioning true)
+  (with-let [curr (atom 0) is-switching (atom false) sub-panel-count (count sub-panels)
+             switch-with-fade #(do (reset! is-switching true)
                              (js/setTimeout (fn [] (swap! curr %)) duration-2)
-                             (js/setTimeout (fn [] (reset! is-transitioning false)) (* duration-2 1.5)))]
+                             (js/setTimeout (fn [] (reset! is-switching false)) (* duration-2 1.5)))]
     [v-box :size "1" :children
      [;; display
-      [box :size "1" :class (str "justify-content-center fade-duration-2 " (if @is-transitioning "is-inactive" "is-active")) :child [(-> (get sub-panels @curr) second)]]
+      [box :size "1" :class (str "justify-content-center fade-duration-2 " (if @is-switching "is-inactive" "is-active")) :child [(-> (get sub-panels @curr) second)]]
       ;; switcher
       [box :size (if (= @(re-frame/subscribe [::bp/screen]) :mobile) control-bar-height control-bar-height-desktop) :child
        [h-box :size "1" :class "children-align-self-center z-index-1" :children
-        [[box :child [:a.button {:on-click #(when (not @is-transitioning) (update-map dec))} "←"]]
+        [[box :child [:a.button {:on-click #(when (not @is-switching) (switch-with-fade dec))} "←"]]
          [box :size "1" :child [:p.margin-0-auto (-> (get sub-panels (mod @curr sub-panel-count)) first)
                                 [:span.light (str " — " (inc (mod @curr sub-panel-count)) "/" sub-panel-count)]]]
-         [box :child [:a.button {:on-click #(when (not @is-transitioning) (update-map inc))} "→"]]]]]]]))
+         [box :child [:a.button {:on-click #(when (not @is-switching) (switch-with-fade inc))} "→"]]]]]]]))
 
 (defn display-and-local-switcher
   "Takes a vector of title-component pairs, returns a v-box with a display on top and a switcher on bottom.
@@ -47,10 +47,10 @@
   [sub-panels]
   (with-let [sub-panel-count (count sub-panels)
              curr-map (re-frame/subscribe [::subs/curr-map])
-             is-transitioning (re-frame/subscribe [::subs/is-transitioning])
-             update-map #(do (re-frame/dispatch [:assoc-is-transitioning true])
+             is-switching (re-frame/subscribe [::subs/is-switching])
+             switch-with-fade #(do (re-frame/dispatch [:assoc-is-switching true])
                              (js/setTimeout (fn [] (re-frame/dispatch [:update-curr-map %])) duration-2)
-                             (js/setTimeout (fn [] (re-frame/dispatch [:assoc-is-transitioning false])) (* duration-2 1.5)))]
+                             (js/setTimeout (fn [] (re-frame/dispatch [:assoc-is-switching false])) (* duration-2 1.5)))]
     [v-box :size "1" :children
      [;; spacer
       [box :size "1" :child ""]
@@ -66,10 +66,10 @@
       ;; switcher
       [box :size control-bar-height-desktop :child
        [h-box :size "1" :class "children-align-self-center z-index-1 panel" :children
-        [[box :child [:a.button {:on-click #(when (not @is-transitioning) (do (re-frame/dispatch [:clear-actives])
-                                                                              (update-map dec)))} "←"]]
+        [[box :child [:a.button {:on-click #(when (not @is-switching) (do (re-frame/dispatch [:clear-actives])
+                                                                              (switch-with-fade dec)))} "←"]]
          [box :size "1" :child [:p.margin-0-auto (str (->> (mod @curr-map sub-panel-count) (get sub-panels) first)
                                                       " "
                                                       (inc (mod @curr-map sub-panel-count)) "/" sub-panel-count)]]
-         [box :child [:a.button {:on-click #(when (not @is-transitioning) (do (re-frame/dispatch [:clear-actives])
-                                                                              (update-map inc)))} "→"]]]]]]]))
+         [box :child [:a.button {:on-click #(when (not @is-switching) (do (re-frame/dispatch [:clear-actives])
+                                                                              (switch-with-fade inc)))} "→"]]]]]]]))

@@ -66,7 +66,7 @@
 (defn home-page []
   (let [curr-map (subscribe [::subs/curr-map])
         is-loaded (subscribe [::subs/is-loaded])
-        is-transitioning (subscribe [::subs/is-transitioning])
+        is-switching (subscribe [::subs/is-switching])
         map-sub-panels [["US - Confirmed by Population" maps/map-us-confirmed-by-county]
                         ["Cumulative Confirmed Cases" maps/map-world-confirmed-by-country]]
         screen (subscribe [::bp/screen])
@@ -115,7 +115,7 @@
              [v-box
               :height "100%"
               :class (str (when (not (nil? @screen)) (name @screen)) " desktop fade-duration-3 " (when @is-loaded "is-active"))
-              :children [[:div.fade-duration-2 {:class (if @is-transitioning "is-inactive" "is-active")}
+              :children [[:div.fade-duration-2 {:class (if @is-switching "is-inactive" "is-active")}
                           [(->> (mod @curr-map (count map-sub-panels)) (get map-sub-panels) second)]]
                          [h-box :class "home-page" :gap gap-size :children
                           [[box :size (if (= @screen :tablet) (if @is-left-panel-open "2" "0") (if @is-left-panel-open "220px" "0")) :child [home-col-left]]

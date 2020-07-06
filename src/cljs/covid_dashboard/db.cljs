@@ -13,7 +13,7 @@
    :global-recovered nil
    :is-fetching false
    :is-loaded false
-   :is-transitioning false
+   :is-switching false
    :time-series-confirmed-global nil
    :total-confirmed nil
    :us-states-deaths-recovered nil

@@ -69,9 +69,9 @@
    (:is-loaded db)))
 
 (re-frame/reg-sub
- ::is-transitioning
+ ::is-switching
  (fn [db]
-   (:is-transitioning db)))
+   (:is-switching db)))
 
 (re-frame/reg-sub
  ::time-series-confirmed-global
