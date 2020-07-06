@@ -13,14 +13,25 @@
   [sub-panels]
   (with-let [curr (atom 0) is-switching (atom false) sub-panel-count (count sub-panels)
              switch-with-fade #(do (reset! is-switching true)
-                             (js/setTimeout (fn [] (swap! curr %)) duration-2)
-                             (js/setTimeout (fn [] (reset! is-switching false)) (* duration-2 1.5)))]
+                                   (js/setTimeout (fn [] (do (re-frame/dispatch [:clear-actives])
+                                                             (swap! curr %))) duration-2)
+                                   (js/setTimeout (fn [] (reset! is-switching false)) (* duration-2 1.5)))]
     [v-box :size "1" :children
      [;; display
       [box :size "1" :class (str "justify-content-center fade-duration-2 " (if @is-switching "is-inactive" "is-active")) :child [(-> (get sub-panels @curr) second)]]
+      ;; info panel
+      (let [county (re-frame/subscribe [:active-county])
+            country (re-frame/subscribe [:active-country])
+            value (re-frame/subscribe [:active-value])]
+        [box :class (str "fade-duration-2 " (if (or @county @country) "is-active" "is-inactive"))
+         :child (if (or @county @country)
+                  [:div.panel.z-index-1.padding-1.fade-duration-2 {:class (if @is-switching "is-inactive" "is-active")}
+                   (when @county [:p [:span.bold "County: "] @county])
+                   (when @country [:p [:span.bold "Country: "] @country])
+                   [:p [:span.bold "Value: "] @value]] "")])
       ;; switcher
       [box :size (if (= @(re-frame/subscribe [::bp/screen]) :mobile) control-bar-height control-bar-height-desktop) :child
-       [h-box :size "1" :class "children-align-self-center z-index-1" :children
+       [h-box :size "1" :class "panel children-align-self-center z-index-1" :children
         [[box :child [:a.button {:on-click #(when (not @is-switching) (switch-with-fade dec))} "←"]]
          [box :size "1" :child [:p.margin-0-auto (-> (get sub-panels (mod @curr sub-panel-count)) first)
                                 [:span.light (str " — " (inc (mod @curr sub-panel-count)) "/" sub-panel-count)]]]
@@ -49,27 +60,27 @@
              curr-map (re-frame/subscribe [::subs/curr-map])
              is-switching (re-frame/subscribe [::subs/is-switching])
              switch-with-fade #(do (re-frame/dispatch [:assoc-is-switching true])
-                             (js/setTimeout (fn [] (re-frame/dispatch [:update-curr-map %])) duration-2)
-                             (js/setTimeout (fn [] (re-frame/dispatch [:assoc-is-switching false])) (* duration-2 1.5)))]
+                                   (js/setTimeout (fn [] (do (re-frame/dispatch [:clear-actives])
+                                                             (re-frame/dispatch [:update-curr-map %]))) duration-2)
+                                   (js/setTimeout (fn [] (re-frame/dispatch [:assoc-is-switching false])) (* duration-2 1.5)))]
     [v-box :size "1" :children
      [;; spacer
       [box :size "1" :child ""]
       ;; info panel
-      [box :child (let [county (re-frame/subscribe [:active-county])
-                        country (re-frame/subscribe [:active-country])
-                        value (re-frame/subscribe [:active-value])]
-                    (if (or @county @country)
-                      [:div.panel.z-index-1.padding-1
-                       (when @county [:p [:span.bold "County: "] @county])
-                       (when @country [:p [:span.bold "Country: "] @country])
-                       [:p [:span.bold "Value: "] @value]] ""))]
+      (let [county (re-frame/subscribe [:active-county])
+            country (re-frame/subscribe [:active-country])
+            value (re-frame/subscribe [:active-value])]
+        [box :class (str "fade-duration-2 " (if (or @county @country) "is-active" "is-inactive"))
+         :child (if (or @county @country)
+                  [:div.panel.z-index-1.padding-1.fade-duration-2 {:class (if @is-switching "is-inactive" "is-active")}
+                   (when @county [:p [:span.bold "County: "] @county])
+                   (when @country [:p [:span.bold "Country: "] @country])
+                   [:p [:span.bold "Value: "] @value]] "")])
       ;; switcher
       [box :size control-bar-height-desktop :child
        [h-box :size "1" :class "children-align-self-center z-index-1 panel" :children
-        [[box :child [:a.button {:on-click #(when (not @is-switching) (do (re-frame/dispatch [:clear-actives])
-                                                                              (switch-with-fade dec)))} "←"]]
+        [[box :child [:a.button {:on-click #(when (not @is-switching) (switch-with-fade dec))} "←"]]
          [box :size "1" :child [:p.margin-0-auto (str (->> (mod @curr-map sub-panel-count) (get sub-panels) first)
                                                       " "
                                                       (inc (mod @curr-map sub-panel-count)) "/" sub-panel-count)]]
-         [box :child [:a.button {:on-click #(when (not @is-switching) (do (re-frame/dispatch [:clear-actives])
-                                                                              (switch-with-fade inc)))} "→"]]]]]]]))
+         [box :child [:a.button {:on-click #(when (not @is-switching) (switch-with-fade inc))} "→"]]]]]]]))
