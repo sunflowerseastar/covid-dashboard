@@ -9,7 +9,7 @@
             [covid-dashboard.subs :as subs]
             [covid-dashboard.utility :as utility]
             [re-com.core :refer [box gap h-box v-box]]
-            [re-frame.core :as re-frame]
+            [re-frame.core :refer [dispatch subscribe]]
             [tupelo.core :refer [spyx]]
             [reagent.core :refer [atom create-class with-let]]))
 
@@ -30,7 +30,7 @@
    :gap gap-size
    :size "auto"
    :children [;; panels 4 & 5...
-              (if (= @(re-frame/subscribe [::bp/screen]) :tablet)
+              (if (= @(subscribe [::bp/screen]) :tablet)
                 ;; ...tablet - above and below
                 [:<>
                  [box :size "1" :class "panel" :child
@@ -59,28 +59,28 @@
 (def curr-map-old (atom 0))
 
 (defn map-world-confirmed-by-country []
-  (let [confirmed-by-country (re-frame/subscribe [::subs/confirmed-by-country])]
+  (let [confirmed-by-country (subscribe [::subs/confirmed-by-country])]
     (when @confirmed-by-country
       [:div.u-absolute-all [maps/world-bubble-map @confirmed-by-country]])))
 
 (defn map-us-confirmed-by-county []
-  (let [confirmed-by-us-county-fips (re-frame/subscribe [::subs/confirmed-by-us-county-fips])]
+  (let [confirmed-by-us-county-fips (subscribe [::subs/confirmed-by-us-county-fips])]
     (when @confirmed-by-us-county-fips
       [:div.u-absolute-all [maps/us-bubble-map @confirmed-by-us-county-fips]])))
 
 (defn map-switcher [sub-panels]
   (with-let [sub-panel-count (count sub-panels)
-             curr-map (re-frame/subscribe [::subs/curr-map])
-             is-transitioning (re-frame/subscribe [::subs/is-transitioning])
+             curr-map (subscribe [::subs/curr-map])
+             is-transitioning (subscribe [::subs/is-transitioning])
              sps ["US - Confirmed by Population" "Cumulative Confirmed Cases"]
-             update-map #(do (re-frame/dispatch [:assoc-is-transitioning true])
-                             (js/setTimeout (fn [] (re-frame/dispatch [:update-curr-map %])) duration-2)
-                             (js/setTimeout (fn [] (re-frame/dispatch [:assoc-is-transitioning false])) (* duration-2 1.5)))]
+             update-map #(do (dispatch [:assoc-is-transitioning true])
+                             (js/setTimeout (fn [] (dispatch [:update-curr-map %])) duration-2)
+                             (js/setTimeout (fn [] (dispatch [:assoc-is-transitioning false])) (* duration-2 1.5)))]
     [v-box :size "1" :children
      [[box :size "1" :child ""]
-      [box :child (let [county (re-frame/subscribe [:active-county])
-                        country (re-frame/subscribe [:active-country])
-                        value (re-frame/subscribe [:active-value])]
+      [box :child (let [county (subscribe [:active-county])
+                        country (subscribe [:active-country])
+                        value (subscribe [:active-value])]
                     (if (or @county @country)
                       [:div.panel.z-index-1.padding-1
                        (when @county [:p [:span.bold "County: "] @county])
@@ -88,25 +88,25 @@
                        [:p [:span.bold "Value: "] @value]] ""))]
       [box :size control-bar-height-desktop :child
        [h-box :size "1" :class "children-align-self-center z-index-1 panel" :children
-        [[box :child [:a.button {:on-click #(when (not @is-transitioning) (do (re-frame/dispatch [:clear-actives])
+        [[box :child [:a.button {:on-click #(when (not @is-transitioning) (do (dispatch [:clear-actives])
                                                                               (update-map dec)))} "←"]]
          [box :size "1" :child [:p.margin-0-auto (str (get sps (mod @curr-map sub-panel-count)) " " (inc (mod @curr-map sub-panel-count)) "/" sub-panel-count)]]
-         [box :child [:a.button {:on-click #(when (not @is-transitioning) (do (re-frame/dispatch [:clear-actives])
+         [box :child [:a.button {:on-click #(when (not @is-transitioning) (do (dispatch [:clear-actives])
                                                                               (update-map inc)))} "→"]]]]]]]))
 
 (defn loader []
-  (let [is-fetching (re-frame/subscribe [::subs/is-fetching])]
+  (let [is-fetching (subscribe [::subs/is-fetching])]
     [:div.loader.fade-duration-3 {:class (when @is-fetching "is-active")}
      [:div.virion-container
       [:div.virion-container-inner
        [:img.virion {:src "images/virion-sat-fade_500.jpg"}]]]]))
 
 (defn home-page []
-  (let [curr-map (re-frame/subscribe [::subs/curr-map])
-        is-loaded (re-frame/subscribe [::subs/is-loaded])
-        is-transitioning (re-frame/subscribe [::subs/is-transitioning])
+  (let [curr-map (subscribe [::subs/curr-map])
+        is-loaded (subscribe [::subs/is-loaded])
+        is-transitioning (subscribe [::subs/is-transitioning])
         map-sub-panels [map-us-confirmed-by-county map-world-confirmed-by-country]
-        screen (re-frame/subscribe [::bp/screen])
+        screen (subscribe [::bp/screen])
         is-left-panel-open (atom true)
         is-right-panel-open (atom true)]
     (letfn [(keyboard-listeners [e]
