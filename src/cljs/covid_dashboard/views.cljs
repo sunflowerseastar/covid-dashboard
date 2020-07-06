@@ -72,7 +72,6 @@
   (with-let [sub-panel-count (count sub-panels)
              curr-map (subscribe [::subs/curr-map])
              is-transitioning (subscribe [::subs/is-transitioning])
-             sps ["US - Confirmed by Population" "Cumulative Confirmed Cases"]
              update-map #(do (dispatch [:assoc-is-transitioning true])
                              (js/setTimeout (fn [] (dispatch [:update-curr-map %])) duration-2)
                              (js/setTimeout (fn [] (dispatch [:assoc-is-transitioning false])) (* duration-2 1.5)))]
@@ -90,7 +89,9 @@
        [h-box :size "1" :class "children-align-self-center z-index-1 panel" :children
         [[box :child [:a.button {:on-click #(when (not @is-transitioning) (do (dispatch [:clear-actives])
                                                                               (update-map dec)))} "←"]]
-         [box :size "1" :child [:p.margin-0-auto (str (get sps (mod @curr-map sub-panel-count)) " " (inc (mod @curr-map sub-panel-count)) "/" sub-panel-count)]]
+         [box :size "1" :child [:p.margin-0-auto (str (->> (mod @curr-map sub-panel-count) (get sub-panels) first)
+                                                      " "
+                                                      (inc (mod @curr-map sub-panel-count)) "/" sub-panel-count)]]
          [box :child [:a.button {:on-click #(when (not @is-transitioning) (do (dispatch [:clear-actives])
                                                                               (update-map inc)))} "→"]]]]]]]))
 
@@ -105,7 +106,8 @@
   (let [curr-map (subscribe [::subs/curr-map])
         is-loaded (subscribe [::subs/is-loaded])
         is-transitioning (subscribe [::subs/is-transitioning])
-        map-sub-panels [map-us-confirmed-by-county map-world-confirmed-by-country]
+        map-sub-panels [["US - Confirmed by Population"  map-us-confirmed-by-county]
+                        [ "Cumulative Confirmed Cases" map-world-confirmed-by-country]]
         screen (subscribe [::bp/screen])
         is-left-panel-open (atom true)
         is-right-panel-open (atom true)]
@@ -151,7 +153,7 @@
               :height "100%"
               :class (str (when (not (nil? @screen)) (name @screen)) " desktop fade-duration-3 " (when @is-loaded "is-active"))
               :children [[:div.fade-duration-2 {:class (if @is-transitioning "is-inactive" "is-active")}
-                          [(get map-sub-panels (mod @curr-map (count map-sub-panels)))]]
+                          [(->> (mod @curr-map (count map-sub-panels)) (get map-sub-panels) second)]]
                          [h-box :class "home-page" :gap gap-size :children
                           [[box :size (if (= @screen :tablet) (if @is-left-panel-open "2" "0") (if @is-left-panel-open "220px" "0")) :child [home-col-left]]
                            [box :size (if (= @screen :tablet) "4" "auto") :class "home-col-center" :child [map-switcher map-sub-panels]]
