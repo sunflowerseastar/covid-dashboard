@@ -165,6 +165,12 @@
       :component-did-mount (fn [this] (us-bubble-map-d3 svg-el-id width height confirmed-by-us-county-fips))
       :reagent-render (fn [this] [:svg {:id svg-el-id :class "svg-container"}])})))
 
+(defn map-us-confirmed-by-county []
+  (let [confirmed-by-us-county-fips (re-frame/subscribe [::subs/confirmed-by-us-county-fips])]
+    (when @confirmed-by-us-county-fips
+      [:div.u-absolute-all [us-bubble-map @confirmed-by-us-county-fips]])))
+
+
 
 
 
@@ -340,3 +346,8 @@
      {:display-name "world-bubble-map"
       :component-did-mount #(world-bubble-map-d3 svg-el-id width height line-chart-data)
       :reagent-render (fn [this] [:svg {:id svg-el-id :class "svg-container"}])})))
+
+(defn map-world-confirmed-by-country []
+  (let [confirmed-by-country (re-frame/subscribe [::subs/confirmed-by-country])]
+    (when @confirmed-by-country
+      [:div.u-absolute-all [world-bubble-map @confirmed-by-country]])))

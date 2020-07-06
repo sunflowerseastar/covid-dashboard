@@ -56,16 +56,6 @@
                                      ["Global Confirmed" line-charts/line-chart-global-confirmed-log]
                                      ["Global Daily Cases" line-charts/line-chart-global-daily-cases]]]]]])
 
-(defn map-world-confirmed-by-country []
-  (let [confirmed-by-country (subscribe [::subs/confirmed-by-country])]
-    (when @confirmed-by-country
-      [:div.u-absolute-all [maps/world-bubble-map @confirmed-by-country]])))
-
-(defn map-us-confirmed-by-county []
-  (let [confirmed-by-us-county-fips (subscribe [::subs/confirmed-by-us-county-fips])]
-    (when @confirmed-by-us-county-fips
-      [:div.u-absolute-all [maps/us-bubble-map @confirmed-by-us-county-fips]])))
-
 (defn loader []
   (let [is-fetching (subscribe [::subs/is-fetching])]
     [:div.loader.fade-duration-3 {:class (when @is-fetching "is-active")}
@@ -77,8 +67,8 @@
   (let [curr-map (subscribe [::subs/curr-map])
         is-loaded (subscribe [::subs/is-loaded])
         is-transitioning (subscribe [::subs/is-transitioning])
-        map-sub-panels [["US - Confirmed by Population"  map-us-confirmed-by-county]
-                        [ "Cumulative Confirmed Cases" map-world-confirmed-by-country]]
+        map-sub-panels [["US - Confirmed by Population" maps/map-us-confirmed-by-county]
+                        ["Cumulative Confirmed Cases" maps/map-world-confirmed-by-country]]
         screen (subscribe [::bp/screen])
         is-left-panel-open (atom true)
         is-right-panel-open (atom true)]
@@ -101,14 +91,15 @@
           [:<>
            [loader]
            (if (= @screen :mobile)
+             ;; mobile layout
              [v-box
               :height "100%"
               :class (str "fade-duration-3 " (when @is-loaded "is-active"))
               :children [[box :size "1" :class "panel" :child
                           [sub-panel-container-mobile
                            [["Total Confirmed" tables/table-totals]
-                            ["Confirmed County" map-us-confirmed-by-county]
-                            ["Confirmed Country" map-world-confirmed-by-country]
+                            ["Confirmed County" maps/map-us-confirmed-by-county]
+                            ["Confirmed Country" maps/map-world-confirmed-by-country]
                             ["Confirmed Country" tables/table-confirmed-country]
                             ["Confirmed State" tables/table-confirmed-state]
                             ["Confirmed County" tables/table-confirmed-county]
@@ -120,6 +111,7 @@
                             ["Global Confirmed" line-charts/line-chart-global-confirmed-linear]
                             ["Global Confirmed" line-charts/line-chart-global-confirmed-log]
                             ["Global Daily Cases" line-charts/line-chart-global-daily-cases]]]]]]
+             ;; desktop layout
              [v-box
               :height "100%"
               :class (str (when (not (nil? @screen)) (name @screen)) " desktop fade-duration-3 " (when @is-loaded "is-active"))
