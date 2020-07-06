@@ -18,7 +18,9 @@
    :class "home-col-left"
    :gap gap-size
    :size "auto"
-   :children [[box :class "panel" :child [tables/table-totals]]
+   :children [;; panel 1
+              [box :class "panel" :child [tables/table-totals]]
+              ;; panel 2
               [box :size "1" :class "panel" :child
                [display-and-local-switcher [["Confirmed Country" tables/table-confirmed-country]
                                      ["Confirmed State" tables/table-confirmed-state]
@@ -115,9 +117,15 @@
              [v-box
               :height "100%"
               :class (str (when (not (nil? @screen)) (name @screen)) " desktop fade-duration-3 " (when @is-loaded "is-active"))
-              :children [[:div.fade-duration-2 {:class (if @is-switching "is-inactive" "is-active")}
+              :children [;; map display, full viewport
+                         [:div.fade-duration-2 {:class (if @is-switching "is-inactive" "is-active")}
                           [(->> (mod @curr-map (count map-sub-panels)) (get map-sub-panels) second)]]
+                         ;; three columns:
                          [h-box :class "home-page" :gap gap-size :children
-                          [[box :size (if (= @screen :tablet) (if @is-left-panel-open "2" "0") (if @is-left-panel-open "220px" "0")) :child [home-col-left]]
-                           [box :size (if (= @screen :tablet) "4" "auto") :class "home-col-center" :child [info-panel-and-global-switcher map-sub-panels]]
+                          [;; left - panels 1 & 2
+                           [box :size (if (= @screen :tablet) (if @is-left-panel-open "2" "0") (if @is-left-panel-open "220px" "0")) :child [home-col-left]]
+                           ;; center - panel 3
+                           [box :size (if (= @screen :tablet) "4" "auto") :class "home-col-center" :child
+                            [info-panel-and-global-switcher map-sub-panels]]
+                           ;; right - panels 4, 5, 6
                            [box :size (if (= @screen :tablet) (if @is-right-panel-open "2" "0") (if @is-right-panel-open "410px" "0")) :child [home-col-right]]]]]])])}))))

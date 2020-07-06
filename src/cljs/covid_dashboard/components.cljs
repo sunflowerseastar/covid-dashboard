@@ -7,11 +7,26 @@
    [re-frame.core :as re-frame]
    [reagent.core :refer [atom with-let]]))
 
+(defn info-panel
+  "Takes is-switching and returns details on the clicked map. Info data is global."
+  [is-switching]
+  (let [county (re-frame/subscribe [:active-county])
+        country (re-frame/subscribe [:active-country])
+        value (re-frame/subscribe [:active-value])]
+    [box :class (str "fade-duration-2 " (if (or @county @country) "is-active" "is-inactive"))
+     :child (if (or @county @country)
+              [:div.panel.z-index-1.padding-1.fade-duration-2 {:class (if is-switching "is-inactive" "is-active")}
+               (when @county [:p [:span.bold "County: "] @county])
+               (when @country [:p [:span.bold "Country: "] @country])
+               [:p [:span.bold "Value: "] @value]] "")]))
+
 (defn display-and-info-panel-and-local-switcher
   "Takes a vector of title-component pairs, returns a v-box with a display on top and a switcher on bottom.
   The display fades when switching."
   [sub-panels]
-  (with-let [curr (atom 0) is-switching (atom false) sub-panel-count (count sub-panels)
+  (with-let [sub-panel-count (count sub-panels)
+             curr (atom 0) ;; local curr state will be used to display the sub-panels
+             is-switching (atom false)
              switch-with-fade #(do (reset! is-switching true)
                                    (js/setTimeout (fn [] (do (re-frame/dispatch [:clear-actives])
                                                              (swap! curr %))) duration-2)
@@ -20,15 +35,7 @@
      [;; display
       [box :size "1" :class (str "justify-content-center fade-duration-2 " (if @is-switching "is-inactive" "is-active")) :child [(-> (get sub-panels @curr) second)]]
       ;; info panel
-      (let [county (re-frame/subscribe [:active-county])
-            country (re-frame/subscribe [:active-country])
-            value (re-frame/subscribe [:active-value])]
-        [box :class (str "fade-duration-2 " (if (or @county @country) "is-active" "is-inactive"))
-         :child (if (or @county @country)
-                  [:div.panel.z-index-1.padding-1.fade-duration-2 {:class (if @is-switching "is-inactive" "is-active")}
-                   (when @county [:p [:span.bold "County: "] @county])
-                   (when @country [:p [:span.bold "Country: "] @country])
-                   [:p [:span.bold "Value: "] @value]] "")])
+      [info-panel @is-switching]
       ;; switcher
       [box :size (if (= @(re-frame/subscribe [::bp/screen]) :mobile) control-bar-height control-bar-height-desktop) :child
        [h-box :size "1" :class "panel children-align-self-center z-index-1" :children
@@ -57,7 +64,7 @@
   that shows & hides, and a switcher. Switching state is global."
   [sub-panels]
   (with-let [sub-panel-count (count sub-panels)
-             curr-map (re-frame/subscribe [::subs/curr-map])
+             curr-map (re-frame/subscribe [::subs/curr-map]) ;; the maps are displayed
              is-switching (re-frame/subscribe [::subs/is-switching])
              switch-with-fade #(do (re-frame/dispatch [:assoc-is-switching true])
                                    (js/setTimeout (fn [] (do (re-frame/dispatch [:clear-actives])
@@ -67,15 +74,7 @@
      [;; spacer
       [box :size "1" :child ""]
       ;; info panel
-      (let [county (re-frame/subscribe [:active-county])
-            country (re-frame/subscribe [:active-country])
-            value (re-frame/subscribe [:active-value])]
-        [box :class (str "fade-duration-2 " (if (or @county @country) "is-active" "is-inactive"))
-         :child (if (or @county @country)
-                  [:div.panel.z-index-1.padding-1.fade-duration-2 {:class (if @is-switching "is-inactive" "is-active")}
-                   (when @county [:p [:span.bold "County: "] @county])
-                   (when @country [:p [:span.bold "Country: "] @country])
-                   [:p [:span.bold "Value: "] @value]] "")])
+      [info-panel @is-switching]
       ;; switcher
       [box :size control-bar-height-desktop :child
        [h-box :size "1" :class "children-align-self-center z-index-1 panel" :children
