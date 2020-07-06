@@ -1,8 +1,10 @@
 (ns covid-dashboard.line-charts
   (:require [covid-dashboard.subs :as subs]
+            [breaking-point.core :as bp]
             [covid-dashboard.utility :as utility]
             [re-com.core :refer [box gap h-box v-box]]
             [re-frame.core :as re-frame]
+            [tupelo.core :refer [spyx]]
             [reagent.core :as reagent]))
 
 (defn parse-date [x] ((.timeParse js/d3 "%m/%d/%Y") x))
@@ -52,6 +54,12 @@
 
     (-> svg (.attr "viewBox" (clj->js [0 0 (-> (.node svg) (.-clientWidth)) height])))
 
+    ;; clean-up (for re-renders)
+    (-> svg (.selectAll "g")
+        (.remove))
+    (-> svg (.selectAll "path")
+        (.remove))
+
     (-> svg (.append "g")
         (.call x-axis))
 
@@ -67,17 +75,21 @@
         (.attr "stroke-linecap" "round")
         (.attr "d" my-line))))
 
-(defn line-chart-d3 [line-chart-data]
+(defn line-chart-d3
+  "This takes the current ('live') screen width to force updates on viewport size change, and the data.
+  It returns an svg, and calls the d3 function to work on the svg."
+  [live-width-to-force-updates line-chart-data]
   (let [height 200 svg-el-id "line-chart-root-svg"]
     (reagent/create-class
      {:display-name "line-chart-d3"
-      :reagent-render (fn [this] [:svg {:id svg-el-id :class "svg-container" :viewBox [0 0 300 height]}])
-      :component-did-mount #(line-chart svg-el-id height line-chart-data)})))
+      :reagent-render (fn [comp] [:svg {:id svg-el-id :class "svg-container" :viewBox [0 0 300 height]}])
+      :component-did-update (fn [comp] (js/setTimeout #(line-chart svg-el-id height line-chart-data) 500))
+      :component-did-mount (fn [comp] (line-chart svg-el-id height line-chart-data))})))
 
 (defn line-chart-global-confirmed-linear []
   (let [time-series-confirmed-global (re-frame/subscribe [::subs/time-series-confirmed-global])]
     (when @time-series-confirmed-global
-      [:div.panel-interior.padding-2 [line-chart-d3 @time-series-confirmed-global]])))
+      [:div.panel-interior.padding-2 [line-chart-d3 @(re-frame/subscribe [::bp/screen-width]) @time-series-confirmed-global]])))
 
 (defn line-chart-global-daily-cases []
   (let [time-series-confirmed-global (re-frame/subscribe [::subs/time-series-confirmed-global])]
@@ -85,7 +97,7 @@
       (let [daily-cases-data (->> @time-series-confirmed-global
                                   (partition 2 1)
                                   (map (fn [[[_ yesterday] [date today]]] (vector date (- today yesterday)))))]
-        [:div.panel-interior.padding-2 [line-chart-d3 daily-cases-data]]))))
+        [:div.panel-interior.padding-2 [line-chart-d3 @(re-frame/subscribe [::bp/screen-width]) daily-cases-data]]))))
 
 
 
@@ -136,6 +148,12 @@
 
     (-> svg (.attr "viewBox" (clj->js [0 0 (-> (.node svg) (.-clientWidth)) height])))
 
+    ;; clean-up (for re-renders)
+    (-> svg (.selectAll "g")
+        (.remove))
+    (-> svg (.selectAll "path")
+        (.remove))
+
     (-> svg (.append "g")
         (.call x-axis))
 
@@ -151,14 +169,18 @@
         (.attr "stroke-linecap" "round")
         (.attr "d" my-line))))
 
-(defn line-chart-log-d3 [line-chart-data]
+(defn line-chart-log-d3
+  "This takes the current ('live') screen width to force updates on viewport size change, and the data.
+  It returns an svg, and calls the d3 function to work on the svg."
+  [live-width-to-force-updates line-chart-data]
   (let [height 200 svg-el-id "line-chart-log-root-svg"]
     (reagent/create-class
      {:display-name "line-chart-log-d3"
       :reagent-render (fn [this] [:svg {:id svg-el-id :class "svg-container" :viewBox [0 0 300 height]}])
+      :component-did-update (fn [comp] (js/setTimeout #(line-chart-log svg-el-id height line-chart-data) 500))
       :component-did-mount #(line-chart-log svg-el-id height line-chart-data)})))
 
 (defn line-chart-global-confirmed-log []
   (let [time-series-confirmed-global (re-frame/subscribe [::subs/time-series-confirmed-global])]
     (when @time-series-confirmed-global
-      [:div.panel-interior.padding-2 [line-chart-log-d3 @time-series-confirmed-global]])))
+      [:div.panel-interior.padding-2 [line-chart-log-d3 @(re-frame/subscribe [::bp/screen-width]) @time-series-confirmed-global]])))
