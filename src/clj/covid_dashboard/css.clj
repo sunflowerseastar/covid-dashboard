@@ -81,6 +81,11 @@
 
   [:.panel {:background "#fdfdfdd1"}]
 
+  [:.info-panel {:font-weight 300}]
+  [:.info-table {:margin "0 auto 0.6em"}
+   [:td {:font-size "17px" :line-height 1.2}]
+   [:td:first-child {:text-align "right"}]]
+
   [:.fade-duration-3 {:transition (str "opacity " duration-3 "ms ease-in-out") :opacity 0} [:&.is-active {:opacity "1"}]]
   [:.fade-duration-2 {:transition (str "opacity " duration-2 "ms ease-in-out") :opacity 0} [:&.is-active {:opacity "1"}]]
 
@@ -101,5 +106,11 @@
   [:.graticule {:fill "none" :stroke "#eee" :stroke-width ".5px" :stroke-opacity 0.4}]
 
   [:.scroll-y-auto {:overflow-y "auto" :-webkit-overflow-scrolling "touch"}]
+
+  [:.white-fade-bottom {:position "relative"}
+   [:&:after {:content "''" :position "absolute" :bottom 0 :left 0
+              :width "100%" :height "12px"
+              :background-image "linear-gradient(#fff0, #ffff)"
+              :pointer-events "none" :overflow "visible" :z-index 2}]]
   [:.svg-container {:position "relative" :top "50%" :transform "translateY(-50%)" :width "100%" :height "100%" :overflow "visible"}]
   [:.svg-pointer-events-none [:svg {:pointer-events "none"}]])

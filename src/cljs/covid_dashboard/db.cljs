@@ -3,6 +3,7 @@
 (def default-db
   {:active-country nil
    :active-county nil
+   :active-state nil
    :active-value nil
    :confirmed-by-province nil
    :confirmed-by-country nil

@@ -12,7 +12,7 @@
 (defn table-confirmed-country []
   (let [confirmed-by-country (re-frame/subscribe [::subs/confirmed-by-country])]
     (when @confirmed-by-country
-      [v-box :size "1" :children
+      [v-box :size "1" :class "white-fade-bottom" :children
        [[box :class "padding-1" :child [:h4 "Confirmed Cases by Country/Region"]]
         [box :size "1" :class "scroll-y-auto" :child
          [:table [:tbody (map (fn [[country value]]
@@ -23,7 +23,7 @@
 (defn table-confirmed-state []
   (let [confirmed-by-province (re-frame/subscribe [::subs/confirmed-by-province])]
     (when @confirmed-by-province
-      [v-box :size "1" :children
+      [v-box :size "1" :class "white-fade-bottom" :children
        [[box :class "padding-1" :child [:h4 "Confirmed Cases by State/Province"]]
         [box :size "1" :class "scroll-y-auto" :child
          [:table [:tbody (map (fn [[value province country]]
@@ -33,7 +33,7 @@
 (defn table-confirmed-county []
   (let [confirmed-by-us-county (re-frame/subscribe [::subs/confirmed-by-us-county])]
     (when @confirmed-by-us-county
-      [v-box :size "1" :children
+      [v-box :size "1" :class "white-fade-bottom" :children
        [[box :class "padding-1" :child [:h4 "Confirmed Cases by U.S. County"]]
         [box :size "1" :class "scroll-y-auto" :child
          [:table [:tbody (map (fn [[value us-county country]]
@@ -43,7 +43,7 @@
 (defn table-global-deaths []
   (let [global-deaths (re-frame/subscribe [::subs/global-deaths])]
     (when-let [{:keys [deaths-by-country total-deaths]} @global-deaths]
-      [v-box :size "1" :children
+      [v-box :size "1" :class "white-fade-bottom" :children
        [[box :class "padding-1" :child [:div [:h4 "Global Deaths"] [:h3 (utility/nf total-deaths)]]]
         [box :size "1" :class "scroll-y-auto" :child
          [:table [:tbody (map (fn [[country value]]
@@ -53,7 +53,7 @@
 (defn table-global-recovered []
   (let [global-recovered (re-frame/subscribe [::subs/global-recovered])]
     (when-let [{:keys [recovered-by-country total-recovered]} @global-recovered]
-      [v-box :size "1" :children
+      [v-box :size "1" :class "white-fade-bottom" :children
        [[box :class "padding-1" :child [:div [:h4 "Global Recovered"] [:h3 (utility/nf total-recovered)]]]
         [box :size "1" :class "scroll-y-auto" :child
          [:table [:tbody (map (fn [[country value]]
@@ -63,7 +63,7 @@
 (defn table-us-deaths-recovered []
   (let [us-states-deaths-recovered (re-frame/subscribe [::subs/us-states-deaths-recovered])]
     (when @us-states-deaths-recovered
-      [v-box :size "1" :children
+      [v-box :size "1" :class "white-fade-bottom" :children
        [[box :class "padding-1" :child [:div [:h4 "US State Level"] [:h3 "Deaths, Recovered"]]]
         [box :size "1" :class "scroll-y-auto" :child
          [:table [:tbody (map (fn [[state deaths recovered]]
@@ -74,7 +74,7 @@
 (defn table-us-tested []
   (let [us-states-tested (re-frame/subscribe [::subs/us-states-tested])]
     (when-let [{:keys [tested-by-state total-tested]} @us-states-tested]
-      [v-box :size "1" :children
+      [v-box :size "1" :class "white-fade-bottom" :children
        [[box :class "padding-1" :child [:div [:h4 "US People Tested"] [:h3 (utility/nf total-tested)]]]
         [box :size "1" :class "scroll-y-auto" :child
          [:table [:tbody (map (fn [[state tested]]
@@ -84,7 +84,7 @@
 (defn table-us-hospitalized []
   (let [us-states-hospitalized (re-frame/subscribe [::subs/us-states-hospitalized])]
     (when @us-states-hospitalized
-      [v-box :size "1" :children
+      [v-box :size "1" :class "white-fade-bottom" :children
        [[box :class "padding-1" :child [:div [:h4 "US State Level"] [:h3 "Hospitalizations"]]]
         [box :size "1" :class "scroll-y-auto" :child
          [:table [:tbody (map (fn [[state hospitalized]]

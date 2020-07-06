@@ -24,6 +24,10 @@
  (fn-traced [db [_ active-county]] (assoc db :active-county active-county)))
 
 (re-frame/reg-event-db
+ :set-active-state
+ (fn-traced [db [_ active-state]] (assoc db :active-state active-state)))
+
+(re-frame/reg-event-db
  :set-active-value
  (fn-traced [db [_ active-value]] (assoc db :active-value active-value)))
 

@@ -19,6 +19,11 @@
    (:active-page db)))
 
 (re-frame/reg-sub
+ :active-state
+ (fn [db _]
+   (:active-state db)))
+
+(re-frame/reg-sub
  :active-value
  (fn [db _]
    (-> (:active-value db) utility/nf)))

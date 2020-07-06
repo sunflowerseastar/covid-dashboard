@@ -11,14 +11,17 @@
   "Takes is-switching and returns details on the clicked map. Info data is global."
   [is-switching]
   (let [county (re-frame/subscribe [:active-county])
+        state (re-frame/subscribe [:active-state])
         country (re-frame/subscribe [:active-country])
         value (re-frame/subscribe [:active-value])]
     [box :class (str "fade-duration-2 " (if (or @county @country) "is-active" "is-inactive"))
      :child (if (or @county @country)
-              [:div.panel.z-index-1.padding-1.fade-duration-2 {:class (if is-switching "is-inactive" "is-active")}
-               (when @county [:p [:span.bold "County: "] @county])
-               (when @country [:p [:span.bold "Country: "] @country])
-               [:p [:span.bold "Value: "] @value]] "")]))
+              [:div.panel.info-panel.z-index-1.padding-2.fade-duration-2 {:class (if is-switching "is-inactive" "is-active")}
+               [:table.info-table [:tbody
+                (when @county [:tr [:td "County: "] [:td.bold @county]])
+                (when @state [:tr [:td "State: "] [:td.bold @state]])
+                (when @country [:tr [:td "Country: "] [:td.bold @country]])
+                [:tr [:td "Confirmed: "] [:td.bold @value]]]]] "")]))
 
 (defn display-and-info-panel-and-local-switcher
   "Takes a vector of title-component pairs, returns a v-box with a display on top and a switcher on bottom.
