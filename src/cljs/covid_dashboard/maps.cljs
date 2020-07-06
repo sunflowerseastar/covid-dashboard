@@ -17,7 +17,7 @@
    [topojson-client :as topo]
    [tupelo.core :refer [spyx]]))
 
-(defn bubble-map-covid [svg-el-id width height confirmed-by-us-county-fips]
+(defn us-bubble-map-d3 [svg-el-id width height confirmed-by-us-county-fips]
   (-> (.json js/d3 "data/counties-albers-10m.json")
       (.then
        (fn [counties-albers-10m-data]
@@ -114,13 +114,13 @@
 
            (-> svg (.call my-zoom)))))))
 
-(defn bubble-map-covid-us-d3 [confirmed-by-us-county-fips]
+(defn us-bubble-map [confirmed-by-us-county-fips]
   (let [width @(re-frame/subscribe [::bp/screen-width])
         height @(re-frame/subscribe [::bp/screen-height])
-        svg-el-id "bubble-map-covid-us-d3-svg-root"]
+        svg-el-id "us-bubble-map-svg-root"]
     (reagent/create-class
-     {:display-name "bubble-map-covid-us-d3-component"
-      :component-did-mount (fn [this] (bubble-map-covid svg-el-id width height confirmed-by-us-county-fips))
+     {:display-name "us-bubble-map-component"
+      :component-did-mount (fn [this] (us-bubble-map-d3 svg-el-id width height confirmed-by-us-county-fips))
       :reagent-render (fn [this] [:svg {:id svg-el-id :class "svg-container"}])})))
 
 
@@ -130,7 +130,7 @@
 (defn get-name [name]
   (or (get cross-name-map name) name))
 
-(defn world-bubble-map [svg-el-id width height world-bubble-map-data]
+(defn world-bubble-map-d3 [svg-el-id width height world-bubble-map-data]
   (let [data (->> world-bubble-map-data
                   (reduce (fn [acc d] (assoc acc (get-name (first d)) (second d))) {})
                   clj->js)
@@ -248,11 +248,11 @@
 
              (-> svg (.call my-zoom))))))))
 
-(defn world-bubble-map-d3 [line-chart-data]
+(defn world-bubble-map [line-chart-data]
   (let [width @(re-frame/subscribe [::bp/screen-width])
         height @(re-frame/subscribe [::bp/screen-height])
         svg-el-id "world-bubble-map-root-svg"]
     (reagent/create-class
-     {:display-name "world-bubble-map-d3"
-      :component-did-mount #(world-bubble-map svg-el-id width height line-chart-data)
+     {:display-name "world-bubble-map"
+      :component-did-mount #(world-bubble-map-d3 svg-el-id width height line-chart-data)
       :reagent-render (fn [this] [:svg {:id svg-el-id :class "svg-container"}])})))

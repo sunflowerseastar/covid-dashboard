@@ -61,18 +61,18 @@
 (defn map-world-confirmed-by-country []
   (let [confirmed-by-country (re-frame/subscribe [::subs/confirmed-by-country])]
     (when @confirmed-by-country
-      [:div.u-absolute-all [maps/world-bubble-map-d3 @confirmed-by-country]])))
+      [:div.u-absolute-all [maps/world-bubble-map @confirmed-by-country]])))
 
 (defn map-us-confirmed-by-county []
   (let [confirmed-by-us-county-fips (re-frame/subscribe [::subs/confirmed-by-us-county-fips])]
     (when @confirmed-by-us-county-fips
-      [:div.u-absolute-all [maps/bubble-map-covid-us-d3 @confirmed-by-us-county-fips]])))
+      [:div.u-absolute-all [maps/us-bubble-map @confirmed-by-us-county-fips]])))
 
 (defn map-switcher [sub-panels]
   (with-let [sub-panel-count (count sub-panels)
              curr-map (re-frame/subscribe [::subs/curr-map])
              is-transitioning (re-frame/subscribe [::subs/is-transitioning])
-             sps ["Cumulative Confirmed Cases" "US - Confirmed by Population"]
+             sps ["US - Confirmed by Population" "Cumulative Confirmed Cases"]
              update-map #(do (re-frame/dispatch [:assoc-is-transitioning true])
                              (js/setTimeout (fn [] (re-frame/dispatch [:update-curr-map %])) duration-2)
                              (js/setTimeout (fn [] (re-frame/dispatch [:assoc-is-transitioning false])) (* duration-2 1.5)))]
@@ -90,7 +90,7 @@
        [h-box :size "1" :class "children-align-self-center z-index-1 panel" :children
         [[box :child [:a.button {:on-click #(when (not @is-transitioning) (do (re-frame/dispatch [:clear-actives])
                                                                               (update-map dec)))} "←"]]
-         [box :size "1" :child [:p.margin-0-auto (str (get sps (mod @curr-map sub-panel-count)) " " (inc @curr-map) "/" sub-panel-count)]]
+         [box :size "1" :child [:p.margin-0-auto (str (get sps (mod @curr-map sub-panel-count)) " " (inc (mod @curr-map sub-panel-count)) "/" sub-panel-count)]]
          [box :child [:a.button {:on-click #(when (not @is-transitioning) (do (re-frame/dispatch [:clear-actives])
                                                                               (update-map inc)))} "→"]]]]]]]))
 
