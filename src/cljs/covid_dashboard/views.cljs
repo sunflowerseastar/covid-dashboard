@@ -1,6 +1,6 @@
 (ns covid-dashboard.views
   (:require [applied-science.js-interop :as j]
-            [covid-dashboard.components :refer [sub-panel-container sub-panel-container-mobile]]
+            [covid-dashboard.components :refer [map-switcher sub-panel-container sub-panel-container-mobile]]
             [covid-dashboard.line-charts :as line-charts]
             [covid-dashboard.tables :as tables]
             [breaking-point.core :as bp]
@@ -56,8 +56,6 @@
                                      ["Global Confirmed" line-charts/line-chart-global-confirmed-log]
                                      ["Global Daily Cases" line-charts/line-chart-global-daily-cases]]]]]])
 
-(def curr-map-old (atom 0))
-
 (defn map-world-confirmed-by-country []
   (let [confirmed-by-country (subscribe [::subs/confirmed-by-country])]
     (when @confirmed-by-country
@@ -67,33 +65,6 @@
   (let [confirmed-by-us-county-fips (subscribe [::subs/confirmed-by-us-county-fips])]
     (when @confirmed-by-us-county-fips
       [:div.u-absolute-all [maps/us-bubble-map @confirmed-by-us-county-fips]])))
-
-(defn map-switcher [sub-panels]
-  (with-let [sub-panel-count (count sub-panels)
-             curr-map (subscribe [::subs/curr-map])
-             is-transitioning (subscribe [::subs/is-transitioning])
-             update-map #(do (dispatch [:assoc-is-transitioning true])
-                             (js/setTimeout (fn [] (dispatch [:update-curr-map %])) duration-2)
-                             (js/setTimeout (fn [] (dispatch [:assoc-is-transitioning false])) (* duration-2 1.5)))]
-    [v-box :size "1" :children
-     [[box :size "1" :child ""]
-      [box :child (let [county (subscribe [:active-county])
-                        country (subscribe [:active-country])
-                        value (subscribe [:active-value])]
-                    (if (or @county @country)
-                      [:div.panel.z-index-1.padding-1
-                       (when @county [:p [:span.bold "County: "] @county])
-                       (when @country [:p [:span.bold "Country: "] @country])
-                       [:p [:span.bold "Value: "] @value]] ""))]
-      [box :size control-bar-height-desktop :child
-       [h-box :size "1" :class "children-align-self-center z-index-1 panel" :children
-        [[box :child [:a.button {:on-click #(when (not @is-transitioning) (do (dispatch [:clear-actives])
-                                                                              (update-map dec)))} "←"]]
-         [box :size "1" :child [:p.margin-0-auto (str (->> (mod @curr-map sub-panel-count) (get sub-panels) first)
-                                                      " "
-                                                      (inc (mod @curr-map sub-panel-count)) "/" sub-panel-count)]]
-         [box :child [:a.button {:on-click #(when (not @is-transitioning) (do (dispatch [:clear-actives])
-                                                                              (update-map inc)))} "→"]]]]]]]))
 
 (defn loader []
   (let [is-fetching (subscribe [::subs/is-fetching])]
