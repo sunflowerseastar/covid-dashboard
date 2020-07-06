@@ -115,17 +115,33 @@
            (-> g
                (.selectAll ".g-circles circle")
                (.on "mouseover" (fn [d] (this-as this (-> (.select js/d3 this)
+                                                          (.filter #(this-as this (-> (.select js/d3 this) (.classed "is-bubble-active") not)))
                                                           (.attr "fill-opacity" 0.5)
                                                           (.transition)
                                                           (.duration 100)
                                                           (.ease #(.easeLinear js/d3 %))
                                                           (.attr "fill-opacity" 0.8)))))
                (.on "mouseout" (fn [d] (this-as this (-> (.select js/d3 this)
+                                                         (.filter #(this-as this (-> (.select js/d3 this) (.classed "is-bubble-active") not)))
                                                          (.attr "fill-opacity" 0.8)
                                                          (.transition)
                                                          (.duration 100)
                                                          (.ease #(.easeLinear js/d3 %))
-                                                         (.attr "fill-opacity" 0.5))))))
+                                                         (.attr "fill-opacity" 0.5)))))
+               (.on "click" (fn [d] (this-as this (let [self (.select js/d3 this)
+                                                        is-active (-> self (.classed "is-bubble-active"))]
+                                                    (do
+                                                      ;; deselect all others
+                                                      (-> g (.selectAll ".g-circles circle")
+                                                          (.filter #(this-as inner-this (not= this inner-this)))
+                                                          (.classed "is-bubble-active" false)
+                                                          (.attr "fill-opacity" 0.5))
+                                                      ;; select/de-select self
+                                                      (-> self
+                                                          (.classed "is-bubble-active" (not is-active))
+                                                          (.transition)
+                                                          (.duration 500)
+                                                          (.attr "fill-opacity" (if is-active 0.5 1)))))))))
 
            (-> svg (.call my-zoom)))))))
 
@@ -250,6 +266,23 @@
                  (.transition)
                  (.duration duration-3)
                  (.attr "r" (fn [d] (radius (aget data (-> d .-properties .-name))))))
+
+             (-> g
+               (.selectAll ".g-circles circle")
+               (.on "mouseover" (fn [d] (this-as this (-> (.select js/d3 this)
+                                                          (.filter #(this-as this (-> (.select js/d3 this) (.classed "is-bubble-active") not)))
+                                                          (.attr "fill-opacity" 0.5)
+                                                          (.transition)
+                                                          (.duration 100)
+                                                          (.ease #(.easeLinear js/d3 %))
+                                                          (.attr "fill-opacity" 0.8)))))
+               (.on "mouseout" (fn [d] (this-as this (-> (.select js/d3 this)
+                                                         (.filter #(this-as this (-> (.select js/d3 this) (.classed "is-bubble-active") not)))
+                                                         (.attr "fill-opacity" 0.8)
+                                                         (.transition)
+                                                         (.duration 100)
+                                                         (.ease #(.easeLinear js/d3 %))
+                                                         (.attr "fill-opacity" 0.5))))))
 
              (-> g
                  (.selectAll ".g-circles circle")
