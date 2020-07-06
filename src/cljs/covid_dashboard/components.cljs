@@ -17,11 +17,11 @@
     [box :class (str "fade-duration-2 " (if (or @county @country) "is-active" "is-inactive"))
      :child (if (or @county @country)
               [:div.panel.info-panel.z-index-1.padding-2.fade-duration-2 {:class (if is-switching "is-inactive" "is-active")}
-               [:table.info-table [:tbody
-                (when @county [:tr [:td "County: "] [:td.bold @county]])
-                (when @state [:tr [:td "State: "] [:td.bold @state]])
-                (when @country [:tr [:td "Country: "] [:td.bold @country]])
-                [:tr [:td "Confirmed: "] [:td.bold @value]]]]] "")]))
+               [:table.info-table
+                [:tbody (when @county [:tr [:td "County: "] [:td.bold @county]])
+                 (when @state [:tr [:td "State: "] [:td.bold @state]])
+                 (when @country [:tr [:td "Country: "] [:td.bold @country]])
+                 [:tr [:td "Confirmed: "] [:td.bold @value]]]]] "")]))
 
 (defn display-and-info-panel-and-local-switcher
   "Takes a vector of title-component pairs, returns a v-box with a display on top and a switcher on bottom.
@@ -32,11 +32,14 @@
              is-switching (atom false)
              switch-with-fade #(do (reset! is-switching true)
                                    (js/setTimeout (fn [] (do (re-frame/dispatch [:clear-actives])
-                                                             (swap! curr %))) duration-2)
-                                   (js/setTimeout (fn [] (reset! is-switching false)) (* duration-2 1.5)))]
+                                                             (if (and (= % dec) (= (dec @curr) -1))
+                                                               (reset! curr (dec sub-panel-count))
+                                                               (swap! curr %))
+                                                             (reset! is-switching false))) duration-2))]
     [v-box :size "1" :children
      [;; display
-      [box :size "1" :class (str "justify-content-center fade-duration-2 " (if @is-switching "is-inactive" "is-active")) :child [(-> (get sub-panels @curr) second)]]
+      [box :size "1" :class (str "justify-content-center fade-duration-2 " (if @is-switching "is-inactive" "is-active")) :child
+       [(-> (get sub-panels (mod @curr sub-panel-count)) second)]]
       ;; info panel
       [info-panel @is-switching]
       ;; switcher
@@ -71,8 +74,10 @@
              is-switching (re-frame/subscribe [::subs/is-switching])
              switch-with-fade #(do (re-frame/dispatch [:assoc-is-switching true])
                                    (js/setTimeout (fn [] (do (re-frame/dispatch [:clear-actives])
-                                                             (re-frame/dispatch [:update-curr-map %]))) duration-2)
-                                   (js/setTimeout (fn [] (re-frame/dispatch [:assoc-is-switching false])) (* duration-2 1.5)))]
+                                                             (if (and (= % dec) (= (dec @curr-map) -1))
+                                                               (re-frame/dispatch [:assoc-curr-map (dec sub-panel-count)])
+                                                               (re-frame/dispatch [:assoc-curr-map (inc @curr-map)]))
+                                                             (re-frame/dispatch [:assoc-is-switching false]))) duration-2))]
     [v-box :size "1" :children
      [;; spacer
       [box :size "1" :child ""]

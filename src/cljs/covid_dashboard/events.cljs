@@ -89,6 +89,6 @@
    (assoc db :is-switching bool)))
 
 (re-frame/reg-event-db
- :update-curr-map
+ :assoc-curr-map
  (fn [{:keys [is-switching] :as db} [_ f]]
-   (update db :curr-map f)))
+   (assoc db :curr-map f)))
