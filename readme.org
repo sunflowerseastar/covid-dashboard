@@ -17,25 +17,25 @@ lein prod         # output build -> resources/public/js/compiled/
 
 [[https://github.com/Day8/re-frame-template][Re-frame]] framework (which sits on [[https://github.com/reagent-project/reagent][Reagent]]) with [[https://github.com/noprompt/garden][garden]], [[https://github.com/Day8/re-com][re-com]], [[https://github.com/gadfly361/breaking-point][breaking-point]], [[https://github.com/clj-commons/secretary][secretary]], plus other niceties via [[https://github.com/Day8/re-frame-template][re-frame-template]]. [[https://github.com/d3/d3][D3]] visualizations.
 
-** Views, Panels, Sub-panels
+** Layouts, Panels, Sub-panels, Switchers
 
-#+begin_quote
-The app is constrained to 100% viewport height for all views.
-#+end_quote
+There are three layouts: mobile, tablet, and desktop. The app is constrained to 100% viewport height for all layouts.
 
-Each view (mobile, tablet, desktop) has one or more panels. Each panel contains one or more sub-panels, and can switch through them using the left-button/right-button "switcher." A sub-panel is a representation of data: table, line chart, or map.
+Each layout has one or more panels. Each panel contains one or more sub-panels, and a "switcher." The left/right buttons on the switcher switches through the sub-panels.
+
+Each sub-panel contains a representation of data in the form of a table, line chart, or map. The sub-panel views are split among respective namespaces: ~tables~, ~line-charts~, and ~maps~.
 
 *** Mobile
 
 #+begin_src
 +---+
 |   |
-| x |
+| 1 |
 |   |
 +---+
 #+end_src
 
-The mobile view has one panel, with a switcher at the bottom.
+The mobile layout has one panel (and one switcher). All the sub-panels are contained in that one panel.
 
 *** Tablet
 
@@ -49,7 +49,9 @@ The mobile view has one panel, with a switcher at the bottom.
 +---+-----+---+
 #+end_src
 
-Each of the 6 panels has its own panel-switcher. Panel 3 is "special" in that the main display panel (that contains maps) spans the full width of the screen (behind the left 1/2 column and the right 4/5/6 column), while the switcher part fits in its expected place in the dom as the middle column.
+The tablet layout has 6 panels, each with its own switcher. Panel 3 is "special," however, in that the main display element (which contains maps) spans the full viewport, while the switcher element fits in its expected place in the dom in the middle column.
+
+Put another way, each panel has both a display element for the currently shown sub-panel and a switcher. Each panel's display element and switcher are colocated—except for panel 3. Panel 3 is split between a full viewport sub-panel display element in the "background" (behind all three columns), and its switcher, which lives in the middle column. Since these components are separate in the DOM and the component tree, they are synchronized via re-frame's events/app-db state. The other, "normal" panels' switchers use local ratom state.
 
 *** Desktop
 
@@ -63,7 +65,7 @@ Each of the 6 panels has its own panel-switcher. Panel 3 is "special" in that th
 +---+---------+-------+
 #+end_src
 
-The main difference between tablet view and desktop view is that 4 & 5 are vertical instead of horizontal.
+The main difference between tablet layout and desktop layout is that 4 & 5 are vertical instead of horizontal. Panel 3 is the same between tablet and desktop.
 
 ** Data
 
