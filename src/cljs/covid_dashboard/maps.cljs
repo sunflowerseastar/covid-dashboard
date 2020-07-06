@@ -105,10 +105,6 @@
 
            (-> g
                (.selectAll ".g-circles circle")
-               (.on "click" (fn [d] (let [county (j/get-in d [:properties :name])
-                                          value (j/get d :value)]
-                                      (do (re-frame/dispatch [:set-active-county county])
-                                          (re-frame/dispatch [:set-active-value value])))))
                (.append "title")
                (.text #(str (-> % .-properties .-name) " – " (utility/nf (.-value %)))))
 
@@ -144,19 +140,19 @@
                                                         (do
                                                           (re-frame/dispatch [:clear-actives])
                                                           (-> self
-                                                             (.classed "is-bubble-active" false)
-                                                             (.transition)
-                                                             (.duration 500)
-                                                             (.attr "fill-opacity" 0.5)))
+                                                              (.classed "is-bubble-active" false)
+                                                              (.transition)
+                                                              (.duration 500)
+                                                              (.attr "fill-opacity" 0.5)))
                                                         ;; bubble is becoming active
                                                         (do
-                                                          (re-frame/dispatch [:set-active-country county])
+                                                          (re-frame/dispatch [:set-active-county county])
                                                           (re-frame/dispatch [:set-active-value value])
                                                           (-> self
-                                                             (.classed "is-bubble-active" true)
-                                                             (.transition)
-                                                             (.duration 500)
-                                                             (.attr "fill-opacity" 1))))))))))
+                                                              (.classed "is-bubble-active" true)
+                                                              (.transition)
+                                                              (.duration 500)
+                                                              (.attr "fill-opacity" 1))))))))))
 
            (-> svg (.call my-zoom)))))))
 
@@ -283,31 +279,56 @@
                  (.attr "r" (fn [d] (radius (aget data (-> d .-properties .-name))))))
 
              (-> g
-               (.selectAll ".g-circles circle")
-               (.on "mouseover" (fn [d] (this-as this (-> (.select js/d3 this)
-                                                          (.filter #(this-as this (-> (.select js/d3 this) (.classed "is-bubble-active") not)))
-                                                          (.attr "fill-opacity" 0.5)
-                                                          (.transition)
-                                                          (.duration 100)
-                                                          (.ease #(.easeLinear js/d3 %))
-                                                          (.attr "fill-opacity" 0.8)))))
-               (.on "mouseout" (fn [d] (this-as this (-> (.select js/d3 this)
-                                                         (.filter #(this-as this (-> (.select js/d3 this) (.classed "is-bubble-active") not)))
-                                                         (.attr "fill-opacity" 0.8)
-                                                         (.transition)
-                                                         (.duration 100)
-                                                         (.ease #(.easeLinear js/d3 %))
-                                                         (.attr "fill-opacity" 0.5))))))
-
-             (-> g
                  (.selectAll ".g-circles circle")
-                 (.on "click" (fn [d] (let [country (j/get-in d [:properties :name])
-                                            value (j/get data country)]
-                                        (do (re-frame/dispatch [:set-active-country country])
-                                            (re-frame/dispatch [:set-active-value value])))))
                  (.append "title")
                  (.text (fn [d] (str (-> d .-properties .-name) " – "
                                      (utility/nf (aget data (-> d .-properties .-name)))))))
+
+             (-> g
+                 (.selectAll ".g-circles circle")
+                 (.on "mouseover" (fn [d] (this-as this (-> (.select js/d3 this)
+                                                            (.filter #(this-as this (-> (.select js/d3 this) (.classed "is-bubble-active") not)))
+                                                            (.attr "fill-opacity" 0.5)
+                                                            (.transition)
+                                                            (.duration 100)
+                                                            (.ease #(.easeLinear js/d3 %))
+                                                            (.attr "fill-opacity" 0.8)))))
+                 (.on "mouseout" (fn [d] (this-as this (-> (.select js/d3 this)
+                                                           (.filter #(this-as this (-> (.select js/d3 this) (.classed "is-bubble-active") not)))
+                                                           (.attr "fill-opacity" 0.8)
+                                                           (.transition)
+                                                           (.duration 100)
+                                                           (.ease #(.easeLinear js/d3 %))
+                                                           (.attr "fill-opacity" 0.5)))))
+                 (.on "click" (fn [d] (this-as this (let [self (.select js/d3 this)
+                                                          is-active (-> self (.classed "is-bubble-active"))
+                                                          country (j/get-in d [:properties :name])
+                                                          value (j/get data country)]
+                                                      (do
+                                                        ;; deselect all others
+                                                        (-> g (.selectAll ".g-circles circle")
+                                                            (.filter #(this-as inner-this (not= this inner-this)))
+                                                            (.classed "is-bubble-active" false)
+                                                            (.attr "fill-opacity" 0.5))
+
+                                                        (if is-active
+                                                          ;; bubble is becoming inactive
+                                                          (do
+                                                            (re-frame/dispatch [:clear-actives])
+                                                            (-> self
+                                                                (.classed "is-bubble-active" false)
+                                                                (.transition)
+                                                                (.duration 500)
+                                                                (.attr "fill-opacity" 0.5)))
+                                                          ;; bubble is becoming active
+                                                          (do
+                                                            (re-frame/dispatch [:set-active-country country])
+                                                            (re-frame/dispatch [:set-active-value value])
+                                                            (-> self
+                                                                (.classed "is-bubble-active" true)
+                                                                (.transition)
+                                                                (.duration 500)
+                                                                (.attr "fill-opacity" 1))))))))))
 
              (-> svg (.call my-zoom))))))))
 
