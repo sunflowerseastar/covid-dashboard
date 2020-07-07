@@ -62,16 +62,13 @@
              :line-height control-bar-height
              :text-align "center"
              :background "#f4f4f4"
-             :transition "background 120ms"
-             ;; :border "1px solid #555"
-             }]
+             :transition "background 120ms"}]
   [:.desktop [:.button {:width "30px"
                         :height control-bar-height-desktop
                         :line-height control-bar-height-desktop
                         :font-size "12px"
                         :color "#aaa"
-                        :background "#f8f8f8"
-                        }]]
+                        :background "#f8f8f8"}]]
   [:.button:hover {:background "#f5f5f5"}]
   [:.button:active {:background "#f2f2f2"}]
 
@@ -85,6 +82,23 @@
   [:.info-table {:margin "0 auto 0.6em"}
    [:td {:font-size "17px" :line-height 1.2}]
    [:td:first-child {:text-align "right"}]]
+
+  [:.big-container {
+                    :position "relative"
+                    :height "100%"
+                    ;; :top 0
+                    ;; :left 0
+                    ;; :width "100%"
+                    ;; :bottom 0
+
+                    :border "2px solid blue"}]
+  [:.overlay {:border "3px solid red"
+              :position "absolute"
+              :top 0
+              :left 0
+              :width "100%"
+              :bottom 0
+              :background "#fff8"}]
 
   [:.fade-duration-3 {:transition (str "opacity " duration-3 "ms ease-in-out") :opacity 0} [:&.is-active {:opacity "1"}]]
   [:.fade-duration-2 {:transition (str "opacity " duration-2 "ms ease-in-out") :opacity 0} [:&.is-active {:opacity "1"}]]

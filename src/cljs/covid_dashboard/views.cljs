@@ -1,6 +1,6 @@
 (ns covid-dashboard.views
   (:require [applied-science.js-interop :as j]
-            [covid-dashboard.components :refer [info-panel-and-global-switcher display-and-local-switcher display-and-info-panel-and-local-switcher]]
+            [covid-dashboard.components :refer [info-panel-and-global-switcher display-and-local-switcher display-info-menu-switcher]]
             [covid-dashboard.line-charts :as line-charts]
             [covid-dashboard.tables :as tables]
             [breaking-point.core :as bp]
@@ -99,7 +99,7 @@
               :height "100%"
               :class (str "fade-duration-3 " (when @is-loaded "is-active"))
               :children [[box :size "1" :class "panel" :child
-                          [display-and-info-panel-and-local-switcher
+                          [display-info-menu-switcher
                            [["Total Confirmed" tables/table-totals]
                             ["Confirmed County" maps/map-us-confirmed-by-county]
                             ["Confirmed County" maps/map-us-chloropleth-confirmed-by-county]
