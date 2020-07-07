@@ -38,6 +38,7 @@
                  [box :size "1" :class "panel" :child
                   [display-and-switcher [["Global Deaths" tables/table-global-deaths]
                                         ["Global Recovered" tables/table-global-recovered]]]]
+                 [gap :size gap-size]
                  [box :size "1" :class "panel" :child
                   [display-and-switcher [["US Deaths/Recovered" tables/table-us-deaths-recovered]
                                         ["US Tested" tables/table-us-tested]
