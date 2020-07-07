@@ -5,6 +5,7 @@
    [covid-dashboard.subs :as subs]
    [re-com.core :refer [box gap h-box v-box]]
    [re-frame.core :as re-frame]
+   [tupelo.core :refer [spyx]]
    [reagent.core :refer [atom with-let]]))
 
 (defn detail
@@ -62,22 +63,19 @@
   (with-let [curr (atom 0)
              is-menu-active (atom false)
              sub-panel-count (count sub-panels)]
-    [:div.big-container
+    [:div.panel-container
      [v-box :size "1" :children
       [;; display
        [box :size "1" :class "justify-content-center" :child [(-> (get sub-panels @curr) second)]]
        ;; switcher
        [box :size (if (= @(re-frame/subscribe [::bp/screen]) :mobile) control-bar-height control-bar-height-desktop) :child
-        [h-box :size "1" :attr {:on-click #(do (spyx "hi2")
-                                               (spyx is-menu-active)
-                                               ;; (reset! is-menu-active true)
-                                               (swap! is-menu-active not)
-                                               )} :class "children-align-self-center z-index-1" :children
+        [h-box :size "1" :attr {:on-click #(swap! is-menu-active not)} :class "children-align-self-center z-index-1" :children
          [[box :child [:a.button {:on-click #(do (.stopPropagation %)
                                                  (reset! curr (if (= (dec @curr) -1) (dec sub-panel-count) (dec @curr))))} "←"]]
           [box :size "1" :child [:p.margin-0-auto (-> (get sub-panels @curr) first) [:span.light (str " — " (inc @curr) "/" sub-panel-count)]]]
           [box :child [:a.button {:on-click #(do (.stopPropagation %)
                                                  (reset! curr (if (= (inc @curr) sub-panel-count) 0 (inc @curr))))} "→"]]]]]]]
-     [:div.menu.fade-duration-2 {:class (if @is-menu-active "is-active" "is-inactive")}
-      (map-indexed (fn [i [name _]] [:a {:on-click (fn [] (reset! curr i))} name]) sub-panels)
-      [:p "hi"]]]))
+     [:div.menu-container.fade-duration-2 {:class (if @is-menu-active "is-active" "is-inactive")}
+      [:ul.menu (map-indexed (fn [i [name]] [:li {:class (when (= @curr i) "is-selected")
+                                                    :on-click (fn [] (do (reset! curr i) (reset! is-menu-active false)))}
+                                               name]) sub-panels)]]]))

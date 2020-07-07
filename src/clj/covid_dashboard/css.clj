@@ -83,26 +83,18 @@
    [:td {:font-size "17px" :line-height 1.2}]
    [:td:first-child {:text-align "right"}]]
 
-  [:.big-container {
-                    :position "relative"
-                    :height "100%"
-                    ;; :top 0
-                    ;; :left 0
-                    ;; :width "100%"
-                    ;; :bottom 0
-
-                    :border "2px solid blue"}
+  [:.panel-container {:position "relative" :width "100%" :height "100%" :cursor "pointer"}
    [:>div:first-child {:height "100%"}]]
-  [:.menu {:border "3px solid red"
-              :position "absolute"
-
-              :left 0
-              :width "100%"
-              :bottom control-bar-height
-              :background "#eee"}]
-  [:.desktop [:.menu {:border "3px solid green"
-                         :bottom control-bar-height-desktop
-                         }]]
+  [:.menu-container {:position "absolute" :left 0 :bottom control-bar-height :width "100%"
+                     :background "#fffe" :border-top "1px solid #eee" :z-index 2}]
+  [:.desktop [:.menu-container {:bottom control-bar-height-desktop}]]
+  [:ul.menu {:margin 0 :padding-left 0 :list-style "none"}
+   [:li {:padding "10px" :cursor "pointer" :transition (str "opacity " duration-2 "ms ease-in-out")}
+    [:&:first-child :padding-top "18px"]
+    [:&:last-child :padding-bottom "12px"]
+    [:&:hover {:background "#f9f9f9"}]
+    [:&.is-selected {:background "#f3f3f3" :cursor "default"}]]
+   [:li+li {:border-top "1px dotted #eee"}]]
 
   [:.fade-duration-3 {:transition (str "opacity " duration-3 "ms ease-in-out") :opacity 0} [:&.is-active {:opacity "1"}]]
   [:.fade-duration-2 {:transition (str "opacity " duration-2 "ms ease-in-out") :opacity 0} [:&.is-active {:opacity "1"}]]
