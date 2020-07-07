@@ -76,7 +76,7 @@
                                    (js/setTimeout (fn [] (do (re-frame/dispatch [:clear-actives])
                                                              (if (and (= % dec) (= (dec @curr-map) -1))
                                                                (re-frame/dispatch [:assoc-curr-map (dec sub-panel-count)])
-                                                               (re-frame/dispatch [:assoc-curr-map (inc @curr-map)]))
+                                                               (re-frame/dispatch [:assoc-curr-map (% @curr-map)]))
                                                              (re-frame/dispatch [:assoc-is-switching false]))) duration-2))]
     [v-box :size "1" :children
      [;; spacer
