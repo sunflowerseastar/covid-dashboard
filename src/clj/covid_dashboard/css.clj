@@ -91,14 +91,18 @@
                     ;; :width "100%"
                     ;; :bottom 0
 
-                    :border "2px solid blue"}]
-  [:.overlay {:border "3px solid red"
+                    :border "2px solid blue"}
+   [:>div:first-child {:height "100%"}]]
+  [:.menu {:border "3px solid red"
               :position "absolute"
-              :top 0
+
               :left 0
               :width "100%"
-              :bottom 0
-              :background "#fff8"}]
+              :bottom control-bar-height
+              :background "#eee"}]
+  [:.desktop [:.menu {:border "3px solid green"
+                         :bottom control-bar-height-desktop
+                         }]]
 
   [:.fade-duration-3 {:transition (str "opacity " duration-3 "ms ease-in-out") :opacity 0} [:&.is-active {:opacity "1"}]]
   [:.fade-duration-2 {:transition (str "opacity " duration-2 "ms ease-in-out") :opacity 0} [:&.is-active {:opacity "1"}]]
