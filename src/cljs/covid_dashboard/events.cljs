@@ -82,13 +82,3 @@
                  :response-format (ajax/json-response-format {:keywords? true})
                  :on-success [::assoc-api-all]
                  :on-failure [::failure-http-result]}}))
-
-(re-frame/reg-event-db
- :assoc-is-switching
- (fn [db [_ bool]]
-   (assoc db :is-switching bool)))
-
-(re-frame/reg-event-db
- :assoc-curr-map
- (fn [{:keys [is-switching] :as db} [_ f]]
-   (assoc db :curr-map f)))

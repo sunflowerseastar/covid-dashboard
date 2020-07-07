@@ -55,7 +55,7 @@
                                 [:span.light (str " — " (inc (mod @curr sub-panel-count)) "/" sub-panel-count)]]]
          [box :child [:a.button {:on-click #(when (not @is-switching) (switch-with-fade inc))} "→"]]]]]]]))
 
-(defn display-and-local-switcher
+(defn display-and-switcher
   "Takes a vector of title-component pairs, returns a v-box with a display on top and a switcher on bottom.
   Switching state is local."
   [sub-panels]
@@ -71,30 +71,3 @@
           [box :size "1" :child [:p.margin-0-auto (-> (get sub-panels @curr) first) [:span.light (str " — " (inc @curr) "/" sub-panel-count)]]]
           [box :child [:a.button {:on-click #(reset! curr (if (= (inc @curr) sub-panel-count) 0 (inc @curr)))} "→"]]]]]]]
      [:div.overlay [:p "hi"]]]))
-
-(defn detail-and-global-switcher
-  "Takes a vector of title-component vector pairs, returns a v-box with a spacer on top, a detail panel
-  that shows & hides, and a switcher. Switching state is global."
-  [sub-panels]
-  (with-let [sub-panel-count (count sub-panels)
-             curr-map (re-frame/subscribe [::subs/curr-map]) ;; the maps are displayed
-             is-switching (re-frame/subscribe [::subs/is-switching])
-             switch-with-fade #(do (re-frame/dispatch [:assoc-is-switching true])
-                                   (js/setTimeout (fn [] (do (re-frame/dispatch [:clear-details])
-                                                             (if (and (= % dec) (= (dec @curr-map) -1))
-                                                               (re-frame/dispatch [:assoc-curr-map (dec sub-panel-count)])
-                                                               (re-frame/dispatch [:assoc-curr-map (% @curr-map)]))
-                                                             (re-frame/dispatch [:assoc-is-switching false]))) duration-2))]
-    [v-box :size "1" :children
-     [;; spacer
-      [box :size "1" :child ""]
-      ;; detail panel
-      [detail @is-switching]
-      ;; switcher
-      [box :size control-bar-height-desktop :child
-       [h-box :size "1" :class "children-align-self-center z-index-1 panel" :children
-        [[box :child [:a.button {:on-click #(when (not @is-switching) (switch-with-fade dec))} "←"]]
-         [box :size "1" :child [:p.margin-0-auto (str (->> (mod @curr-map sub-panel-count) (get sub-panels) first)
-                                                      " "
-                                                      (inc (mod @curr-map sub-panel-count)) "/" sub-panel-count)]]
-         [box :child [:a.button {:on-click #(when (not @is-switching) (switch-with-fade inc))} "→"]]]]]]]))

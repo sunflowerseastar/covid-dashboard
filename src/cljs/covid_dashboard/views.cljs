@@ -1,6 +1,6 @@
 (ns covid-dashboard.views
   (:require [applied-science.js-interop :as j]
-            [covid-dashboard.components :refer [detail-and-global-switcher display-and-local-switcher display-detail-menu-switcher]]
+            [covid-dashboard.components :refer [display-and-switcher display-detail-menu-switcher]]
             [covid-dashboard.line-charts :as line-charts]
             [covid-dashboard.tables :as tables]
             [breaking-point.core :as bp]
@@ -22,7 +22,7 @@
               [box :class "panel" :child [tables/table-totals]]
               ;; panel 2
               [box :size "1" :class "panel" :child
-               [display-and-local-switcher [["Confirmed Country" tables/table-confirmed-country]
+               [display-and-switcher [["Confirmed Country" tables/table-confirmed-country]
                                      ["Confirmed State" tables/table-confirmed-state]
                                      ["Confirmed County" tables/table-confirmed-county]]]]]])
 
@@ -36,25 +36,25 @@
                 ;; ...tablet - above and below
                 [:<>
                  [box :size "1" :class "panel" :child
-                  [display-and-local-switcher [["Global Deaths" tables/table-global-deaths]
+                  [display-and-switcher [["Global Deaths" tables/table-global-deaths]
                                         ["Global Recovered" tables/table-global-recovered]]]]
                  [box :size "1" :class "panel" :child
-                  [display-and-local-switcher [["US Deaths/Recovered" tables/table-us-deaths-recovered]
+                  [display-and-switcher [["US Deaths/Recovered" tables/table-us-deaths-recovered]
                                         ["US Tested" tables/table-us-tested]
                                         ["US Hospitalized" tables/table-us-hospitalized]]]]]
                 ;; ...desktop - side by side
                 [box :size "1" :child
                  [h-box :size "1" :gap gap-size :children
                   [[box :size "4" :class "panel" :child
-                    [display-and-local-switcher [["Global Deaths" tables/table-global-deaths]
+                    [display-and-switcher [["Global Deaths" tables/table-global-deaths]
                                           ["Global Recovered" tables/table-global-recovered]]]]
                    [box :size "5" :class "panel" :child
-                    [display-and-local-switcher [["US Deaths/Recovered" tables/table-us-deaths-recovered]
+                    [display-and-switcher [["US Deaths/Recovered" tables/table-us-deaths-recovered]
                                           ["US Tested" tables/table-us-tested]
                                           ["US Hospitalized" tables/table-us-hospitalized]]]]]]])
               ;; panel 6, same either way
               [box :class "panel svg-pointer-events-none" :size "255px" :child
-               [display-and-local-switcher [["Global Confirmed" line-charts/line-chart-global-confirmed-linear]
+               [display-and-switcher [["Global Confirmed" line-charts/line-chart-global-confirmed-linear]
                                      ["Global Confirmed" line-charts/line-chart-global-confirmed-log]
                                      ["Global Daily Cases" line-charts/line-chart-global-daily-cases]]]]]])
 
@@ -66,9 +66,7 @@
        [:img.virion {:src "images/virion-sat-fade_500.jpg"}]]]]))
 
 (defn home-page []
-  (let [curr-map (subscribe [::subs/curr-map])
-        is-loaded (subscribe [::subs/is-loaded])
-        is-switching (subscribe [::subs/is-switching])
+  (let [is-loaded (subscribe [::subs/is-loaded])
         map-sub-panels [["US - Confirmed by Population" maps/map-us-confirmed-by-county]
                         ["US - Confirmed by Population" maps/map-us-chloropleth-confirmed-by-county]
                         ["Cumulative Confirmed Cases" maps/map-world-confirmed-by-country]]
@@ -119,15 +117,12 @@
              [v-box
               :height "100%"
               :class (str (when (not (nil? @screen)) (name @screen)) " desktop fade-duration-3 " (when @is-loaded "is-active"))
-              :children [;; map display, full viewport
-                         [:div.fade-duration-2 {:class (if @is-switching "is-inactive" "is-active")}
-                          [(->> (mod @curr-map (count map-sub-panels)) (get map-sub-panels) second)]]
-                         ;; three columns:
+              :children [;; three columns:
                          [h-box :class "home-page" :gap gap-size :children
                           [;; left - panels 1 & 2
                            [box :size (if (= @screen :tablet) (if @is-left-panel-open "2" "0") (if @is-left-panel-open "220px" "0")) :child [home-col-left]]
                            ;; center - panel 3
                            [box :size (if (= @screen :tablet) "4" "auto") :class "home-col-center" :child
-                            [detail-and-global-switcher map-sub-panels]]
+                            [display-detail-menu-switcher map-sub-panels]]
                            ;; right - panels 4, 5, 6
                            [box :size (if (= @screen :tablet) (if @is-right-panel-open "2" "0") (if @is-right-panel-open "410px" "0")) :child [home-col-right]]]]]])])}))))
