@@ -16,24 +16,24 @@
  (fn-traced [db [_ active-page]] (assoc db :active-page active-page)))
 
 (re-frame/reg-event-db
- :set-active-country
- (fn-traced [db [_ active-country]] (assoc db :active-country active-country)))
+ :set-detail-country
+ (fn-traced [db [_ detail-country]] (assoc db :detail-country detail-country)))
 
 (re-frame/reg-event-db
- :set-active-county
- (fn-traced [db [_ active-county]] (assoc db :active-county active-county)))
+ :set-detail-county
+ (fn-traced [db [_ detail-county]] (assoc db :detail-county detail-county)))
 
 (re-frame/reg-event-db
- :set-active-state
- (fn-traced [db [_ active-state]] (assoc db :active-state active-state)))
+ :set-detail-state
+ (fn-traced [db [_ detail-state]] (assoc db :detail-state detail-state)))
 
 (re-frame/reg-event-db
- :set-active-value
- (fn-traced [db [_ active-value]] (assoc db :active-value active-value)))
+ :set-detail-value
+ (fn-traced [db [_ detail-value]] (assoc db :detail-value detail-value)))
 
 (re-frame/reg-event-db
- :clear-actives
- (fn [db [_ active-value]] (assoc db :active-county nil :active-country nil :active-value nil)))
+ :clear-details
+ (fn [db [_ detail-value]] (assoc db :detail-county nil :detail-country nil :detail-value nil)))
 
 (re-frame/reg-event-db
  ::assoc-api-all

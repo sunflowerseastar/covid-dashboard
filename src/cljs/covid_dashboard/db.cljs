@@ -1,10 +1,10 @@
 (ns covid-dashboard.db)
 
 (def default-db
-  {:active-country nil
-   :active-county nil
-   :active-state nil
-   :active-value nil
+  {:detail-country nil
+   :detail-county nil
+   :detail-state nil
+   :detail-value nil
    :confirmed-by-province nil
    :confirmed-by-country nil
    :confirmed-by-us-county nil

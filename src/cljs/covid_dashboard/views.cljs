@@ -1,6 +1,6 @@
 (ns covid-dashboard.views
   (:require [applied-science.js-interop :as j]
-            [covid-dashboard.components :refer [info-panel-and-global-switcher display-and-local-switcher display-info-menu-switcher]]
+            [covid-dashboard.components :refer [detail-and-global-switcher display-and-local-switcher display-detail-menu-switcher]]
             [covid-dashboard.line-charts :as line-charts]
             [covid-dashboard.tables :as tables]
             [breaking-point.core :as bp]
@@ -99,7 +99,7 @@
               :height "100%"
               :class (str "fade-duration-3 " (when @is-loaded "is-active"))
               :children [[box :size "1" :class "panel" :child
-                          [display-info-menu-switcher
+                          [display-detail-menu-switcher
                            [["Total Confirmed" tables/table-totals]
                             ["Confirmed County" maps/map-us-confirmed-by-county]
                             ["Confirmed County" maps/map-us-chloropleth-confirmed-by-county]
@@ -128,6 +128,6 @@
                            [box :size (if (= @screen :tablet) (if @is-left-panel-open "2" "0") (if @is-left-panel-open "220px" "0")) :child [home-col-left]]
                            ;; center - panel 3
                            [box :size (if (= @screen :tablet) "4" "auto") :class "home-col-center" :child
-                            [info-panel-and-global-switcher map-sub-panels]]
+                            [detail-and-global-switcher map-sub-panels]]
                            ;; right - panels 4, 5, 6
                            [box :size (if (= @screen :tablet) (if @is-right-panel-open "2" "0") (if @is-right-panel-open "410px" "0")) :child [home-col-right]]]]]])])}))))

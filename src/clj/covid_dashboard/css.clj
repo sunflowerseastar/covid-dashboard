@@ -78,8 +78,8 @@
 
   [:.panel {:background "#fdfdfdd1"}]
 
-  [:.info-panel {:font-weight 300}]
-  [:.info-table {:margin "0 auto 0.6em"}
+  [:.detail {:font-weight 300}]
+  [:.detail-table {:margin "0 auto 0.6em"}
    [:td {:font-size "17px" :line-height 1.2}]
    [:td:first-child {:text-align "right"}]]
 

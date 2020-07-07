@@ -138,7 +138,7 @@
                                                       (if is-active
                                                         ;; bubble is becoming inactive
                                                         (do
-                                                          (re-frame/dispatch [:clear-actives])
+                                                          (re-frame/dispatch [:clear-details])
                                                           (-> self
                                                               (.classed "is-bubble-active" false)
                                                               (.transition)
@@ -146,8 +146,8 @@
                                                               (.attr "fill-opacity" 0.5)))
                                                         ;; bubble is becoming active
                                                         (do
-                                                          (re-frame/dispatch [:set-active-county county])
-                                                          (re-frame/dispatch [:set-active-value value])
+                                                          (re-frame/dispatch [:set-detail-county county])
+                                                          (re-frame/dispatch [:set-detail-value value])
                                                           (-> self
                                                               (.classed "is-bubble-active" true)
                                                               (.transition)
@@ -288,7 +288,7 @@
                                                       (if is-active
                                                         ;; county is becoming inactive
                                                         (do
-                                                          (re-frame/dispatch [:clear-actives])
+                                                          (re-frame/dispatch [:clear-details])
                                                           (-> self
                                                               (.classed "is-county-active" false)
                                                               (.transition)
@@ -296,8 +296,8 @@
                                                               (.attr "stroke" stroke-color-normal)))
                                                         ;; county is becoming active
                                                         (do
-                                                          (re-frame/dispatch [:set-active-county county])
-                                                          (re-frame/dispatch [:set-active-value value])
+                                                          (re-frame/dispatch [:set-detail-county county])
+                                                          (re-frame/dispatch [:set-detail-value value])
                                                           (-> self
                                                               (.classed "is-county-active" true)
                                                               (.transition)
@@ -491,7 +491,7 @@
                                                         (if is-active
                                                           ;; bubble is becoming inactive
                                                           (do
-                                                            (re-frame/dispatch [:clear-actives])
+                                                            (re-frame/dispatch [:clear-details])
                                                             (-> self
                                                                 (.classed "is-bubble-active" false)
                                                                 (.transition)
@@ -499,8 +499,8 @@
                                                                 (.attr "fill-opacity" 0.5)))
                                                           ;; bubble is becoming active
                                                           (do
-                                                            (re-frame/dispatch [:set-active-country country])
-                                                            (re-frame/dispatch [:set-active-value value])
+                                                            (re-frame/dispatch [:set-detail-country country])
+                                                            (re-frame/dispatch [:set-detail-value value])
                                                             (-> self
                                                                 (.classed "is-bubble-active" true)
                                                                 (.transition)

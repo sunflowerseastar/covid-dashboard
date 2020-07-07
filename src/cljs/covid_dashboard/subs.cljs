@@ -4,29 +4,9 @@
    [re-frame.core :as re-frame]))
 
 (re-frame/reg-sub
- :active-country
- (fn [db _]
-   (:active-country db)))
-
-(re-frame/reg-sub
- :active-county
- (fn [db _]
-   (:active-county db)))
-
-(re-frame/reg-sub
  ::active-page
  (fn [db _]
    (:active-page db)))
-
-(re-frame/reg-sub
- :active-state
- (fn [db _]
-   (:active-state db)))
-
-(re-frame/reg-sub
- :active-value
- (fn [db _]
-   (-> (:active-value db) utility/nf)))
 
 (re-frame/reg-sub
  ::confirmed-by-province
@@ -52,6 +32,26 @@
  ::curr-map
  (fn [db]
    (:curr-map db)))
+
+(re-frame/reg-sub
+ :detail-country
+ (fn [db _]
+   (:detail-country db)))
+
+(re-frame/reg-sub
+ :detail-county
+ (fn [db _]
+   (:detail-county db)))
+
+(re-frame/reg-sub
+ :detail-state
+ (fn [db _]
+   (:detail-state db)))
+
+(re-frame/reg-sub
+ :detail-value
+ (fn [db _]
+   (-> (:detail-value db) utility/nf)))
 
 (re-frame/reg-sub
  ::global-deaths

@@ -7,36 +7,36 @@
    [re-frame.core :as re-frame]
    [reagent.core :refer [atom with-let]]))
 
-(defn info-panel
-  "Takes is-switching and returns details on the clicked map. Info data is global."
+(defn detail
+  "Takes is-switching and returns details on the clicked map. Detail data is global."
   [is-switching]
-  (let [county (re-frame/subscribe [:active-county])
-        state (re-frame/subscribe [:active-state])
-        country (re-frame/subscribe [:active-country])
-        value (re-frame/subscribe [:active-value])]
+  (let [county (re-frame/subscribe [:detail-county])
+        state (re-frame/subscribe [:detail-state])
+        country (re-frame/subscribe [:detail-country])
+        value (re-frame/subscribe [:detail-value])]
     [box :class (str "fade-duration-2 " (if (or @county @country) "is-active" "is-inactive"))
      :child (if (or @county @country)
-              [:div.panel.info-panel.z-index-1.padding-2.fade-duration-2 {:class (if is-switching "is-inactive" "is-active")}
-               [:table.info-table
+              [:div.panel.detail.z-index-1.padding-2.fade-duration-2 {:class (if is-switching "is-inactive" "is-active")}
+               [:table.detail-table
                 [:tbody (when @county [:tr [:td "County: "] [:td.bold @county]])
                  (when @state [:tr [:td "State: "] [:td.bold @state]])
                  (when @country [:tr [:td "Country: "] [:td.bold @country]])
                  [:tr [:td "Confirmed: "] [:td.bold @value]]]]] "")]))
 
-(defn display-info-menu-switcher
+(defn display-detail-menu-switcher
   "Takes a vector of title-component pairs, returns a v-box with, from top to bottom:
   - display
-  - info
+  - detail
   - menu
   - switcher
-  The display fades when switching. Switcher state is local. Info shows after map clicks.
+  The display fades when switching. Switcher state is local. Detail shows after map clicks.
   The menu is a switcher menu that lets the user jump to a sub-panel in the current panel."
   [sub-panels]
   (with-let [sub-panel-count (count sub-panels)
              curr (atom 0) ;; local curr state will be used to display the sub-panels
              is-switching (atom false)
              switch-with-fade #(do (reset! is-switching true)
-                                   (js/setTimeout (fn [] (do (re-frame/dispatch [:clear-actives])
+                                   (js/setTimeout (fn [] (do (re-frame/dispatch [:clear-details])
                                                              (if (and (= % dec) (= (dec @curr) -1))
                                                                (reset! curr (dec sub-panel-count))
                                                                (swap! curr %))
@@ -45,8 +45,8 @@
      [;; display
       [box :size "1" :class (str "justify-content-center fade-duration-2 " (if @is-switching "is-inactive" "is-active")) :child
        [(-> (get sub-panels (mod @curr sub-panel-count)) second)]]
-      ;; info panel
-      [info-panel @is-switching]
+      ;; detail panel
+      [detail @is-switching]
       ;; switcher
       [box :size (if (= @(re-frame/subscribe [::bp/screen]) :mobile) control-bar-height control-bar-height-desktop) :child
        [h-box :size "1" :class "panel children-align-self-center z-index-1" :children
@@ -72,15 +72,15 @@
           [box :child [:a.button {:on-click #(reset! curr (if (= (inc @curr) sub-panel-count) 0 (inc @curr)))} "→"]]]]]]]
      [:div.overlay [:p "hi"]]]))
 
-(defn info-panel-and-global-switcher
-  "Takes a vector of title-component vector pairs, returns a v-box with a spacer on top, an info panel
+(defn detail-and-global-switcher
+  "Takes a vector of title-component vector pairs, returns a v-box with a spacer on top, a detail panel
   that shows & hides, and a switcher. Switching state is global."
   [sub-panels]
   (with-let [sub-panel-count (count sub-panels)
              curr-map (re-frame/subscribe [::subs/curr-map]) ;; the maps are displayed
              is-switching (re-frame/subscribe [::subs/is-switching])
              switch-with-fade #(do (re-frame/dispatch [:assoc-is-switching true])
-                                   (js/setTimeout (fn [] (do (re-frame/dispatch [:clear-actives])
+                                   (js/setTimeout (fn [] (do (re-frame/dispatch [:clear-details])
                                                              (if (and (= % dec) (= (dec @curr-map) -1))
                                                                (re-frame/dispatch [:assoc-curr-map (dec sub-panel-count)])
                                                                (re-frame/dispatch [:assoc-curr-map (% @curr-map)]))
@@ -88,8 +88,8 @@
     [v-box :size "1" :children
      [;; spacer
       [box :size "1" :child ""]
-      ;; info panel
-      [info-panel @is-switching]
+      ;; detail panel
+      [detail @is-switching]
       ;; switcher
       [box :size control-bar-height-desktop :child
        [h-box :size "1" :class "children-align-self-center z-index-1 panel" :children
