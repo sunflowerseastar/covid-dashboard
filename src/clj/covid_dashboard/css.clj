@@ -72,11 +72,6 @@
    [:td {:font-size "17px" :line-height 1.2}]
    [:td:first-child {:text-align "right"}]]
 
-  [:.panel-container {:position "relative" :width "100%" :height "100%"}
-   [:>div:first-child {:height "100%"}]]
-  [:.mc2 {:border "3px solid red"}]
-  [:.blur {:pointer-events "none"}]
-
   [:.menu-container {:background "#fffe" :border-top "1px solid #eee" :z-index 2}]
   [:.desktop [:.menu-container {:bottom control-bar-height-desktop}]]
   [:ul.menu {:margin 0 :padding-left 0 :list-style "none"}
@@ -100,6 +95,9 @@
   [:.bold {:font-weight 600}]
   [:.light {:font-weight 300 :color "#555"}]
 
+  [:.u-width-100 {:width "100%"}]
+  [:.u-height-100 {:height "100%"}]
+  [:.u-position-relative {:position "relative"}]
   [:.u-absolute-all {:position "absolute" :left 0 :right 0 :top 0 :bottom 0}]
   [:.margin-0-auto {:margin "0 auto"}]
   [:.children-align-self-center [:div {:align-self "center"}]]
