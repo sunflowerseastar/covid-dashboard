@@ -71,7 +71,7 @@
         [box :size "0 1 auto" :child
          [:div.menu-container.pointer-events-auto.fade-duration-2.scroll-y-auto {:class (if @is-menu-active "is-active" "is-inactive")}
           [:ul.menu (doall (map-indexed (fn [i [name]] [:li {:key i :class (when (= (mod @curr sub-panel-count) i) "is-selected")
-                                                             :on-click (fn [] (when (not @is-switching) (do (reset! curr i) (reset! is-menu-active false))))}
+                                                             :on-click (fn [] (when (not @is-switching) (do (re-frame/dispatch [:clear-details]) (reset! curr i) (reset! is-menu-active false))))}
                                                         name]) sub-panels))]]]
         [box :size (if @mobile? control-bar-height control-bar-height-desktop) :child ""]]]]
 
@@ -106,6 +106,6 @@
       [[box :size "1" :class "blur" :child ""]
        [box :child [:div.menu-container.pointer-events-auto.fade-duration-2 {:class (if @is-menu-active "is-active" "is-inactive")}
                     [:ul.menu (doall (map-indexed (fn [i [name]] [:li {:key i :class (when (= (mod @curr sub-panel-count) i) "is-selected")
-                                                                       :on-click (fn [] (do (reset! curr i) (reset! is-menu-active false)))}
+                                                                       :on-click (fn [] (do (re-frame/dispatch [:clear-details]) (reset! curr i) (reset! is-menu-active false)))}
                                                                   name]) sub-panels))]]]
        [box :size (if (= @(re-frame/subscribe [::bp/screen]) :mobile) control-bar-height control-bar-height-desktop) :child ""]]]]))
