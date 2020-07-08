@@ -13,7 +13,7 @@
   (let [confirmed-by-country (re-frame/subscribe [::subs/confirmed-by-country])]
     (when @confirmed-by-country
       [v-box :size "1" :class "white-fade-bottom" :children
-       [[box :class "padding-1" :child [:h4 "Confirmed Cases by Country/Region"]]
+       [[box :class "padding-1" :child [:div [:h4 "Confirmed Cases by"] [:h3 "Country/Region"]]]
         [box :size "1" :class "scroll-y-auto" :child
          [:table [:tbody (map (fn [[country value]]
                                 [:tr {:key (str country value)}
@@ -24,7 +24,7 @@
   (let [confirmed-by-province (re-frame/subscribe [::subs/confirmed-by-province])]
     (when @confirmed-by-province
       [v-box :size "1" :class "white-fade-bottom" :children
-       [[box :class "padding-1" :child [:h4 "Confirmed Cases by State/Province"]]
+       [[box :class "padding-1" :child [:div [:h4 "Confirmed Cases by"] [:h3 "State/Province"]]]
         [box :size "1" :class "scroll-y-auto" :child
          [:table [:tbody (map (fn [[value province country]]
                                 [:tr {:key (str province value)} [:td.bold (utility/nf value)] [:td (str province ", " country)]])
@@ -34,7 +34,7 @@
   (let [confirmed-by-us-county (re-frame/subscribe [::subs/confirmed-by-us-county])]
     (when @confirmed-by-us-county
       [v-box :size "1" :class "white-fade-bottom" :children
-       [[box :class "padding-1" :child [:h4 "Confirmed Cases by U.S. County"]]
+       [[box :class "padding-1" :child [:div [:h4 "Confirmed Cases by"] [:h3 "U.S. County"]]]
         [box :size "1" :class "scroll-y-auto" :child
          [:table [:tbody (map (fn [[value us-county country]]
                                 [:tr {:key (str us-county value)} [:td.bold (utility/nf value)] [:td (str us-county ", " country)]])
