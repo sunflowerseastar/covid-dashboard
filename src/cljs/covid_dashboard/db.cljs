@@ -14,6 +14,7 @@
    :is-fetching false
    :is-loaded false
    :last-updated nil
+   :tick 0
    :time-series-confirmed-global nil
    :total-confirmed nil
    :us-states-deaths-recovered nil

@@ -84,6 +84,11 @@
    (:last-updated db)))
 
 (re-frame/reg-sub
+ ::tick
+ (fn [db]
+   (:tick db)))
+
+(re-frame/reg-sub
  ::time-series-confirmed-global
  (fn [db]
    (:time-series-confirmed-global db)))

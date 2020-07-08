@@ -3,6 +3,7 @@
    [re-frame.core :as re-frame]
    [covid-dashboard.db :as db]
    [covid-dashboard.config :as config]
+   [covid-dashboard.fx :as fx]
    [day8.re-frame.tracing :refer-macros [fn-traced]]
    [day8.re-frame.http-fx]
    [ajax.core :as ajax]))
@@ -69,6 +70,11 @@
  (fn [db [_ result]]
    (assoc db :failure-http-result result)))
 
+(re-frame/reg-event-db
+ :tick-event
+ (fn [db [_ _]]
+   (update db :tick inc)))
+
 (defn api-prefix [x]
   (if config/debug?
     (str "http://localhost:3000/" x)
@@ -84,3 +90,8 @@
                  :response-format (ajax/json-response-format {:keywords? true})
                  :on-success [::assoc-api-all]
                  :on-failure [::failure-http-result]}}))
+
+(re-frame/reg-event-fx
+ :seconds-interval
+ (fn [cfx [_ _]]
+   {:interval nil}))
