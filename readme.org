@@ -17,13 +17,18 @@ lein prod         # output build -> resources/public/js/compiled/
 
 [[https://github.com/Day8/re-frame-template][Re-frame]] framework (which sits on [[https://github.com/reagent-project/reagent][Reagent]]) with [[https://github.com/noprompt/garden][garden]], [[https://github.com/Day8/re-com][re-com]], [[https://github.com/gadfly361/breaking-point][breaking-point]], [[https://github.com/clj-commons/secretary][secretary]], plus other niceties via [[https://github.com/Day8/re-frame-template][re-frame-template]]. [[https://github.com/d3/d3][D3]] visualizations.
 
-** Layouts, Panels, Sub-panels, Switchers
+** Layouts, Panels, Sub-panels
 
 There are three layouts: mobile, tablet, and desktop. The app is constrained to 100% viewport height for all layouts.
 
-Each layout has one or more panels. Each panel contains one or more sub-panels, and a "switcher." The left/right buttons on the switcher switches through the sub-panels.
+Each layout has one or more panels. Each panel is made up of sub-panels. The types of sub-panels are:
 
-Each sub-panel contains a representation of data in the form of a table, line chart, or map. The sub-panel views are split among respective namespaces: ~tables~, ~line-charts~, and ~maps~.
+- Viewer
+- Switcher
+- Detail
+- Menu
+
+The viewer is the container div that shows the displays (one at a time). There are three types of displays: tables, line charts, and maps. The switcher has left/right buttons to change the display currently shown in the viewer. Clicking on the center of the switcher brings up a menu of the displays in that panel.
 
 *** Mobile
 
@@ -35,7 +40,7 @@ Each sub-panel contains a representation of data in the form of a table, line ch
 +---+
 #+end_src
 
-The mobile layout has one panel (and one switcher). All the sub-panels are contained in that one panel.
+The mobile layout has one panel. From top to bottom, this panel contains four sub-panels: Viewer, Detail, Menu, and Switcher. The detail sub-panel is toggled by map interactions, and the switcher menu is toggled by clicking on the switcher. Like Panel 3 for tablet/desktop, the mobile panel viewer fades when switching between displays.
 
 *** Tablet
 
@@ -49,9 +54,7 @@ The mobile layout has one panel (and one switcher). All the sub-panels are conta
 +---+-----+---+
 #+end_src
 
-The tablet layout has 6 panels, each with its own switcher. Panel 3 is "special," however, in that the main display element (which contains maps) spans the full viewport, while the switcher element fits in its expected place in the dom in the middle column.
-
-Put another way, each panel has both a display element for the currently shown sub-panel and a switcher. Each panel's display element and switcher are colocated—except for panel 3. Panel 3 is split between a full viewport sub-panel display element in the "background" (behind all three columns), and its switcher, which lives in the middle column. Since these components are separate in the DOM and the component tree, they are synchronized via re-frame's events/app-db state. The other, "normal" panels' switchers use local ratom state.
+The tablet layout has six panels, each with a viewer, a switcher, and a menu that is available by clicking on the switcher. Panel 3 is "special" because the viewer fades when switching between displays, and a detail sub-panel shows when clicking on a map display.
 
 *** Desktop
 
