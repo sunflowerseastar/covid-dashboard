@@ -2,12 +2,35 @@
   (:require [covid-dashboard.subs :as subs]
             [covid-dashboard.utility :as utility]
             [re-com.core :refer [box gap h-box v-box]]
-            [re-frame.core :as re-frame]))
+            [cljs-time.core :as time]
+            [cljs-time.coerce :as coerce]
+            [cljs-time.format :as format]
+            [goog.string :as goog-string]
+            [goog.string.format]
+            [re-frame.core :as re-frame]
+            [tupelo.core :refer [it->]]))
 
 (defn table-totals []
-  (let [total-confirmed (re-frame/subscribe [::subs/total-confirmed])]
-    (when @total-confirmed
-      [:div.padding-1 [:h4 "Total Confirmed"] [:h3 (utility/nf @total-confirmed)]])))
+  (let [last-updated (re-frame/subscribe [::subs/last-updated])
+        total-confirmed (re-frame/subscribe [::subs/total-confirmed])]
+    (when (and @total-confirmed @last-updated)
+      (let [server (coerce/from-string @last-updated)
+            server-display (format/unparse (format/formatters :rfc822) server)
+            local (->> (time/now) time/to-default-time-zone)
+            local-display (format/unparse (format/formatters :rfc822) local)
+            interval (time/interval server local)
+            display-of #(it-> % (js/parseInt it) (mod it 60) (goog-string/format "%02d" it))]
+        [:div.padding-1 [:h4 "Total Confirmed"] [:h3 (utility/nf @total-confirmed)]
+         [:div.padding-1 [:h4 "Last Updated"]
+          [:h5 "server"]
+          [:h6 server-display]
+          [:h5 "local"]
+          [:h6 local-display]
+          [:h5 "elapsed (hh:mm:ss)"]
+          [:h6 (str (time/in-days interval) " days, "
+                    (display-of (time/in-hours interval)) ":"
+                    (display-of (time/in-minutes interval)) ":"
+                    (display-of (time/in-seconds interval)))]]]))))
 
 (defn table-confirmed-country []
   (let [confirmed-by-country (re-frame/subscribe [::subs/confirmed-by-country])]

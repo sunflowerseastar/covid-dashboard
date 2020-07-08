@@ -79,6 +79,11 @@
    (:is-switching db)))
 
 (re-frame/reg-sub
+ ::last-updated
+ (fn [db]
+   (:last-updated db)))
+
+(re-frame/reg-sub
  ::time-series-confirmed-global
  (fn [db]
    (:time-series-confirmed-global db)))

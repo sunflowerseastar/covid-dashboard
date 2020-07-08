@@ -43,6 +43,7 @@
                     confirmed-by-us-county-fips
                     global-deaths
                     global-recovered
+                    last-updated
                     time-series-confirmed-global
                     total-confirmed
                     us-states-deaths-recovered
@@ -56,6 +57,7 @@
           :global-recovered global-recovered
           :is-fetching false
           :is-loaded true
+          :last-updated last-updated
           :time-series-confirmed-global time-series-confirmed-global
           :total-confirmed total-confirmed
           :us-states-deaths-recovered us-states-deaths-recovered

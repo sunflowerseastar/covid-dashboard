@@ -25,6 +25,13 @@
   [:.desktop [:h3 {:font-size "14px"}]]
   [:h4 {:font-size "19px" :font-weight 300}]
   [:.desktop [:h4 {:font-size "15px"}]]
+  [:h5 {:margin 0 :padding "0 0.8em" :color "#333" :font-weight 300 :font-size "13px" :text-align "center"
+        :text-transform "uppercase"
+        :letter-spacing "0.03em"
+        }]
+  [:.desktop [:h5 {:font-size "9px"}]]
+  [:h6 {:margin "0.2em 0 0.7em" :padding "0 0.8em" :color "#666" :font-weight 400 :font-size "13px" :text-align "center"}]
+  [:.desktop [:h6 {:font-size "12px"}]]
   [:p {:font-size "0.9em" :letter-spacing "0.03em"}]
   [:a {:cursor "pointer"}]
   [:table {:padding "0 1em"}]
@@ -89,7 +96,7 @@
   [:.is-active {:opacity "1"}]
   [:.is-inactive {:pointer-events "none !important"}]
 
-  [:.padding-1 {:box-sizing "border-box" :padding "8px 5px 8px 10px"}]
+  [:.padding-1 {:box-sizing "border-box" :padding "8px 10px"}]
   [:.padding-2 {:box-sizing "border-box" :padding "8px"}]
   [:.z-index-1 {:z-index 1}]
   [:.bold {:font-weight 600}]
