@@ -47,8 +47,8 @@
     [:div.panel-container
      [v-box :size "1" :children
       [;; display
-       [box :size "1" :class (str "justify-content-center fade-duration-2 " (if @is-switching "is-inactive" "is-active")) :child
-        [(-> (get sub-panels (mod @curr sub-panel-count)) second)]]
+       [box :size "1" :class (str "justify-content-center fade-duration-2 " (if @is-switching "is-inactive" "is-active"))
+        :attr {:on-click #(reset! is-menu-active false)} :child [(-> (get sub-panels (mod @curr sub-panel-count)) second)]]
        ;; detail panel
        [detail @is-switching]
        ;; switcher
@@ -58,10 +58,13 @@
           [box :size "1" :child [:p.margin-0-auto (-> (get sub-panels (mod @curr sub-panel-count)) first)
                                  [:span.light (str " — " (inc (mod @curr sub-panel-count)) "/" sub-panel-count)]]]
           [box :child [:a.button {:on-click #(switch-with-fade % inc)} "→"]]]]]]]
-     [:div.menu-container.fade-duration-2 {:class (if @is-menu-active "is-active" "is-inactive")}
-      [:ul.menu (map-indexed (fn [i [name]] [:li {:class (when (= (mod @curr sub-panel-count) i) "is-selected")
-                                                  :on-click (fn [] (when (not @is-switching) (do (reset! curr i) (reset! is-menu-active false))))}
-                                             name]) sub-panels)]]]))
+     [v-box :size "1" :class "u-absolute-all pointer-events-none" :children
+      [[box :size "1" :class "blur" :child ""]
+       [box :child [:div.menu-container.pointer-events-auto.fade-duration-2 {:class (if @is-menu-active "is-active" "is-inactive")}
+                    [:ul.menu (map-indexed (fn [i [name]] [:li {:class (when (= (mod @curr sub-panel-count) i) "is-selected")
+                                                                :on-click (fn [] (when (not @is-switching) (do (reset! curr i) (reset! is-menu-active false))))}
+                                                           name]) sub-panels)]]]
+       [box :size (if (= @(re-frame/subscribe [::bp/screen]) :mobile) control-bar-height control-bar-height-desktop) :child ""]]]]))
 
 (defn display-and-switcher
   "Takes a vector of title-component pairs, returns a v-box with a display on top, a switcher on bottom, and a menu."
@@ -76,7 +79,8 @@
     [:div.panel-container
      [v-box :size "1" :children
       [;; display
-       [box :size "1" :class "justify-content-center" :child [(-> (get sub-panels (mod @curr sub-panel-count)) second)]]
+       [box :size "1" :class "justify-content-center" :attr {:on-click #(reset! is-menu-active false)} :child
+        [(-> (get sub-panels (mod @curr sub-panel-count)) second)]]
        ;; switcher
        [box :size (if (= @(re-frame/subscribe [::bp/screen]) :mobile) control-bar-height control-bar-height-desktop) :child
         [h-box :size "1" :attr {:on-click #(swap! is-menu-active not)} :class "children-align-self-center z-index-1 cursor-pointer" :children
@@ -84,7 +88,11 @@
           [box :size "1" :child [:p.margin-0-auto (-> (get sub-panels (mod @curr sub-panel-count)) first)
                                  [:span.light (str " — " (inc (mod @curr sub-panel-count)) "/" sub-panel-count)]]]
           [box :child [:a.button {:on-click #(switch % inc)} "→"]]]]]]]
-     [:div.menu-container.fade-duration-2 {:class (if @is-menu-active "is-active" "is-inactive")}
-      [:ul.menu (map-indexed (fn [i [name]] [:li {:class (when (= (mod @curr sub-panel-count) i) "is-selected")
-                                                  :on-click (fn [] (do (reset! curr i) (reset! is-menu-active false)))}
-                                             name]) sub-panels)]]]))
+
+     [v-box :size "1" :class "u-absolute-all pointer-events-none" :children
+      [[box :size "1" :class "blur" :child ""]
+       [box :child [:div.menu-container.pointer-events-auto.fade-duration-2 {:class (if @is-menu-active "is-active" "is-inactive")}
+                    [:ul.menu (map-indexed (fn [i [name]] [:li {:class (when (= (mod @curr sub-panel-count) i) "is-selected")
+                                                                :on-click (fn [] (do (reset! curr i) (reset! is-menu-active false)))}
+                                                           name]) sub-panels)]]]
+       [box :size (if (= @(re-frame/subscribe [::bp/screen]) :mobile) control-bar-height control-bar-height-desktop) :child ""]]]]))

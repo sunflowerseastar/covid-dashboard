@@ -53,22 +53,10 @@
   [:.control-bar-height-box {:height control-bar-height
                              :border "1px solid blue"
                              :flex (str "1 1 " control-bar-height)}]
-  [:.button {:display "block"
-             :width "80px"
-             :height control-bar-height
-             :font-size "21px"
-             :color "#ccc"
-             :text-shadow "1px 1px 0 #fff"
-             :line-height control-bar-height
-             :text-align "center"
-             :background "#f4f4f4"
-             :transition "background 120ms"}]
-  [:.desktop [:.button {:width "30px"
-                        :height control-bar-height-desktop
-                        :line-height control-bar-height-desktop
-                        :font-size "12px"
-                        :color "#aaa"
-                        :background "#f8f8f8"}]]
+  [:.button {:display "block" :width "80px" :height control-bar-height :font-size "21px" :color "#ccc" :text-shadow "1px 1px 0 #fff"
+             :line-height control-bar-height :text-align "center" :background "#f4f4f4" :transition "background 120ms"}]
+  [:.desktop [:.button {:width "30px" :height control-bar-height-desktop :line-height control-bar-height-desktop
+                        :font-size "12px" :color "#aaa" :background "#f8f8f8"}]]
   [:.button:hover {:background "#f5f5f5"}]
   [:.button:active {:background "#f2f2f2"}]
 
@@ -85,8 +73,10 @@
 
   [:.panel-container {:position "relative" :width "100%" :height "100%"}
    [:>div:first-child {:height "100%"}]]
-  [:.menu-container {:position "absolute" :left 0 :bottom control-bar-height :width "100%"
-                     :background "#fffe" :border-top "1px solid #eee" :z-index 2}]
+  [:.mc2 {:border "3px solid red"}]
+  [:.blur {:pointer-events "none"}]
+
+  [:.menu-container {:background "#fffe" :border-top "1px solid #eee" :z-index 2}]
   [:.desktop [:.menu-container {:bottom control-bar-height-desktop}]]
   [:ul.menu {:margin 0 :padding-left 0 :list-style "none"}
    [:li {:padding "10px" :cursor "pointer" :transition (str "opacity " duration-2 "ms ease-in-out")
@@ -117,6 +107,8 @@
   [:.text-align-center {:text-align "center"}]
   [:.justify-content-center {:justify-content "center"}]
   [:.cursor-pointer {:cursor "pointer"}]
+  [:.pointer-events-none {:pointer-events "none"}]
+  [:.pointer-events-auto {:pointer-events "auto"}]
 
   [:.graticule {:fill "none" :stroke "#eee" :stroke-width ".5px" :stroke-opacity 0.4}]
 
