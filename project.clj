@@ -4,6 +4,7 @@
                  [clj-commons/secretary "1.2.4"]
                  [cljsjs/d3 "5.12.0-0"
                   :exclusions [cljsjs/react cljsjs/react-dom cljsjs/react-dom-server cljsjs/create-react-class]]
+                 [com.andrewmcveigh/cljs-time "0.5.2"]
                  [day8.re-frame/http-fx "v0.2.0"]
                  [day8.re-frame/tracing "0.5.5"]
                  [garden "1.3.10"]
