@@ -70,9 +70,21 @@
        [[box :size "1" :child ""]
         [box :size "0 1 auto" :child
          [:div.menu-container.pointer-events-auto.fade-duration-2.scroll-y-auto {:class (if @is-menu-active "is-active" "is-inactive")}
-          [:ul.menu (doall (map-indexed (fn [i [name]] [:li {:key i :class (when (= (mod @curr sub-panel-count) i) "is-selected")
-                                                             :on-click (fn [] (when (not @is-switching) (do (re-frame/dispatch [:clear-details]) (reset! curr i) (reset! is-menu-active false))))}
-                                                        name]) sub-panels))]]]
+          [:ul.menu (doall (map-indexed
+                            (fn [i [name _ long-name type]]
+                              [:li {:key i :class (when (= (mod @curr sub-panel-count) i) "is-selected")
+                                    :on-click (fn []
+                                                (when (not @is-switching)
+                                                  (do (re-frame/dispatch [:clear-details])
+                                                      (reset! curr i)
+                                                      (reset! is-menu-active false))))}
+                               (if @mobile?
+                                 [h-box :size "1" :children
+                                  [[box :size "5" :class "bold justify-content-flex-end" :child long-name]
+                                   [gap :size "10px"]
+                                   [box :size "4" :class "light" :child type]]]
+                               [:span name])])
+                            sub-panels))]]]
         [box :size (if @mobile? switcher-height-mobile switcher-height-desktop) :child ""]]]]
 
      ;; display (desktop)

@@ -97,8 +97,9 @@
    [:td:first-child {:text-align "right"}]]
   [:.menu-container {:background "#fffe" :border-top "1px solid #eee" :z-index 2}]
   [:.desktop [:.menu-container {:bottom switcher-height-desktop}]]
-  [:ul.menu {:margin 0 :padding-left 0 :list-style "none"}
-   [:li {:padding "10px" :cursor "pointer" :transition (str "opacity " duration-2 "ms ease-in-out")
+  [:ul.menu {:margin 0 :padding-left 0 :list-style "none" :text-align "center"}
+   [:li {:padding "12px" :cursor "pointer" :transition (str "opacity " duration-2 "ms ease-in-out")
+         :font-size "13px"
          :border-left "1px solid #eee" :border-right "1px solid #eee"}
     [:&:first-child :padding-top "18px"]
     [:&:last-child :padding-bottom "12px"]
@@ -106,6 +107,8 @@
     [:&.is-selected {:background "#f3f3f3" :cursor "default"}]]
    [:li+li {:border-top "1px dotted #eee"}]
    [:li:last-child {:border-bottom "1px dotted #eee"}]]
+  [:.desktop [:ul.menu {:text-align "left"}
+              [:li {:padding "10px" :font-size "13px"}]]]
   [:.white-fade-bottom {:position "relative"}
    [:&:after {:content "''" :position "absolute" :bottom 0 :left 0
               :width "100%" :height "12px"
@@ -114,17 +117,11 @@
 
   ;; info
 
-  [:.info {
-           :position "absolute"
-           :top 0
-           :left 0
-           :width "100%"
-           :bottom 0
+  [:.info {:position "absolute" :top 0 :left 0 :width "100%" :bottom 0
            :background "#fffd"
            :z-index 3
            :display "none"
-           }
-   ]
+           }]
 
   ;; visualizations
 
@@ -159,6 +156,7 @@
   [:.text-align-right {:text-align "right"}]
   [:.text-align-center {:text-align "center"}]
   [:.justify-content-center {:justify-content "center"}]
+  [:.justify-content-flex-end {:justify-content "flex-end"}]
   [:.cursor-pointer {:cursor "pointer"}]
   [:.pointer-events-none {:pointer-events "none"}]
   [:.pointer-events-auto {:pointer-events "auto"}]

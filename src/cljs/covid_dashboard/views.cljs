@@ -5,13 +5,29 @@
             [covid-dashboard.tables :as tables]
             [breaking-point.core :as bp]
             [covid-dashboard.maps :as maps]
-            [covid-dashboard.static :refer [switcher-height-desktop gap-size duration-2]]
+            [covid-dashboard.static :refer [duration-2 gap-size switcher-height-desktop]]
             [covid-dashboard.subs :as subs]
             [covid-dashboard.utility :as utility]
             [re-com.core :refer [box gap h-box v-box]]
             [re-frame.core :refer [dispatch subscribe]]
-            [tupelo.core :refer [spyx]]
-            [reagent.core :refer [atom create-class with-let]]))
+            [reagent.core :refer [atom create-class with-let]]
+            [tupelo.core :refer [spyx]]))
+
+(def mobile-panels [["Total Confirmed" tables/table-totals "Overview" ""]
+                    ["Confirmed US County" maps/map-us-confirmed-by-county "Confirmed by US County" "US map - bubble"]
+                    ["Confirmed US County (2)" maps/map-us-chloropleth-confirmed-by-county "Confirmed by US County" "US map - chloropleth"]
+                    ["Confirmed Country" maps/map-world-confirmed-by-country "Confirmed by Country" "world map - bubble"]
+                    ["Confirmed Country" tables/table-confirmed-country "Confirmed by Country" "table"]
+                    ["Confirmed State" tables/table-confirmed-state "Confirmed by Country" "table"]
+                    ["Confirmed US County" tables/table-confirmed-county "Confirmed by US County" "table"]
+                    ["Global Deaths" tables/table-global-deaths "Global Deaths" "table"]
+                    ["Global Recovered" tables/table-global-recovered "Global Recovered" "table"]
+                    ["US Deaths/Recovered" tables/table-us-deaths-recovered "US Deaths & Recovered" "table"]
+                    ["US Tested" tables/table-us-tested "US Tested" "table"]
+                    ["US Hospitalized" tables/table-us-hospitalized "US Hospitalized" "table"]
+                    ["Global Confirmed" line-charts/line-chart-global-confirmed-linear "Global Confirmed" "line chart - linear"]
+                    ["Global Confirmed - log" line-charts/line-chart-global-confirmed-log "Global Confirmed" "line chart - log"]
+                    ["Global Daily Cases" line-charts/line-chart-global-daily-cases "Global Daily Cases" "line chart - linear"]])
 
 (defn home-col-left []
   [v-box
@@ -23,8 +39,8 @@
               ;; panel 2
               [box :size "1" :class "panel" :child
                [display-and-switcher [["Confirmed Country" tables/table-confirmed-country]
-                                     ["Confirmed State" tables/table-confirmed-state]
-                                     ["Confirmed County" tables/table-confirmed-county]]]]]])
+                                      ["Confirmed State" tables/table-confirmed-state]
+                                      ["Confirmed County" tables/table-confirmed-county]]]]]])
 
 (defn home-col-right []
   [v-box
@@ -37,27 +53,27 @@
                 [:<>
                  [box :size "1" :class "panel" :child
                   [display-and-switcher [["Global Deaths" tables/table-global-deaths]
-                                        ["Global Recovered" tables/table-global-recovered]]]]
+                                         ["Global Recovered" tables/table-global-recovered]]]]
                  [gap :size gap-size]
                  [box :size "1" :class "panel" :child
                   [display-and-switcher [["US Deaths/Recovered" tables/table-us-deaths-recovered]
-                                        ["US Tested" tables/table-us-tested]
-                                        ["US Hospitalized" tables/table-us-hospitalized]]]]]
+                                         ["US Tested" tables/table-us-tested]
+                                         ["US Hospitalized" tables/table-us-hospitalized]]]]]
                 ;; ...desktop - side by side
                 [box :size "1" :child
                  [h-box :size "1" :gap gap-size :children
                   [[box :size "4" :class "panel" :child
                     [display-and-switcher [["Global Deaths" tables/table-global-deaths]
-                                          ["Global Recovered" tables/table-global-recovered]]]]
+                                           ["Global Recovered" tables/table-global-recovered]]]]
                    [box :size "5" :class "panel" :child
                     [display-and-switcher [["US Deaths/Recovered" tables/table-us-deaths-recovered]
-                                          ["US Tested" tables/table-us-tested]
-                                          ["US Hospitalized" tables/table-us-hospitalized]]]]]]])
+                                           ["US Tested" tables/table-us-tested]
+                                           ["US Hospitalized" tables/table-us-hospitalized]]]]]]])
               ;; panel 6, same either way
               [box :class "panel svg-pointer-events-none" :size "255px" :child
                [display-and-switcher [["Global Confirmed" line-charts/line-chart-global-confirmed-linear]
-                                     ["Global Confirmed" line-charts/line-chart-global-confirmed-log]
-                                     ["Global Daily Cases" line-charts/line-chart-global-daily-cases]]]]]])
+                                      ["Global Confirmed" line-charts/line-chart-global-confirmed-log]
+                                      ["Global Daily Cases" line-charts/line-chart-global-daily-cases]]]]]])
 
 (defn loader []
   (let [is-fetching (subscribe [::subs/is-fetching])]
@@ -68,9 +84,9 @@
 
 (defn home-page []
   (let [is-loaded (subscribe [::subs/is-loaded])
-        map-sub-panels [["US - Confirmed by Population" maps/map-us-confirmed-by-county]
-                        ["US - Confirmed by Population" maps/map-us-chloropleth-confirmed-by-county]
-                        ["Cumulative Confirmed Cases" maps/map-world-confirmed-by-country]]
+        map-sub-panels [["Confirmed US County" maps/map-us-confirmed-by-county]
+                        ["Confirmed US County (2)" maps/map-us-chloropleth-confirmed-by-county]
+                        ["Global Confirmed Cases" maps/map-world-confirmed-by-country]]
         screen (subscribe [::bp/screen])
         is-left-panel-open (atom true)
         is-right-panel-open (atom true)]
@@ -97,23 +113,7 @@
              [v-box
               :height "100%"
               :class (str "fade-duration-3 " (when @is-loaded "is-active"))
-              :children [[box :size "1" :class "panel" :child
-                          [display-detail-menu-switcher
-                           [["Total Confirmed" tables/table-totals]
-                            ["Confirmed County" maps/map-us-confirmed-by-county]
-                            ["Confirmed County" maps/map-us-chloropleth-confirmed-by-county]
-                            ["Confirmed Country" maps/map-world-confirmed-by-country]
-                            ["Confirmed Country" tables/table-confirmed-country]
-                            ["Confirmed State" tables/table-confirmed-state]
-                            ["Confirmed County" tables/table-confirmed-county]
-                            ["Global Deaths" tables/table-global-deaths]
-                            ["Global Recovered" tables/table-global-recovered]
-                            ["US Deaths/Recovered" tables/table-us-deaths-recovered]
-                            ["US Tested" tables/table-us-tested]
-                            ["US Hospitalized" tables/table-us-hospitalized]
-                            ["Global Confirmed" line-charts/line-chart-global-confirmed-linear]
-                            ["Global Confirmed" line-charts/line-chart-global-confirmed-log]
-                            ["Global Daily Cases" line-charts/line-chart-global-daily-cases]]]]]]
+              :children [[box :size "1" :class "panel" :child [display-detail-menu-switcher mobile-panels]]]]
              ;; desktop layout
              [v-box
               :height "100%"
