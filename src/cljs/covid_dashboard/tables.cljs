@@ -22,18 +22,17 @@
           (let [server (coerce/from-string @last-updated)
                 server-display (format/unparse (format/formatters :rfc822) server)
                 local (->> (time/now) time/to-default-time-zone)
-                local-display (format/unparse (format/formatters :rfc822) local)
+                local-display (format/unparse (format/formatter "E, dd MMM YYYY hh:mm A") local)
                 interval (time/interval server local)
                 tick @(re-frame/subscribe [::subs/tick])
                 display-of #(it-> % (js/parseInt it) (mod it 60) (goog-string/format "%02d" it))]
             [:div.padding-1 [:h4 "Total Confirmed"] [:h3 (utility/nf @total-confirmed)]
              [:div.padding-1 [:h4 "Last Updated"]
-              [:h5 "server data"]
+              [:h5 "server data (UTC±00:00)"]
               [:h6 server-display]
               [:h5 "local time"]
               [:h6 local-display]
-              ;; [:p @tick]
-              [:h5 "interval (hh:mm:ss)"]
+              [:h5 "age (hh:mm:ss)"]
               [:h6 (str (time/in-days interval) " days, "
                         (display-of (time/in-hours interval)) ":"
                         (display-of (time/in-minutes interval)) ":"
