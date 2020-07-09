@@ -95,8 +95,8 @@
   [:.detail-table {:margin "0 auto 0.6em"}
    [:td {:font-size "17px" :line-height 1.2}]
    [:td:first-child {:text-align "right"}]]
-  [:.menu-container {:background "#fffe" :border-top "1px solid #eee" :z-index 2}]
-  [:.desktop [:.menu-container {:bottom switcher-height-desktop}]]
+  [:.menu-container {:background "#fff" :border-top "1px solid #eee" :z-index 2}]
+  [:.desktop [:.menu-container {:background "#fffe" :bottom switcher-height-desktop}]]
   [:ul.menu {:margin 0 :padding-left 0 :list-style "none" :text-align "center"}
    [:li {:padding "12px" :cursor "pointer" :transition (str "opacity " duration-2 "ms ease-in-out")
          :font-size "13px"

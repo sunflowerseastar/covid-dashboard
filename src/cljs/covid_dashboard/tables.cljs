@@ -36,7 +36,8 @@
                                                (display-of (time/in-hours interval)) ":"
                                                (display-of (time/in-minutes interval)) ":"
                                                (display-of (time/in-seconds interval)))]
-              [:a.information-link "information"]]]))))}))
+              ;; [:a.information-link "information"]
+              ]]))))}))
 
 (defn table-confirmed-country []
   (let [confirmed-by-country (re-frame/subscribe [::subs/confirmed-by-country])]
