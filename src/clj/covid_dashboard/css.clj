@@ -17,8 +17,13 @@
   [:to {:transform "scale(1.4) translateX(-14%)"}])
 
 (defstyles screen
+
+  ;; global
+
   [:#app {:overflow "hidden" :height "100%"}]
   [:.rc-box {:overflow "hidden" :transition (str "all " duration-0 " ease-in-out")}]
+
+  ;; type
 
   [:h3 :h4 {:margin "0.5em 0 0.4em" :padding "0 0.8em" :color "#333" :text-align "center" :letter-spacing "0.03em"}]
   [:h3 {:font-size "21px" :font-weight 600}]
@@ -39,6 +44,8 @@
    [:&:hover {:color "#333" :border-bottom "1px solid #aaa"}]]
   [:.desktop [:a.information-link {:margin "6px 0" :font-size "10px"}]]
 
+  ;; html
+
   [:table {:padding "0 1em"}]
   [:.tablet [:table {:padding "0em"}]]
   [:.small-monitor [:table {:padding "0.4em"}]]
@@ -46,6 +53,18 @@
   [:td {:padding "4px 6px 3px 3px"
         :font-size "15px"}]
   [:.desktop [:td {:padding "4px 4px 3px 2px" :font-size "12px"}]]
+
+  ;; buttons
+
+  [:.button {:display "block" :width "80px" :height control-bar-height :font-size "21px" :color "#ccc" :text-shadow "1px 1px 0 #fff"
+             :line-height control-bar-height :text-align "center" :background "#f4f4f4" :transition "background 120ms"}]
+  [:.desktop [:.button {:width "30px" :height control-bar-height-desktop :line-height control-bar-height-desktop
+                        :font-size "12px" :color "#aaa" :background "#f8f8f8"}]]
+  [:.button:hover {:background "#f5f5f5"}]
+  [:.button:active {:background "#f2f2f2"}]
+
+
+  ;; loader
 
   [:.loader {:position "absolute" :top 0 :left 0 :right 0 :bottom 0 :pointer-events "none"}]
   [:.virion-container {:position "absolute" :display "block" :width "44vw" :height "28vw"
@@ -61,21 +80,15 @@
   [:.virion {:position "absolute" :display "block" :width "100%" :left 0 :top 0
              :animation [[virion-animation "4s" "cubic-bezier(.38,.09,.47,.98)" "forwards"]]}]
 
-  [:.home-page {:height "100vh" :padding "10px" :box-sizing "border-box" :-webkit-font-smoothing "antialiased"}]
+  ;; layout
 
+  [:.home-page {:height "100vh" :padding "10px" :box-sizing "border-box" :-webkit-font-smoothing "antialiased"}]
   [:.control-bar-height-box {:height control-bar-height
                              :border "1px solid blue"
                              :flex (str "1 1 " control-bar-height)}]
-  [:.button {:display "block" :width "80px" :height control-bar-height :font-size "21px" :color "#ccc" :text-shadow "1px 1px 0 #fff"
-             :line-height control-bar-height :text-align "center" :background "#f4f4f4" :transition "background 120ms"}]
-  [:.desktop [:.button {:width "30px" :height control-bar-height-desktop :line-height control-bar-height-desktop
-                        :font-size "12px" :color "#aaa" :background "#f8f8f8"}]]
-  [:.button:hover {:background "#f5f5f5"}]
-  [:.button:active {:background "#f2f2f2"}]
-
   [:.home-col-left :.home-col-right {:z-index 1}]
 
-  [:#line-chart-root-svg {:height "200px"}]
+  ;; panel
 
   [:.panel {:background "#fdfdfdd1"}]
 
@@ -95,6 +108,20 @@
     [:&.is-selected {:background "#f3f3f3" :cursor "default"}]]
    [:li+li {:border-top "1px dotted #eee"}]
    [:li:last-child {:border-bottom "1px dotted #eee"}]]
+  [:.white-fade-bottom {:position "relative"}
+   [:&:after {:content "''" :position "absolute" :bottom 0 :left 0
+              :width "100%" :height "12px"
+              :background-image "linear-gradient(#fff0, #ffff)"
+              :pointer-events "none" :overflow "visible" :z-index 2}]]
+
+  ;; visualizations
+
+  [:.svg-container {:position "relative" :top "50%" :transform "translateY(-50%)" :width "100%" :height "100%" :overflow "visible"}]
+  [:.svg-pointer-events-none [:svg {:pointer-events "none"}]]
+  [:.graticule {:fill "none" :stroke "#eee" :stroke-width ".5px" :stroke-opacity 0.4}]
+  [:#line-chart-root-svg {:height "200px"}]
+
+  ;; utility
 
   [:.fade-duration-3 {:transition (str "opacity " duration-3 "ms ease-in-out") :opacity 0}]
   [:.fade-duration-2 {:transition (str "opacity " duration-2 "ms ease-in-out") :opacity 0}]
@@ -121,15 +148,4 @@
   [:.cursor-pointer {:cursor "pointer"}]
   [:.pointer-events-none {:pointer-events "none"}]
   [:.pointer-events-auto {:pointer-events "auto"}]
-
-  [:.graticule {:fill "none" :stroke "#eee" :stroke-width ".5px" :stroke-opacity 0.4}]
-
-  [:.scroll-y-auto {:overflow-y "auto" :-webkit-overflow-scrolling "touch"}]
-
-  [:.white-fade-bottom {:position "relative"}
-   [:&:after {:content "''" :position "absolute" :bottom 0 :left 0
-              :width "100%" :height "12px"
-              :background-image "linear-gradient(#fff0, #ffff)"
-              :pointer-events "none" :overflow "visible" :z-index 2}]]
-  [:.svg-container {:position "relative" :top "50%" :transform "translateY(-50%)" :width "100%" :height "100%" :overflow "visible"}]
-  [:.svg-pointer-events-none [:svg {:pointer-events "none"}]])
+  [:.scroll-y-auto {:overflow-y "auto" :-webkit-overflow-scrolling "touch"}])
