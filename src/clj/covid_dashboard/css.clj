@@ -23,17 +23,22 @@
   [:h3 :h4 {:margin "0.5em 0 0.4em" :padding "0 0.8em" :color "#333" :text-align "center" :letter-spacing "0.03em"}]
   [:h3 {:font-size "21px" :font-weight 600}]
   [:.desktop [:h3 {:font-size "14px"}]]
-  [:h4 {:font-size "19px" :font-weight 300}]
-  [:.desktop [:h4 {:font-size "15px"}]]
-  [:h5 {:margin 0 :padding "0 0.8em" :color "#333" :font-weight 300 :font-size "13px" :text-align "center"
-        :text-transform "uppercase"
-        :letter-spacing "0.03em"
-        }]
+  [:h4 {:font-size "19px" :font-weight 300}
+   [:&.extra-margin {:margin "2em 0 0.55em"}]]
+  [:.desktop [:h4 {:font-size "15px"} [:&.extra-margin {:margin "1em 0 0.55em"}]]]
+  [:h5 {:margin 0 :padding "0 0.7em" :color "#333" :font-weight 300 :font-size "10px" :text-align "center"
+        :text-transform "uppercase" :letter-spacing "0.03em"}]
   [:.desktop [:h5 {:font-size "9px"}]]
-  [:h6 {:margin "0.2em 0 0.7em" :padding "0 0.8em" :color "#666" :font-weight 400 :font-size "13px" :text-align "center"}]
-  [:.desktop [:h6 {:font-size "12px"}]]
+  [:h6 {:margin "0.2em 0 0.7em" :padding "0 0.8em" :color "#777" :font-weight 400 :font-size "14px" :text-align "center"}]
+  [:.desktop [:h6 {:font-size "12px" :color "#666"}]]
   [:p {:font-size "0.9em" :letter-spacing "0.03em"}]
   [:a {:cursor "pointer"}]
+  [:a.information-link {:position "relative" :top "-3px" :display "inline-block" :margin-top "2.4em"
+                        :font-size "12px" :font-weight 300 :color "#666" :text-align "center"
+                        :border-bottom "1px solid #ccc" :transition "all 120ms"}
+   [:&:hover {:color "#333" :border-bottom "1px solid #aaa"}]]
+  [:.desktop [:a.information-link {:margin "6px 0" :font-size "10px"}]]
+
   [:table {:padding "0 1em"}]
   [:.tablet [:table {:padding "0em"}]]
   [:.small-monitor [:table {:padding "0.4em"}]]
@@ -98,6 +103,7 @@
 
   [:.padding-1 {:box-sizing "border-box" :padding "8px 10px"}]
   [:.padding-2 {:box-sizing "border-box" :padding "8px"}]
+  [:.padding-3-top {:box-sizing "border-box" :padding-top "2px"}]
   [:.z-index-1 {:z-index 1}]
   [:.bold {:font-weight 600}]
   [:.light {:font-weight 300 :color "#555"}]

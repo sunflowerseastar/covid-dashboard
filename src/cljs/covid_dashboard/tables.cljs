@@ -26,17 +26,17 @@
                 interval (time/interval server local)
                 tick @(re-frame/subscribe [::subs/tick])
                 display-of #(it-> % (js/parseInt it) (mod it 60) (goog-string/format "%02d" it))]
-            [:div.padding-1 [:h4 "Total Confirmed"] [:h3 (utility/nf @total-confirmed)]
-             [:div.padding-1 [:h4 "Last Updated"]
-              [:h5 "server data (UTC±00:00)"]
-              [:h6 server-display]
-              [:h5 "local time"]
-              [:h6 local-display]
-              [:h5 "age (hh:mm:ss)"]
-              [:h6 (str (time/in-days interval) " days, "
-                        (display-of (time/in-hours interval)) ":"
-                        (display-of (time/in-minutes interval)) ":"
-                        (display-of (time/in-seconds interval)))]]]))))}))
+            [:div.u-position-relative.padding-1
+             [:h4 "Total Confirmed"] [:h3 (utility/nf @total-confirmed)]
+             [:div.text-align-center
+              [:h4.extra-margin "Last Updated"]
+              [:h5 "server (UTC±00:00)"] [:h6 server-display]
+              [:h5 "local time"] [:h6 local-display]
+              [:h5 "age (hh:mm:ss)"] [:h6 (str (time/in-days interval) " days, "
+                                               (display-of (time/in-hours interval)) ":"
+                                               (display-of (time/in-minutes interval)) ":"
+                                               (display-of (time/in-seconds interval)))]
+              [:a.information-link "information"]]]))))}))
 
 (defn table-confirmed-country []
   (let [confirmed-by-country (re-frame/subscribe [::subs/confirmed-by-country])]
