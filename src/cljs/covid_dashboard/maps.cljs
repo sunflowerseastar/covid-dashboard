@@ -242,21 +242,14 @@
            ;; marks
            (-> g
                (.append "g")
+               (.attr "class" "county-container")
                (.attr "stroke" stroke-color-normal)
                (.attr "stroke-width" "1px")
                (.attr "stroke-linejoin" "round")
                (.selectAll "path")
                (.data counties-geojson)
-               ;; (.join "path")
-               (.join (fn [enter]
-                        (-> enter
-                            (.append "path")
-                            (.attr "class" "counties")
-                            (.attr "fill" "transparent"))))
-               (.transition)
-               (.delay duration-2)
-               (.transition)
-               (.duration duration-2)
+               (.join "path")
+               (.attr "class" "counties")
                (.attr "fill" (fn [d] (scale-color-2 (j/get d :value))))
                (.attr "d" path))
 

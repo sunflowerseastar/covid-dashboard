@@ -15,6 +15,10 @@
 (defkeyframes virion-animation
   [:from {:transform "scale(1.4) translateX(-11%)"}]
   [:to {:transform "scale(1.4) translateX(-14%)"}])
+(defkeyframes fade-in-after-delay ["0%" {:opacity 0}] ["50%" {:opacity 0}] ["100%" {:opacity 1}])
+
+(def s-curve-ease-cubic "cubic-bezier(.5,0,.5,1)")
+(def s-curve-custom "cubic-bezier(.38,.09,.47,.98)")
 
 (defstyles screen
 
@@ -77,7 +81,7 @@
   [:.virion-container-inner {:position "relative" :box-sizing "border-box" :width "100%" :height "100%" :overflow "hidden"}]
   virion-animation
   [:.virion {:position "absolute" :display "block" :width "100%" :left 0 :top 0
-             :animation [[virion-animation "4s" "cubic-bezier(.38,.09,.47,.98)" "forwards"]]}]
+             :animation [[virion-animation "4s" s-curve-custom "forwards"]]}]
 
   ;; layout
 
@@ -128,6 +132,8 @@
   [:.svg-pointer-events-none [:svg {:pointer-events "none"}]]
   [:.graticule {:fill "none" :stroke "#eee" :stroke-width ".5px" :stroke-opacity 0.4}]
   [:#line-chart-root-svg {:height "200px"}]
+  fade-in-after-delay
+  [:.county-container {:animation [[fade-in-after-delay (str (* 2 duration-2) "ms") "linear" "forwards"]]}]
 
   ;; utility
 
