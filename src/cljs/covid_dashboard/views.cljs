@@ -5,7 +5,7 @@
             [covid-dashboard.tables :as tables]
             [breaking-point.core :as bp]
             [covid-dashboard.maps :as maps]
-            [covid-dashboard.static :refer [control-bar-height-desktop gap-size duration-2]]
+            [covid-dashboard.static :refer [switcher-height-desktop gap-size duration-2]]
             [covid-dashboard.subs :as subs]
             [covid-dashboard.utility :as utility]
             [re-com.core :refer [box gap h-box v-box]]

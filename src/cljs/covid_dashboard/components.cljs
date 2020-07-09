@@ -1,7 +1,7 @@
 (ns covid-dashboard.components
   (:require
    [breaking-point.core :as bp]
-   [covid-dashboard.static :refer [control-bar-height control-bar-height-desktop duration-2 gap-size]]
+   [covid-dashboard.static :refer [switcher-height-mobile switcher-height-desktop duration-2 gap-size]]
    [covid-dashboard.subs :as subs]
    [re-com.core :refer [box gap h-box v-box]]
    [re-frame.core :as re-frame]
@@ -58,7 +58,7 @@
         ;; detail
         [detail @is-switching]
         ;; switcher
-        [box :size (if (= @(re-frame/subscribe [::bp/screen]) :mobile) control-bar-height control-bar-height-desktop) :child
+        [box :size (if (= @(re-frame/subscribe [::bp/screen]) :mobile) switcher-height-mobile switcher-height-desktop) :child
          [h-box :size "1" :attr {:on-click #(swap! is-menu-active not)} :class "panel children-align-self-center z-index-1 cursor-pointer" :children
           [[box :child [:a.button {:on-click #(switch-with-fade % dec)} "←"]]
            [box :size "1" :child [:p.margin-0-auto (-> (get sub-panels (mod @curr sub-panel-count)) first)
@@ -73,7 +73,7 @@
           [:ul.menu (doall (map-indexed (fn [i [name]] [:li {:key i :class (when (= (mod @curr sub-panel-count) i) "is-selected")
                                                              :on-click (fn [] (when (not @is-switching) (do (re-frame/dispatch [:clear-details]) (reset! curr i) (reset! is-menu-active false))))}
                                                         name]) sub-panels))]]]
-        [box :size (if @mobile? control-bar-height control-bar-height-desktop) :child ""]]]]
+        [box :size (if @mobile? switcher-height-mobile switcher-height-desktop) :child ""]]]]
 
      ;; display (desktop)
      (when (not @mobile?) [box :size "1" :class (str "u-width1-100 u-height-100 justify-content-center fade-duration-2 " (if @is-switching "is-inactive" "is-active"))
@@ -95,7 +95,7 @@
        [box :size "1" :class "justify-content-center" :attr {:on-click #(reset! is-menu-active false)} :child
         [(-> (get sub-panels (mod @curr sub-panel-count)) second)]]
        ;; switcher
-       [box :size (if (= @(re-frame/subscribe [::bp/screen]) :mobile) control-bar-height control-bar-height-desktop) :child
+       [box :size (if (= @(re-frame/subscribe [::bp/screen]) :mobile) switcher-height-mobile switcher-height-desktop) :child
         [h-box :size "1" :attr {:on-click #(swap! is-menu-active not)} :class "children-align-self-center z-index-1 cursor-pointer" :children
          [[box :child [:a.button {:on-click #(switch % dec)} "←"]]
           [box :size "1" :child [:p.margin-0-auto (-> (get sub-panels (mod @curr sub-panel-count)) first)
@@ -108,4 +108,4 @@
                     [:ul.menu (doall (map-indexed (fn [i [name]] [:li {:key i :class (when (= (mod @curr sub-panel-count) i) "is-selected")
                                                                        :on-click (fn [] (do (re-frame/dispatch [:clear-details]) (reset! curr i) (reset! is-menu-active false)))}
                                                                   name]) sub-panels))]]]
-       [box :size (if (= @(re-frame/subscribe [::bp/screen]) :mobile) control-bar-height control-bar-height-desktop) :child ""]]]]))
+       [box :size (if (= @(re-frame/subscribe [::bp/screen]) :mobile) switcher-height-mobile switcher-height-desktop) :child ""]]]]))

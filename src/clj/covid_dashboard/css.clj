@@ -9,8 +9,8 @@
 (def duration-2 (* duration-1 1.8))
 (def duration-3 (* duration-1 7))
 
-(def control-bar-height "58px")
-(def control-bar-height-desktop "36px")
+(def switcher-height-mobile "58px")
+(def switcher-height-desktop "36px")
 
 (defkeyframes virion-animation
   [:from {:transform "scale(1.4) translateX(-11%)"}]
@@ -56,13 +56,12 @@
 
   ;; buttons
 
-  [:.button {:display "block" :width "80px" :height control-bar-height :font-size "21px" :color "#ccc" :text-shadow "1px 1px 0 #fff"
-             :line-height control-bar-height :text-align "center" :background "#f4f4f4" :transition "background 120ms"}]
-  [:.desktop [:.button {:width "30px" :height control-bar-height-desktop :line-height control-bar-height-desktop
+  [:.button {:display "block" :width "80px" :height switcher-height-mobile :font-size "21px" :color "#ccc" :text-shadow "1px 1px 0 #fff"
+             :line-height switcher-height-mobile :text-align "center" :background "#f4f4f4" :transition "background 120ms"}]
+  [:.desktop [:.button {:width "30px" :height switcher-height-desktop :line-height switcher-height-desktop
                         :font-size "12px" :color "#aaa" :background "#f8f8f8"}]]
   [:.button:hover {:background "#f5f5f5"}]
   [:.button:active {:background "#f2f2f2"}]
-
 
   ;; loader
 
@@ -83,22 +82,17 @@
   ;; layout
 
   [:.home-page {:height "100vh" :padding "10px" :box-sizing "border-box" :-webkit-font-smoothing "antialiased"}]
-  [:.control-bar-height-box {:height control-bar-height
-                             :border "1px solid blue"
-                             :flex (str "1 1 " control-bar-height)}]
   [:.home-col-left :.home-col-right {:z-index 1}]
 
   ;; panel
 
   [:.panel {:background "#fdfdfdd1"}]
-
   [:.detail {:font-weight 300}]
   [:.detail-table {:margin "0 auto 0.6em"}
    [:td {:font-size "17px" :line-height 1.2}]
    [:td:first-child {:text-align "right"}]]
-
   [:.menu-container {:background "#fffe" :border-top "1px solid #eee" :z-index 2}]
-  [:.desktop [:.menu-container {:bottom control-bar-height-desktop}]]
+  [:.desktop [:.menu-container {:bottom switcher-height-desktop}]]
   [:ul.menu {:margin 0 :padding-left 0 :list-style "none"}
    [:li {:padding "10px" :cursor "pointer" :transition (str "opacity " duration-2 "ms ease-in-out")
          :border-left "1px solid #eee" :border-right "1px solid #eee"}
