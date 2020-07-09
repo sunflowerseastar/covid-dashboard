@@ -126,4 +126,10 @@
                            [box :size (if (= @screen :tablet) "4" "auto") :class "home-col-center" :child
                             [display-detail-menu-switcher map-sub-panels]]
                            ;; right - panels 4, 5, 6
-                           [box :size (if (= @screen :tablet) (if @is-right-panel-open "2" "0") (if @is-right-panel-open "410px" "0")) :child [home-col-right]]]]]])])}))))
+                           [box :size (if (= @screen :tablet) (if @is-right-panel-open "2" "0") (if @is-right-panel-open "410px" "0")) :child [home-col-right]]]]]])
+           [:div.info
+            [:h4 "COVID-19 Dashboard"]
+            [:p "Inspired by the excellent " [:a {:href "https://coronavirus.jhu.edu/map.html"} "COVID-19 Dashboard by the Center for Systems Science and Engineering (CSSE) at Johns Hopkins University"] "."]
+            [:p "This dashboard uses data aggregated by CSSE available here."]
+            [:p "Code is open source and available " [:a {:href "https://github.com/sunflowerseastar.com/covid-dashboard"} "here"] "."]
+            ]])}))))

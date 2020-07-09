@@ -108,6 +108,20 @@
               :background-image "linear-gradient(#fff0, #ffff)"
               :pointer-events "none" :overflow "visible" :z-index 2}]]
 
+  ;; info
+
+  [:.info {
+           :position "absolute"
+           :top 0
+           :left 0
+           :width "100%"
+           :bottom 0
+           :background "#fffd"
+           :z-index 3
+           :display "none"
+           }
+   ]
+
   ;; visualizations
 
   [:.svg-container {:position "relative" :top "50%" :transform "translateY(-50%)" :width "100%" :height "100%" :overflow "visible"}]
