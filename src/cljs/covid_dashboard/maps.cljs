@@ -192,29 +192,14 @@
                svg (.. js/d3 (select (str "#" svg-el-id)))
                g (-> svg (.append "g"))
 
-               scale-radius (.scaleSqrt js/d3 (clj->js (.extent js/d3 (vals confirmed-by-us-county-fips))) (clj->js [1 40]))
-               ;; scale-color (.scaleQuantize js/d3 (clj->js [1 10])
-               ;;                             (j/get-in js/d3 [:schemeBlues 9]))
-               scale-color-2 (-> (.scaleThreshold js/d3)
+               scale-color (-> (.scaleThreshold js/d3)
                                  (.domain (clj->js [0 1 50 100 200 1000 4000 12000]))
                                  (.range (j/get-in js/d3 [:schemeBlues 9])))
 
-               scale-extent (clj->js [1 12])
-               zoom-k->scaled-zoom-k (.scaleLinear js/d3 scale-extent (clj->js [1 0.3]))
-
-               zoomed #(let [transform (-> js/d3 .-event .-transform)
-                             k (.-k transform)
-                             circles (.selectAll g ".g-circles circle")]
-                         (do (-> circles
-                                 (.attr "r" (fn [d] (let [scaled-radius (* (zoom-k->scaled-zoom-k k)
-                                                                           (scale-radius (.-value d)))]
-                                                      (if (js/isNaN scaled-radius) 0 scaled-radius)))))
-                             (-> (.selectAll g ".counties")
-                                 (.attr "stroke-width" (* (zoom-k->scaled-zoom-k k) 0.75)))
-                             (-> g (.attr "transform" transform)
-                                 (.attr "stroke-width" (/ 1 k)))))
+               zoomed #(let [transform (-> js/d3 .-event .-transform)]
+                         (-> g (.attr "transform" transform)))
                my-zoom (-> (.zoom js/d3)
-                           (.scaleExtent scale-extent)
+                           (.scaleExtent (clj->js [1 12]))
                            (.on "zoom" zoomed))
 
                counties-geojson (->> (topo/feature counties-albers-10m-data counties-topology) (.-features))
@@ -222,9 +207,9 @@
                                                           (.map #(j/assoc! % :value (get confirmed-by-us-county-fips (keyword (.-id %)))))
                                                           (.filter #(j/get % :value)))
 
-               stroke-color-normal "#fff6"
-               stroke-color-active "#fffd"
-               stroke-color-hover "#fffa"]
+               stroke-color-normal "#fff4"
+               stroke-color-active "#fffe"
+               stroke-color-hover "#ffff"]
 
            (-> svg (.attr "viewBox" (clj->js [0 0 width height])))
 
@@ -250,7 +235,7 @@
                (.data counties-geojson)
                (.join "path")
                (.attr "class" "counties")
-               (.attr "fill" (fn [d] (scale-color-2 (j/get d :value))))
+               (.attr "fill" (fn [d] (scale-color (j/get d :value))))
                (.attr "d" path))
 
            (-> g
