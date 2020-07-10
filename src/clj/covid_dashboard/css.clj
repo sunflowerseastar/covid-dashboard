@@ -29,10 +29,10 @@
 
   ;; type
 
-  [:h3 :h4 {:margin "0.5em 0 0.4em" :padding "0 0.8em" :color "#333" :text-align "center" :letter-spacing "0.03em"}]
-  [:h3 {:font-size "21px" :font-weight 600}]
+  [:h3 :h4 {:margin "0.5em 0 0.4em" :padding "0 0.8em" :color "#333" :text-align "center" :letter-spacing "0.02em"}]
+  [:h3 {:font-size "20px" :font-weight 600}]
   [:.desktop [:h3 {:font-size "14px"}]]
-  [:h4 {:font-size "19px" :font-weight 300}
+  [:h4 {:font-size "18px" :font-weight 300}
    [:&.extra-margin {:margin "2em 0 0.55em"}]]
   [:.desktop [:h4 {:font-size "15px"} [:&.extra-margin {:margin "1em 0 0.55em"}]]]
   [:h5 {:margin 0 :padding "0 0.7em" :color "#333" :font-weight 300 :font-size "10px" :text-align "center"
