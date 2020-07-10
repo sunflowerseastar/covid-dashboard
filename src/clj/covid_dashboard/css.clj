@@ -125,7 +125,8 @@
 
   ;; visualizations
 
-  [:.svg-container {:position "relative" :top "50%" :transform "translateY(-50%)" :width "100%" :height "100%" :overflow "visible"}]
+  [:.svg-container {:width "100%"}]
+  [:.desktop [:.svg-container {:position "relative" :top "50%" :transform "translateY(-50%)" :width "100%" :height "100%" :overflow "visible"}]]
   [:.svg-pointer-events-none [:svg {:pointer-events "none"}]]
   [:.graticule {:fill "none" :stroke "#eee" :stroke-width ".5px" :stroke-opacity 0.4}]
   [:#line-chart-root-svg {:height "200px"}]
