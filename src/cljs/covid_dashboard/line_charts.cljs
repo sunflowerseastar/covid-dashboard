@@ -131,13 +131,13 @@
 
         x-axis (fn [g] (-> (.attr g "transform" (str "translate(0," (- height 20) ")"))
                            (.call (-> (.axisBottom js/d3 x-scale)
-                                      (.ticks 3)
+                                      (.ticks (/ width 80))
                                       (.tickSizeOuter 0)))
                            (.call (fn [g] (-> (.select g ".domain") (.remove))))))
 
         y-axis (fn [g] (-> (.attr g "transform" (str "translate(" margin ",9)"))
                            (.call (-> (.axisLeft js/d3 y-scale)
-                                      (.ticks 3)
+                                      (.ticks 5)
                                       (.tickFormat format-value)))
                            (.call (fn [g] (-> (.select g ".domain") (.remove))))
                            (.call (fn [g] (-> (.select g ".tick:last-of-type text")
