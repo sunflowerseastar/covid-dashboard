@@ -9,7 +9,7 @@
    [reagent.core :refer [atom with-let]]))
 
 (defn detail
-  "Takes is-switching and returns details on the clicked map. Detail data is global."
+  "Takes is-switching and returns details on the clicked map (hiccup). Detail data is global."
   [is-switching]
   (let [county (re-frame/subscribe [:detail-county])
         state (re-frame/subscribe [:detail-state])
