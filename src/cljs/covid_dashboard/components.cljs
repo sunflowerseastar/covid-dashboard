@@ -50,8 +50,8 @@
       ;; display (mobile), detail, & switcher overlay
       [v-box :size "1" :class "u-height-100" :children
        [(if @mobile?
-          ;; display
-          [box :size "1" :class (str "u-width1-100 u-height-100 justify-content-center fade-duration-2 " (if @is-switching "is-inactive" "is-active"))
+          ;; display (mobile)
+          [box :size "1" :class (str "u-width-100 u-height-100 justify-content-center fade-duration-2 " (if @is-switching "is-inactive" "is-active"))
            :attr {:on-click #(reset! is-menu-active false)} :child [(-> (get sub-panels (mod @curr sub-panel-count)) second)]]
           ;; spacer
           [box :size "1" :child ""])
@@ -83,12 +83,12 @@
                                   [[box :size "5" :class "bold justify-content-flex-end" :child long-name]
                                    [gap :size "10px"]
                                    [box :size "4" :class "light" :child type]]]
-                               [:span name])])
+                                 [:span name])])
                             sub-panels))]]]
         [box :size (if @mobile? switcher-height-mobile switcher-height-desktop) :child ""]]]]
 
      ;; display (desktop)
-     (when (not @mobile?) [box :size "1" :class (str "u-width1-100 u-height-100 justify-content-center fade-duration-2 " (if @is-switching "is-inactive" "is-active"))
+     (when (not @mobile?) [box :size "1" :class (str "u-width-100 u-height-100 justify-content-center fade-duration-2 " (if @is-switching "is-inactive" "is-active"))
                            :attr {:on-click #(reset! is-menu-active false)} :child [(-> (get sub-panels (mod @curr sub-panel-count)) second)]])]))
 
 (defn display-and-switcher
