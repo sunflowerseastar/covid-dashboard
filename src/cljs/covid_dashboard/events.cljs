@@ -38,7 +38,7 @@
 
 (re-frame/reg-event-db
  ::assoc-api-all
- (fn [db [_ {:keys [confirmed-by-province
+ (fn [db [_ {:keys [confirmed-by-state
                     confirmed-by-country
                     confirmed-by-us-county
                     confirmed-by-us-county-fips
@@ -50,7 +50,7 @@
                     us-states-deaths-recovered
                     us-states-hospitalized
                     us-states-tested]}]]
-   (assoc db :confirmed-by-province confirmed-by-province
+   (assoc db :confirmed-by-state confirmed-by-state
           :confirmed-by-country confirmed-by-country
           :confirmed-by-us-county confirmed-by-us-county
           :confirmed-by-us-county-fips confirmed-by-us-county-fips

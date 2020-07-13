@@ -5,7 +5,7 @@
    :detail-county nil
    :detail-state nil
    :detail-value nil
-   :confirmed-by-province nil
+   :confirmed-by-state nil
    :confirmed-by-country nil
    :confirmed-by-us-county nil
    :confirmed-by-us-county-fips nil

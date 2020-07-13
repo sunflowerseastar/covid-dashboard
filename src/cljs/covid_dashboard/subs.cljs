@@ -9,9 +9,9 @@
    (:active-page db)))
 
 (re-frame/reg-sub
- ::confirmed-by-province
+ ::confirmed-by-state
  (fn [db]
-   (:confirmed-by-province db)))
+   (:confirmed-by-state db)))
 
 (re-frame/reg-sub
  ::confirmed-by-country

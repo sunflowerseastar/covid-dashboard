@@ -51,14 +51,14 @@
                               @confirmed-by-country)]]]]])))
 
 (defn table-confirmed-state []
-  (let [confirmed-by-province (re-frame/subscribe [::subs/confirmed-by-province])]
-    (when @confirmed-by-province
+  (let [confirmed-by-state (re-frame/subscribe [::subs/confirmed-by-state])]
+    (when @confirmed-by-state
       [v-box :size "1" :class "white-fade-bottom" :children
        [[box :class "padding-1" :child [:div [:h4 "Confirmed Cases by"] [:h3 "State/Province"]]]
         [box :size "1" :class "scroll-y-auto" :child
-         [:table [:tbody (map (fn [[value province country]]
-                                [:tr {:key (str province value)} [:td.bold (utility/nf value)] [:td (str province ", " country)]])
-                              @confirmed-by-province)]]]]])))
+         [:table [:tbody (map (fn [[value state country]]
+                                [:tr {:key (str state value)} [:td.bold (utility/nf value)] [:td (str state ", " country)]])
+                              @confirmed-by-state)]]]]])))
 
 (defn table-confirmed-county []
   (let [confirmed-by-us-county (re-frame/subscribe [::subs/confirmed-by-us-county])]
