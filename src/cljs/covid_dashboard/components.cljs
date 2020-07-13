@@ -15,7 +15,7 @@
         state (re-frame/subscribe [:detail-state])
         country (re-frame/subscribe [:detail-country])
         value (re-frame/subscribe [:detail-value])]
-    [box :class (str "fade-duration-2 " (if (or @county @country) "is-active" "is-inactive"))
+    [box :class (str "u-position-relative z-index-1 fade-duration-2 " (if (or @county @country) "is-active" "is-inactive"))
      :child (if (or @county @country)
               [:div.panel.detail.z-index-1.padding-2.fade-duration-2 {:class (if is-switching "is-inactive" "is-active")}
                [:table.detail-table
