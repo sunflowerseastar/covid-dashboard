@@ -86,7 +86,7 @@
    {:db (assoc db :is-fetching true)
     :http-xhrio {:method :get
                  :uri (api-prefix "all")
-                 :timeout 8000
+                 :timeout 15000
                  :response-format (ajax/json-response-format {:keywords? true})
                  :on-success [::assoc-api-all]
                  :on-failure [::failure-http-result]}}))
