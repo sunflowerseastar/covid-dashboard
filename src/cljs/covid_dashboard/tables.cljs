@@ -66,8 +66,8 @@
       [v-box :size "1" :class "white-fade-bottom" :children
        [[box :class "padding-1" :child [:div [:h4 "Confirmed Cases by"] [:h3 "U.S. County"]]]
         [box :size "1" :class "scroll-y-auto" :child
-         [:table [:tbody (map (fn [[value us-county country]]
-                                [:tr {:key (str us-county value)} [:td.bold (utility/nf value)] [:td (str us-county ", " country)]])
+         [:table [:tbody (map (fn [[value us-county state]]
+                                [:tr {:key (str us-county value)} [:td.bold (utility/nf value)] [:td (str us-county ", " state)]])
                               @confirmed-by-us-county)]]]]])))
 
 (defn table-global-deaths []
