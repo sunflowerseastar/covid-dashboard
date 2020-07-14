@@ -193,8 +193,8 @@
                g (-> svg (.append "g"))
 
                scale-color (-> (.scaleThreshold js/d3)
-                                 (.domain (clj->js [0 1 50 100 200 1000 4000 12000]))
-                                 (.range (j/get-in js/d3 [:schemeBlues 9])))
+                               (.domain (clj->js [0 1 50 100 200 1000 4000 12000]))
+                               (.range (j/get-in js/d3 [:schemeBlues 9])))
 
                zoomed #(let [transform (-> js/d3 .-event .-transform)]
                          (-> g (.attr "transform" transform)))
