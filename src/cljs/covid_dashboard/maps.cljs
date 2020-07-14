@@ -369,6 +369,19 @@
 
              (-> svg (.attr "viewBox" (clj->js [0 0 width height])))
 
+             ;; graticule
+             (-> g
+                 (.append "path")
+                 (.datum graticule-outline)
+                 (.attr "class" "graticule")
+                 (.attr "d" path))
+
+             (-> g
+                 (.append "path")
+                 (.datum graticule)
+                 (.attr "class" "graticule")
+                 (.attr "d" path))
+
              ;; land
              (-> g
                  (.append "g")
@@ -390,18 +403,6 @@
                  (.text #(str (-> % .-properties .-name)
                               " – "
                               (utility/nf (aget data (-> % .-properties .-name))))))
-
-             (-> g
-                 (.append "path")
-                 (.datum graticule-outline)
-                 (.attr "class" "graticule")
-                 (.attr "d" path))
-
-             (-> g
-                 (.append "path")
-                 (.datum graticule)
-                 (.attr "class" "graticule")
-                 (.attr "d" path))
 
              ;; country borders
              (-> g
