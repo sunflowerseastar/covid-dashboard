@@ -85,7 +85,7 @@ The backend slices and serves the data the way that each sub-panel wants it. One
 The API call (via [[https://github.com/Day8/re-frame-http-fx][re-frame-http-fx]]) responses are divvied out in the re-frame event ~::assoc-api-all~:
 
  #+begin_src clojure
-(assoc db :confirmed-by-province confirmed-by-province
+(assoc db :confirmed-by-state confirmed-by-state
        :confirmed-by-country confirmed-by-country
        :confirmed-by-us-county confirmed-by-us-county
        ;; ...
