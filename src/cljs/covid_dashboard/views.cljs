@@ -23,8 +23,8 @@
                     ["Global Deaths" tables/table-global-deaths "Global Deaths" "table"]
                     ["Global Recovered" tables/table-global-recovered "Global Recovered" "table"]
                     ["US Deaths/Recovered" tables/table-us-deaths-recovered "US Deaths & Recovered" "table"]
-                    ["US Tested" tables/table-us-tested "US Tested" "table"]
-                    ["US Hospitalized" tables/table-us-hospitalized "US Hospitalized" "table"]
+                    ;; ["US Tested" tables/table-us-tested "US Tested" "table"]
+                    ;; ["US Hospitalized" tables/table-us-hospitalized "US Hospitalized" "table"]
                     ["Global Confirmed" line-charts/line-chart-global-confirmed-linear "Global Confirmed" "line chart - linear"]
                     ["Global Confirmed - log" line-charts/line-chart-global-confirmed-log "Global Confirmed" "line chart - log"]
                     ["Global Daily Cases" line-charts/line-chart-global-daily-cases "Global Daily Cases" "line chart - linear"]])
@@ -57,8 +57,9 @@
                  [gap :size gap-size]
                  [box :size "1" :class "panel" :child
                   [display-and-switcher [["US Deaths/Recovered" tables/table-us-deaths-recovered]
-                                         ["US Tested" tables/table-us-tested]
-                                         ["US Hospitalized" tables/table-us-hospitalized]]]]]
+                                         ;; ["US Tested" tables/table-us-tested]
+                                         ;; ["US Hospitalized" tables/table-us-hospitalized]
+                                         ]]]]
                 ;; ...desktop - side by side
                 [box :size "1" :child
                  [h-box :size "1" :gap gap-size :children
@@ -67,8 +68,9 @@
                                            ["Global Recovered" tables/table-global-recovered]]]]
                    [box :size "5" :class "panel" :child
                     [display-and-switcher [["US Deaths/Recovered" tables/table-us-deaths-recovered]
-                                           ["US Tested" tables/table-us-tested]
-                                           ["US Hospitalized" tables/table-us-hospitalized]]]]]]])
+                                           ;; ["US Tested" tables/table-us-tested]
+                                           ;; ["US Hospitalized" tables/table-us-hospitalized]
+                                           ]]]]]])
               ;; panel 6, same either way
               [box :class "panel svg-pointer-events-none" :size "255px" :child
                [display-and-switcher [["Global Confirmed" line-charts/line-chart-global-confirmed-linear]

@@ -28,5 +28,6 @@
    :time-series-confirmed-global nil
    :total-confirmed nil
    :us-states-deaths-recovered nil
-   :us-states-hospitalized nil
-   :us-states-tested nil})
+   ;; :us-states-hospitalized nil
+   ;; :us-states-tested nil
+   })
