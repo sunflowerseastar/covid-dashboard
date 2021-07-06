@@ -20,7 +20,7 @@
    :confirmed-by-us-county nil
    :confirmed-by-us-county-fips nil
    :global-deaths nil
-   :global-recovered nil
+   ;; :global-recovered nil
    :is-fetching false
    :is-loaded false
    :last-updated nil

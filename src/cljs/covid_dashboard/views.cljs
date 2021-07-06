@@ -21,7 +21,7 @@
                     ["Confirmed State" tables/table-confirmed-state "Confirmed by Country" "table"]
                     ["Confirmed US County" tables/table-confirmed-county "Confirmed by US County" "table"]
                     ["Global Deaths" tables/table-global-deaths "Global Deaths" "table"]
-                    ["Global Recovered" tables/table-global-recovered "Global Recovered" "table"]
+                    ;; ["Global Recovered" tables/table-global-recovered "Global Recovered" "table"]
                     ["US Deaths/Recovered" tables/table-us-deaths-recovered "US Deaths & Recovered" "table"]
                     ;; ["US Tested" tables/table-us-tested "US Tested" "table"]
                     ;; ["US Hospitalized" tables/table-us-hospitalized "US Hospitalized" "table"]
@@ -53,7 +53,8 @@
                 [:<>
                  [box :size "1" :class "panel" :child
                   [display-and-switcher [["Global Deaths" tables/table-global-deaths]
-                                         ["Global Recovered" tables/table-global-recovered]]]]
+                                         ;; ["Global Recovered" tables/table-global-recovered]
+                                         ]]]
                  [gap :size gap-size]
                  [box :size "1" :class "panel" :child
                   [display-and-switcher [["US Deaths/Recovered" tables/table-us-deaths-recovered]
@@ -65,7 +66,8 @@
                  [h-box :size "1" :gap gap-size :children
                   [[box :size "4" :class "panel" :child
                     [display-and-switcher [["Global Deaths" tables/table-global-deaths]
-                                           ["Global Recovered" tables/table-global-recovered]]]]
+                                           ;; ["Global Recovered" tables/table-global-recovered]
+                                           ]]]
                    [box :size "5" :class "panel" :child
                     [display-and-switcher [["US Deaths/Recovered" tables/table-us-deaths-recovered]
                                            ;; ["US Tested" tables/table-us-tested]
