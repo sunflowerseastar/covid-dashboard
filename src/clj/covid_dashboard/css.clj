@@ -13,7 +13,7 @@
 (def switcher-height-desktop "36px")
 
 (defkeyframes virion-animation
-  [:from {:transform "scale(1.4) translateX(-11%)"}]
+  [:from {:transform "scale(1.6) translateX(-10%)"}]
   [:to {:transform "scale(1.4) translateX(-14%)"}])
 (defkeyframes fade-in-after-delay ["0%" {:opacity 0}] ["50%" {:opacity 0}] ["100%" {:opacity 1}])
 
@@ -69,7 +69,9 @@
 
   ;; loader
 
-  [:.loader {:position "absolute" :top 0 :left 0 :right 0 :bottom 0 :pointer-events "none"}]
+  ;; [:.loader+div {:display "none"}] ;; for dev work on loader
+  [:.loader {:position "absolute" :top 0 :left 0 :right 0 :bottom 0
+             :animation [[fade-in-after-delay (str (* 2 duration-3) "ms") "linear" "forwards"]]}]
   [:.virion-container {:position "absolute" :display "block" :width "44vw" :height "28vw"
                        :padding "14px" :left "50%" :top "50%"
                        :transform "translateX(-50%) translateY(-50%)" :border "1px solid #ddd"}
@@ -81,7 +83,7 @@
   [:.virion-container-inner {:position "relative" :box-sizing "border-box" :width "100%" :height "100%" :overflow "hidden"}]
   virion-animation
   [:.virion {:position "absolute" :display "block" :width "100%" :left 0 :top 0
-             :animation [[virion-animation "4s" s-curve-custom "forwards"]]}]
+             :animation [[virion-animation "4s" s-curve-ease-cubic "forwards"]]}]
 
   ;; layout
 

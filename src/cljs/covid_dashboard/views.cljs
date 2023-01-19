@@ -81,8 +81,10 @@
 
 (defn loader []
   (let [is-fetching (subscribe [::subs/is-fetching])]
-    [:div.loader.opacity-0-fade-duration-3 {:class (when @is-fetching "opacity-1")}
-     [:div.virion-container
+    ;; loader has a css keyframe animation to fade in - see css.clj
+    [:div.loader {:class (when (not @is-fetching) "pointer-events-none")}
+     ;; then .virion-container controls the fade-out
+     [:div.virion-container.opacity-0-fade-duration-2 {:class (when @is-fetching "opacity-1")}
       [:div.virion-container-inner
        [:img.virion {:src "images/virion-sat-fade_500.jpg"}]]]]))
 
