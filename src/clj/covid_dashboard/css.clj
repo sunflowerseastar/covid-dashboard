@@ -135,9 +135,10 @@
 
   ;; utility
 
-  [:.fade-duration-3 {:transition (str "opacity " duration-3 "ms ease-in-out") :opacity 0}]
-  [:.fade-duration-2 {:transition (str "opacity " duration-2 "ms ease-in-out") :opacity 0}]
-  [:.is-active {:opacity "1"}]
+  [:.opacity-0-fade-duration-3 {:transition (str "opacity " duration-3 "ms ease-in-out") :opacity 0}]
+  [:.opacity-0-fade-duration-2 {:transition (str "opacity " duration-2 "ms ease-in-out") :opacity 0}]
+  [:.opacity-1 {:opacity "1"}]
+  ;; TODO can I put pen on opacity-0-fade-duration-* and then remove all the pen markup?
   [:.pointer-events-none {:pointer-events "none !important"}]
 
   [:.padding-1 {:box-sizing "border-box" :padding "8px 10px"}]

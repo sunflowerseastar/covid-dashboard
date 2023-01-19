@@ -81,7 +81,7 @@
 
 (defn loader []
   (let [is-fetching (subscribe [::subs/is-fetching])]
-    [:div.loader.fade-duration-3 {:class (when @is-fetching "is-active")}
+    [:div.loader.opacity-0-fade-duration-3 {:class (when @is-fetching "opacity-1")}
      [:div.virion-container
       [:div.virion-container-inner
        [:img.virion {:src "images/virion-sat-fade_500.jpg"}]]]]))
@@ -116,12 +116,12 @@
              ;; mobile layout
              [v-box
               :height "100%"
-              :class (str "fade-duration-3 " (when @is-loaded "is-active"))
+              :class (str "opacity-0-fade-duration-3 " (when @is-loaded "opacity-1"))
               :children [[box :size "1" :class "panel" :child [display-detail-menu-switcher mobile-panels]]]]
              ;; desktop layout
              [v-box
               :height "100%"
-              :class (str (when (not (nil? @screen)) (name @screen)) " desktop fade-duration-3 " (when @is-loaded "is-active"))
+              :class (str (when (not (nil? @screen)) (name @screen)) " desktop opacity-0-fade-duration-3 " (when @is-loaded "opacity-1"))
               :children [;; three columns:
                          [h-box :class "home-page" :gap gap-size :children
                           [;; left - panels 1 & 2
