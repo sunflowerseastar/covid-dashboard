@@ -138,7 +138,7 @@
   [:.fade-duration-3 {:transition (str "opacity " duration-3 "ms ease-in-out") :opacity 0}]
   [:.fade-duration-2 {:transition (str "opacity " duration-2 "ms ease-in-out") :opacity 0}]
   [:.is-active {:opacity "1"}]
-  [:.is-inactive {:pointer-events "none !important"}]
+  [:.pointer-events-none {:pointer-events "none !important"}]
 
   [:.padding-1 {:box-sizing "border-box" :padding "8px 10px"}]
   [:.padding-2 {:box-sizing "border-box" :padding "8px"}]

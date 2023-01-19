@@ -15,9 +15,9 @@
         state (re-frame/subscribe [:detail-state])
         country (re-frame/subscribe [:detail-country])
         value (re-frame/subscribe [:detail-value])]
-    [box :class (str "u-position-relative z-index-1 fade-duration-2 " (if (or @county @country) "is-active" "is-inactive"))
+    [box :class (str "u-position-relative z-index-1 fade-duration-2 " (if (or @county @country) "is-active" "pointer-events-none"))
      :child (if (or @county @country)
-              [:div.panel.detail.z-index-1.padding-2.fade-duration-2 {:class (if is-switching "is-inactive" "is-active")}
+              [:div.panel.detail.z-index-1.padding-2.fade-duration-2 {:class (if is-switching "pointer-events-none" "is-active")}
                [:table.detail-table
                 [:tbody (when @county [:tr [:td "County: "] [:td.bold @county]])
                  (when @state [:tr [:td "State: "] [:td.bold @state]])
@@ -51,7 +51,7 @@
       [v-box :size "1" :class "u-height-100" :children
        [(if @mobile?
           ;; display (mobile)
-          [box :size "1" :class (str "u-width-100 u-height-100 justify-content-center fade-duration-2 " (if @is-switching "is-inactive" "is-active"))
+          [box :size "1" :class (str "u-width-100 u-height-100 justify-content-center fade-duration-2 " (if @is-switching "pointer-events-none" "is-active"))
            :attr {:on-click #(reset! is-menu-active false)} :child [(-> (get sub-panels (mod @curr sub-panel-count)) second)]]
           ;; spacer
           [box :size "1" :child ""])
@@ -69,7 +69,7 @@
       [v-box :size "1" :class "u-absolute-all pointer-events-none" :children
        [[box :size "1" :child ""]
         [box :size "0 1 auto" :child
-         [:div.menu-container.pointer-events-auto.fade-duration-2.scroll-y-auto {:class (if @is-menu-active "is-active" "is-inactive")}
+         [:div.menu-container.pointer-events-auto.fade-duration-2.scroll-y-auto {:class (if @is-menu-active "is-active" "pointer-events-none")}
           [:ul.menu (doall (map-indexed
                             (fn [i [name _ long-name type]]
                               [:li {:key i :class (when (= (mod @curr sub-panel-count) i) "is-selected")
@@ -88,7 +88,7 @@
         [box :size (if @mobile? switcher-height-mobile switcher-height-desktop) :child ""]]]]
 
      ;; display (desktop)
-     (when (not @mobile?) [box :size "1" :class (str "u-width-100 u-height-100 justify-content-center fade-duration-2 " (if @is-switching "is-inactive" "is-active"))
+     (when (not @mobile?) [box :size "1" :class (str "u-width-100 u-height-100 justify-content-center fade-duration-2 " (if @is-switching "pointer-events-none" "is-active"))
                            :attr {:on-click #(reset! is-menu-active false)} :child [(-> (get sub-panels (mod @curr sub-panel-count)) second)]])]))
 
 (defn display-and-switcher
@@ -116,7 +116,7 @@
 
      [v-box :size "1" :class "u-absolute-all pointer-events-none" :children
       [[box :size "1" :class "blur" :child ""]
-       [box :child [:div.menu-container.pointer-events-auto.fade-duration-2 {:class (if @is-menu-active "is-active" "is-inactive")}
+       [box :child [:div.menu-container.pointer-events-auto.fade-duration-2 {:class (if @is-menu-active "is-active" "pointer-events-none")}
                     [:ul.menu (doall (map-indexed (fn [i [name]] [:li {:key i :class (when (= (mod @curr sub-panel-count) i) "is-selected")
                                                                        :on-click (fn [] (do (re-frame/dispatch [:clear-details]) (reset! curr i) (reset! is-menu-active false)))}
                                                                   name]) sub-panels))]]]
